@@ -597,7 +597,13 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
                   <Bird className="h-5 w-5 text-green-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">0</p>
+                  <p className="text-2xl font-bold">
+                    {lofts.reduce(
+                      (acc: number, loft: any) =>
+                        acc + (loft._count?.birds || 0),
+                      0,
+                    )}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {t("currentOccupancy")}
                   </p>
@@ -709,9 +715,14 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
                       <span className="text-muted-foreground">
                         {t("currentOccupancy")}
                       </span>
-                      <span className="font-medium">0 / 50</span>
+                      <span className="font-medium">
+                        {loft._count?.birds || 0}
+                      </span>
                     </div>
-                    <Progress value={0} className="h-2 rounded-xl" />
+                    <Progress
+                      value={(loft._count?.birds || 0) * 2}
+                      className="h-2 rounded-xl"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 text-sm">

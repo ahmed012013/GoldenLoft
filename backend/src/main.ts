@@ -43,6 +43,10 @@ async function bootstrap() {
       ? process.env.DATABASE_URL.slice(0, 10) + '...'
       : 'FALSE'
   );
-  await app.listen(process.env.PORT ?? 3000);
+
+  const port = process.env.PORT ?? 3000;
+  // Bind to 0.0.0.0 for external access (required for Render/Docker)
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 Server running on http://0.0.0.0:${port}`);
 }
 bootstrap().catch((err) => console.error(err));

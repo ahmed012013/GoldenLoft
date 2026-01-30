@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Delete,
   Body,
   Query,
   Param,
@@ -99,5 +101,19 @@ export class BirdsController {
   @Get(':id')
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.birdsService.findOne(req.user.userId, id);
+  }
+
+  @Patch(':id')
+  update(
+    @Request() req: RequestWithUser,
+    @Param('id') id: string,
+    @Body() updateBirdDto: Partial<CreateBirdDto>
+  ) {
+    return this.birdsService.update(req.user.userId, id, updateBirdDto);
+  }
+
+  @Delete(':id')
+  remove(@Request() req: RequestWithUser, @Param('id') id: string) {
+    return this.birdsService.remove(req.user.userId, id);
   }
 }

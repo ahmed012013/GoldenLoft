@@ -26,7 +26,7 @@ export class AuthService {
     const user = await this.userService.create({
       email: dto.email,
       password: hashedPassword,
-      loftName: dto.loftName,
+      name: dto.name,
     });
     return this.login(user); // Auto login on register
   }
@@ -35,6 +35,11 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
     };
   }
 

@@ -153,4 +153,70 @@ export class BirdsService {
     }
     return bird;
   }
+
+  async update(
+    userId: string,
+    id: string,
+    updateBirdDto: Partial<CreateBirdDto & { image?: string }>
+  ) {
+    const bird = await this.birdsRepository.findOne({ id });
+
+    if (!bird) {
+      throw new NotFoundException(`Bird with ID ${id} not found`);
+    }
+
+    if (bird.loft.userId !== userId) {
+      throw new NotFoundException(`Bird with ID ${id} not found`);
+    }
+
+    // Check for duplicate name if name is being updated
+    if (updateBirdDto.name && updateBirdDto.name !== bird.name) {
+      const existingBird = await this.birdsRepository.findByName(
+        updateBirdDto.name,
+        bird.loftId
+      );
+      if (existingBird && existingBird.id !== id) {
+        throw new BadRequestException(
+          'A bird with this name already exists in this loft'
+        );
+      }
+    }
+
+    // Build update data
+    const updateData: any = {
+      ...(updateBirdDto.name && { name: updateBirdDto.name }),
+      ...(updateBirdDto.gender && { gender: updateBirdDto.gender }),
+      ...(updateBirdDto.color && { color: updateBirdDto.color }),
+      ...(updateBirdDto.status && { status: updateBirdDto.status }),
+      ...(updateBirdDto.type && { type: updateBirdDto.type }),
+      ...(updateBirdDto.birthDate && {
+        birthDate: new Date(updateBirdDto.birthDate),
+      }),
+      ...(updateBirdDto.weight !== undefined && {
+        weight: updateBirdDto.weight,
+      }),
+      ...(updateBirdDto.notes !== undefined && { notes: updateBirdDto.notes }),
+      ...(updateBirdDto.image !== undefined && { image: updateBirdDto.image }),
+      ...(updateBirdDto.totalRaces !== undefined && {
+        totalRaces: updateBirdDto.totalRaces,
+      }),
+      ...(updateBirdDto.wins !== undefined && { wins: updateBirdDto.wins }),
+    };
+
+    return this.birdsRepository.update(id, updateData);
+  }
+
+  async remove(userId: string, id: string) {
+    const bird = await this.birdsRepository.findOne({ id });
+
+    if (!bird) {
+      throw new NotFoundException(`Bird with ID ${id} not found`);
+    }
+
+    if (bird.loft.userId !== userId) {
+      throw new NotFoundException(`Bird with ID ${id} not found`);
+    }
+
+    return this.birdsRepository.delete(id);
+  }
 }

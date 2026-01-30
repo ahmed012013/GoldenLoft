@@ -38,6 +38,12 @@ export class LoftController {
     return this.loftService.findManyByUserId(req.user.userId);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a single loft with details' })
+  findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
+    return this.loftService.findOne(id, req.user.userId);
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a loft' })
   update(

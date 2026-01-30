@@ -11,8 +11,8 @@ export class RegisterUserDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: 'My Golden Loft' })
+  @ApiProperty({ example: 'Ahmed Mohamed' })
   @IsString()
   @IsNotEmpty()
-  loftName: string;
+  name: string;
 }

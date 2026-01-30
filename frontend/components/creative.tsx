@@ -423,10 +423,24 @@ export function DesignaliCreative() {
   const [currentNutritionPage, setCurrentNutritionPage] = useState<
     "feeding" | "supplements" | "water" | null
   >(null);
+  const [userName, setUserName] = useState<string>("");
 
   const { language, setLanguage, t, dir } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { data: stats, isLoading } = usePigeonStats();
+
+  // Load user info from localStorage
+  useEffect(() => {
+    const userInfo = localStorage.getItem("user_info");
+    if (userInfo) {
+      try {
+        const parsed = JSON.parse(userInfo);
+        setUserName(parsed.name || "");
+      } catch (e) {
+        console.error("Failed to parse user info", e);
+      }
+    }
+  }, []);
 
   // Simulate progress loading
   useEffect(() => {
@@ -764,7 +778,7 @@ export function DesignaliCreative() {
               <div>
                 <h2 className="font-semibold">{t("title")}</h2>
                 <p className="text-xs text-muted-foreground">
-                  {t("creativeSuite")}
+                  {userName || t("creativeSuite")}
                 </p>
               </div>
             </div>

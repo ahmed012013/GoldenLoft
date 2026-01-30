@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npm run format && npm run lint:fix && nest build",
+    "build": "prisma generate && npm run format && npm run lint:fix && nest build",
     "format": "prettier --write .",
     "start": "nest start",
     "start:dev": "nest start --watch",
