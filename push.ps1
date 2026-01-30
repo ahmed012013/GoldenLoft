@@ -1,38 +1,31 @@
-# GoldenLoft Auto-Fix & Push Script
-$scriptPath = $PSScriptRoot
-Set-Location $scriptPath
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+# --- GoldenLoft Pro Auto-Push Script ---
+$REPO_URL = "https://github.com/ahmed012013/GoldenLoft.git"
 
-Write-Host "--- 🛠️ Starting Auto-Maintenance ---" -ForegroundColor Cyan
-
-# 1. Frontend Auto-Fix
-Write-Host "✨ 1/3 Cleaning & Fixing Frontend..." -ForegroundColor Yellow
-cd "$scriptPath\frontend"
-npm run format
-npm run lint:fix
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Still some manual fixes needed in Frontend!" -ForegroundColor Red
-    cd "$scriptPath"
-    exit
+# 1. Start Engine (Git Init)
+if (!(Test-Path .git)) {
+    Write-Host "Wait... Initializing Git..." -ForegroundColor Yellow
+    git init
+    git remote add origin $REPO_URL
+    git branch -M main
+}
+else {
+    git remote set-url origin $REPO_URL
 }
 
-# 2. Backend Auto-Fix
-Write-Host "✨ 2/3 Cleaning & Fixing Backend..." -ForegroundColor Yellow
-cd "$scriptPath\backend"
-npm run format
-# npm run lint:fix (لو ضفت السكربت في الباك اند)
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Still some manual fixes needed in Backend!" -ForegroundColor Red
-    cd "$scriptPath"
-    exit
-}
+# 2. Cleaning (Format)
+Write-Host "1/3 Cleaning Code..." -ForegroundColor Cyan
+Set-Location frontend; npm run format; Set-Location ..
+Set-Location backend; npm run format; Set-Location ..
 
-# 3. Final Build & Push
-Write-Host "🚀 3/3 Final Build Check & Push..." -ForegroundColor Green
-cd "$scriptPath"
+# 3. Logbook (Commit)
+Write-Host "2/3 Saving Changes..." -ForegroundColor Cyan
 git add .
-$msg = Read-Host "Enter Commit Message (e.g., Code Cleaned & Image Upload Added)"
+$msg = Read-Host "Enter Commit Message (or press Enter for 'Auto-Update')"
+if ($msg -eq "") { $msg = "Auto-Update and Breeding Logic" }
 git commit -m "$msg"
-git push origin main
 
-Write-Host "--- 🎉 GoldenLoft is now Factory-New and Online! ---" -ForegroundColor Green
+# 4. Final Push
+Write-Host "3/3 Pushing to GitHub..." -ForegroundColor Green
+git push -u origin main
+
+Write-Host "Success! GoldenLoft is Live on GitHub." -ForegroundColor Yellow
