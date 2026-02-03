@@ -3,51 +3,53 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  Award,
+  Bell,
+  BookOpen,
+  Bookmark,
   Brush,
   Camera,
+  ChevronDown,
   Cloud,
   Code,
+  Crown,
+  Download,
   FileText,
+  Grid,
+  Heart,
   Home,
   ImageIcon,
   Layers,
   LayoutGrid,
+  Lightbulb,
+  Menu,
+  MessageSquare,
   Palette,
-  Search,
-  Sparkles,
-  Video,
-  X,
+  PanelLeft,
   Play,
+  Plus,
+  Search,
+  Settings,
+  Share2,
+  Sparkles,
+  Star,
+  Trash,
+  TrendingUp,
+  Users,
+  Video,
+  Wand2,
   Clock,
   Eye,
-  Award,
-  Bell,
-  Grid,
-  TrendingUp,
   Archive,
-  Download,
-  Share2,
+  ArrowUpDown,
   MoreHorizontal,
   Type,
   CuboidIcon,
-  Bird,
-  Sun,
+  X,
   Moon,
+  Sun,
   Languages,
-  LogOut,
-  Plus,
-  Heart,
-  Activity,
-  Star,
-  Trash,
-  PanelLeft,
-  Users,
-  Crown,
-  BookOpen,
-  Lightbulb,
-  Bookmark,
-  ChevronDown,
-  ArrowUpDown,
+  Bird,
   ClipboardList,
   Package,
   Utensils,
@@ -55,6 +57,7 @@ import {
   Trophy,
   DollarSign,
   BarChart3,
+  LogOut,
   Warehouse,
 } from "lucide-react";
 
@@ -93,8 +96,14 @@ import { PigeonPages } from "@/components/pigeon-pages";
 import { TasksPages } from "@/components/tasks-pages";
 import { InventoryPages } from "@/components/inventory-pages";
 import { NutritionPages } from "@/components/nutrition-pages";
-import { usePigeonStats } from "@/hooks/usePigeonStats";
-import { Skeleton } from "@/components/ui/skeleton";
+import { BreedingPages } from "@/components/breeding-pages";
+import { TrainingPages } from "@/components/training-pages";
+import { RacingPages } from "@/components/racing-pages";
+import { FinancialPages } from "@/components/financial-pages";
+import { ReportsPages } from "@/components/reports-pages";
+import { DashboardHome } from "@/components/dashboard-home";
+import { SidebarNavigation } from "@/components/sidebar-navigation";
+import { useRouter } from "next/navigation";
 
 // Sample data for apps
 const apps = [
@@ -423,30 +432,202 @@ export function DesignaliCreative() {
   const [currentNutritionPage, setCurrentNutritionPage] = useState<
     "feeding" | "supplements" | "water" | null
   >(null);
-  const [userName, setUserName] = useState<string>("");
+  const [currentBreedingPage, setCurrentBreedingPage] = useState<
+    "pairings" | "eggs" | "squabs" | null
+  >(null);
+  const [currentTrainingPage, setCurrentTrainingPage] = useState<
+    "routes" | "sessions" | "condition" | null
+  >(null);
+  const [currentRacingPage, setCurrentRacingPage] = useState<
+    "results" | "stats" | "calendar" | null
+  >(null);
+  const [currentFinancialPage, setCurrentFinancialPage] = useState<
+    "income" | "expenses" | "reports" | null
+  >(null);
+  const [currentReportsPage, setCurrentReportsPage] = useState<
+    "pigeons" | "financial" | "breeding" | null
+  >(null);
+
+  // Helper function to reset all pages
+  const resetAllPages = () => {
+    setCurrentLoftPage(null);
+    setCurrentPigeonPage(null);
+    setCurrentTasksPage(null);
+    setCurrentInventoryPage(null);
+    setCurrentNutritionPage(null);
+    setCurrentBreedingPage(null);
+    setCurrentTrainingPage(null);
+    setCurrentRacingPage(null);
+    setCurrentFinancialPage(null);
+    setCurrentReportsPage(null);
+  };
+
+  // Helper function for going back
+  const handleBack = () => {
+    resetAllPages();
+    setActiveTab("home");
+    window.history.pushState({}, "", "/dashboard");
+  };
 
   const { language, setLanguage, t, dir } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { data: stats, isLoading } = usePigeonStats();
+  const router = useRouter();
 
-  // Load user info from localStorage
-  useEffect(() => {
-    const userInfo = localStorage.getItem("user_info");
-    if (userInfo) {
-      try {
-        const parsed = JSON.parse(userInfo);
-        setUserName(parsed.name || "");
-      } catch (e) {
-        console.error("Failed to parse user info", e);
-      }
-    }
-  }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    router.push("/login");
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "ar" : "en");
+  };
 
   // Simulate progress loading
   useEffect(() => {
     const timer = setTimeout(() => setProgress(100), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Sync URL with State on PopState (Back Button)
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab");
+      const view = params.get("view");
+
+      resetAllPages();
+      if (tab) setActiveTab(tab);
+      else setActiveTab("home");
+
+      if (tab === "lofts" && view) setCurrentLoftPage(view as any);
+      if (tab === "pigeons" && view) setCurrentPigeonPage(view as any);
+      if (tab === "tasks" && view) setCurrentTasksPage(view as any);
+      if (tab === "inventory" && view) setCurrentInventoryPage(view as any);
+      if (tab === "nutrition" && view) setCurrentNutritionPage(view as any);
+      if (tab === "breeding" && view) setCurrentBreedingPage(view as any);
+      if (tab === "training" && view) setCurrentTrainingPage(view as any);
+      if (tab === "racing" && view) setCurrentRacingPage(view as any);
+      if (tab === "finance" && view) setCurrentFinancialPage(view as any);
+      if (tab === "reports" && view) setCurrentReportsPage(view as any);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  // Load state from localStorage on mount
+  useEffect(() => {
+    const savedActiveTab = localStorage.getItem("goldenloft_activeTab");
+    const savedLoftPage = localStorage.getItem("goldenloft_currentLoftPage");
+    const savedPigeonPage = localStorage.getItem(
+      "goldenloft_currentPigeonPage",
+    );
+    const savedTasksPage = localStorage.getItem("goldenloft_currentTasksPage");
+    const savedInventoryPage = localStorage.getItem(
+      "goldenloft_currentInventoryPage",
+    );
+    const savedNutritionPage = localStorage.getItem(
+      "goldenloft_currentNutritionPage",
+    );
+    const savedBreedingPage = localStorage.getItem(
+      "goldenloft_currentBreedingPage",
+    );
+    const savedTrainingPage = localStorage.getItem(
+      "goldenloft_currentTrainingPage",
+    );
+    const savedRacingPage = localStorage.getItem(
+      "goldenloft_currentRacingPage",
+    );
+    const savedFinancialPage = localStorage.getItem(
+      "goldenloft_currentFinancialPage",
+    );
+    const savedReportsPage = localStorage.getItem(
+      "goldenloft_currentReportsPage",
+    );
+
+    if (savedActiveTab) setActiveTab(savedActiveTab);
+    if (savedLoftPage) setCurrentLoftPage(savedLoftPage as any);
+    if (savedPigeonPage) setCurrentPigeonPage(savedPigeonPage as any);
+    if (savedTasksPage) setCurrentTasksPage(savedTasksPage as any);
+    if (savedInventoryPage) setCurrentInventoryPage(savedInventoryPage as any);
+    if (savedNutritionPage) setCurrentNutritionPage(savedNutritionPage as any);
+    if (savedBreedingPage) setCurrentBreedingPage(savedBreedingPage as any);
+    if (savedTrainingPage) setCurrentTrainingPage(savedTrainingPage as any);
+    if (savedRacingPage) setCurrentRacingPage(savedRacingPage as any);
+    if (savedFinancialPage) setCurrentFinancialPage(savedFinancialPage as any);
+    if (savedReportsPage) setCurrentReportsPage(savedReportsPage as any);
+  }, []);
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("goldenloft_activeTab", activeTab);
+    if (currentLoftPage)
+      localStorage.setItem("goldenloft_currentLoftPage", currentLoftPage);
+    else localStorage.removeItem("goldenloft_currentLoftPage");
+
+    if (currentPigeonPage)
+      localStorage.setItem("goldenloft_currentPigeonPage", currentPigeonPage);
+    else localStorage.removeItem("goldenloft_currentPigeonPage");
+
+    if (currentTasksPage)
+      localStorage.setItem("goldenloft_currentTasksPage", currentTasksPage);
+    else localStorage.removeItem("goldenloft_currentTasksPage");
+
+    if (currentInventoryPage)
+      localStorage.setItem(
+        "goldenloft_currentInventoryPage",
+        currentInventoryPage,
+      );
+    else localStorage.removeItem("goldenloft_currentInventoryPage");
+
+    if (currentNutritionPage)
+      localStorage.setItem(
+        "goldenloft_currentNutritionPage",
+        currentNutritionPage,
+      );
+    else localStorage.removeItem("goldenloft_currentNutritionPage");
+
+    if (currentBreedingPage)
+      localStorage.setItem(
+        "goldenloft_currentBreedingPage",
+        currentBreedingPage,
+      );
+    else localStorage.removeItem("goldenloft_currentBreedingPage");
+
+    if (currentTrainingPage)
+      localStorage.setItem(
+        "goldenloft_currentTrainingPage",
+        currentTrainingPage,
+      );
+    else localStorage.removeItem("goldenloft_currentTrainingPage");
+
+    if (currentRacingPage)
+      localStorage.setItem("goldenloft_currentRacingPage", currentRacingPage);
+    else localStorage.removeItem("goldenloft_currentRacingPage");
+
+    if (currentFinancialPage)
+      localStorage.setItem(
+        "goldenloft_currentFinancialPage",
+        currentFinancialPage,
+      );
+    else localStorage.removeItem("goldenloft_currentFinancialPage");
+
+    if (currentReportsPage)
+      localStorage.setItem("goldenloft_currentReportsPage", currentReportsPage);
+    else localStorage.removeItem("goldenloft_currentReportsPage");
+  }, [
+    activeTab,
+    currentLoftPage,
+    currentPigeonPage,
+    currentTasksPage,
+    currentInventoryPage,
+    currentNutritionPage,
+    currentBreedingPage,
+    currentTrainingPage,
+    currentRacingPage,
+    currentFinancialPage,
+    currentReportsPage,
+  ]);
 
   // Sidebar navigation items for Pigeon Manager
   const sidebarItems = [
@@ -455,6 +636,11 @@ export function DesignaliCreative() {
       icon: <Home className="h-5 w-5" />,
       isActive: activeTab === "home",
       key: "home",
+      onClick: () => {
+        resetAllPages();
+        setActiveTab("home");
+        window.history.pushState({}, "", "/dashboard");
+      },
     },
     {
       title: t("loftManagement"),
@@ -466,24 +652,30 @@ export function DesignaliCreative() {
           title: t("allLofts"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentLoftPage("all");
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("lofts");
+            window.history.pushState({}, "", "?tab=lofts&view=all");
+          },
+        },
+        {
+          title: t("addLoft"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentLoftPage("add");
+            setActiveTab("lofts");
+            window.history.pushState({}, "", "?tab=lofts&view=add");
           },
         },
         {
           title: t("loftSettings"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentLoftPage("settings");
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("lofts");
+            window.history.pushState({}, "", "?tab=lofts&view=settings");
           },
         },
       ],
@@ -499,36 +691,40 @@ export function DesignaliCreative() {
           title: t("allPigeons"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentPigeonPage("all");
-            setCurrentLoftPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("pigeons");
+            window.history.pushState({}, "", "?tab=pigeons&view=all");
+          },
+        },
+        {
+          title: t("addPigeon"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentPigeonPage("add");
+            setActiveTab("pigeons");
+            window.history.pushState({}, "", "?tab=pigeons&view=add");
           },
         },
         {
           title: t("pedigree"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentPigeonPage("pedigree");
-            setCurrentLoftPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("pigeons");
+            window.history.pushState({}, "", "?tab=pigeons&view=pedigree");
           },
         },
         {
           title: t("healthRecords"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentPigeonPage("health");
-            setCurrentLoftPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("pigeons");
+            window.history.pushState({}, "", "?tab=pigeons&view=health");
           },
         },
       ],
@@ -545,11 +741,8 @@ export function DesignaliCreative() {
           url: "#",
           badge: "5",
           onClick: () => {
+            resetAllPages();
             setCurrentTasksPage("today");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("tasks");
           },
         },
@@ -557,11 +750,8 @@ export function DesignaliCreative() {
           title: t("taskSchedule"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentTasksPage("schedule");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("tasks");
           },
         },
@@ -569,11 +759,8 @@ export function DesignaliCreative() {
           title: t("completedTasks"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentTasksPage("completed");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentInventoryPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("tasks");
           },
         },
@@ -589,11 +776,8 @@ export function DesignaliCreative() {
           title: t("feed"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentInventoryPage("feed");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("inventory");
           },
         },
@@ -601,11 +785,8 @@ export function DesignaliCreative() {
           title: t("medications"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentInventoryPage("medications");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("inventory");
           },
         },
@@ -613,11 +794,8 @@ export function DesignaliCreative() {
           title: t("equipment"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentInventoryPage("equipment");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentNutritionPage(null);
             setActiveTab("inventory");
           },
         },
@@ -633,11 +811,8 @@ export function DesignaliCreative() {
           title: t("feedingPlans"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentNutritionPage("feeding");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
             setActiveTab("nutrition");
           },
         },
@@ -645,11 +820,8 @@ export function DesignaliCreative() {
           title: t("supplements"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentNutritionPage("supplements");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
             setActiveTab("nutrition");
           },
         },
@@ -657,59 +829,164 @@ export function DesignaliCreative() {
           title: t("waterManagement"),
           url: "#",
           onClick: () => {
+            resetAllPages();
             setCurrentNutritionPage("water");
-            setCurrentLoftPage(null);
-            setCurrentPigeonPage(null);
-            setCurrentTasksPage(null);
-            setCurrentInventoryPage(null);
             setActiveTab("nutrition");
           },
         },
       ],
     },
     {
-      title: t("breedingMating"),
-      icon: <Baby className="h-5 w-5" />,
-      isActive: false,
+      title: t("breeding"),
+      icon: <Heart className="h-5 w-5" />,
+      isActive: currentBreedingPage !== null,
       key: "breeding",
       badge: "3",
       items: [
-        { title: t("pairings"), url: "#", badge: "3" },
-        { title: t("eggs"), url: "#" },
-        { title: t("youngPigeons"), url: "#" },
+        {
+          title: t("pairings"),
+          url: "#",
+          badge: "3",
+          onClick: () => {
+            resetAllPages();
+            setCurrentBreedingPage("pairings");
+            setActiveTab("breeding");
+          },
+        },
+        {
+          title: t("eggs"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentBreedingPage("eggs");
+            setActiveTab("breeding");
+          },
+        },
+        {
+          title: t("youngPigeons"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentBreedingPage("squabs");
+            setActiveTab("breeding");
+          },
+        },
       ],
     },
     {
       title: t("trainingRacing"),
       icon: <Trophy className="h-5 w-5" />,
-      isActive: false,
-      key: "training",
+      isActive: currentTrainingPage !== null || currentRacingPage !== null,
+      key: "training-racing",
+      badge: "3",
       items: [
-        { title: t("trainingSchedule"), url: "#" },
-        { title: t("raceResults"), url: "#" },
-        { title: t("performance"), url: "#" },
+        {
+          title: t("trainingSchedule"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentTrainingPage("routes");
+            setActiveTab("training");
+          },
+        },
+        {
+          title: t("upcomingRaces" as any),
+          url: "#",
+          badge: "3",
+          onClick: () => {
+            resetAllPages();
+            setCurrentRacingPage("calendar");
+            setActiveTab("racing");
+          },
+        },
+        {
+          title: t("raceResults"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentRacingPage("results");
+            setActiveTab("racing");
+          },
+        },
+        {
+          title: t("performance"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentRacingPage("stats");
+            setActiveTab("racing");
+          },
+        },
       ],
     },
     {
       title: t("finance"),
       icon: <DollarSign className="h-5 w-5" />,
-      isActive: false,
+      isActive: currentFinancialPage !== null,
       key: "finance",
       items: [
-        { title: t("income"), url: "#" },
-        { title: t("expenses"), url: "#" },
-        { title: t("salesPurchases"), url: "#" },
+        {
+          title: t("income"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentFinancialPage("income");
+            setActiveTab("finance");
+          },
+        },
+        {
+          title: t("expenses"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentFinancialPage("expenses");
+            setActiveTab("finance");
+          },
+        },
+        {
+          title: t("financialReports"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentFinancialPage("reports");
+            setActiveTab("finance");
+          },
+        },
       ],
     },
     {
       title: t("reports"),
       icon: <BarChart3 className="h-5 w-5" />,
-      isActive: false,
+      isActive: currentReportsPage !== null,
       key: "reports",
       items: [
-        { title: t("pigeonReports"), url: "#" },
-        { title: t("financialReports"), url: "#" },
-        { title: t("breedingReports"), url: "#" },
+        {
+          title: t("pigeonReports"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentReportsPage("pigeons");
+            setActiveTab("reports");
+          },
+        },
+        {
+          title: t("financialReports"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentReportsPage("financial");
+            setActiveTab("reports");
+          },
+        },
+        {
+          title: t("breedingReports"),
+          url: "#",
+          onClick: () => {
+            resetAllPages();
+            setCurrentReportsPage("breeding");
+            setActiveTab("reports");
+          },
+        },
       ],
     },
   ];
@@ -755,7 +1032,7 @@ export function DesignaliCreative() {
       {/* Sidebar - Mobile */}
       <div
         className={cn(
-          "fixed inset-y-0 z-50 w-64 transform bg-background transition-transform duration-300 ease-in-out md:hidden",
+          "fixed inset-y-0 z-50 w-[280px] max-w-[85vw] transform bg-background transition-transform duration-300 ease-in-out md:hidden shadow-xl",
           dir === "rtl" ? "right-0" : "left-0",
           mobileMenuOpen
             ? "translate-x-0"
@@ -778,7 +1055,7 @@ export function DesignaliCreative() {
               <div>
                 <h2 className="font-semibold">{t("title")}</h2>
                 <p className="text-xs text-muted-foreground">
-                  {userName || t("creativeSuite")}
+                  {t("creativeSuite")}
                 </p>
               </div>
             </div>
@@ -811,128 +1088,55 @@ export function DesignaliCreative() {
           </div>
 
           <ScrollArea className="flex-1 px-3 py-2">
-            <div className="space-y-1">
-              {sidebarItems.map((item) => (
-                <div key={item.title} className="mb-1">
-                  <button
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium",
-                      item.isActive
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-muted",
-                    )}
-                    onClick={() => {
-                      if (item.items) {
-                        toggleExpanded(item.title);
-                      } else if (item.key === "home") {
-                        setCurrentLoftPage(null);
-                        setCurrentPigeonPage(null);
-                        setCurrentTasksPage(null);
-                        setCurrentInventoryPage(null);
-                        setCurrentNutritionPage(null);
-                        setActiveTab("home");
-                        setMobileMenuOpen(false);
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </div>
-                    {item.badge && (
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "rounded-full px-2 py-0.5 text-xs",
-                          dir === "rtl" ? "mr-auto" : "ml-auto",
-                        )}
-                      >
-                        {item.badge}
-                      </Badge>
-                    )}
-                    {item.items && (
-                      <ChevronDown
-                        className={cn(
-                          "h-4 w-4 transition-transform",
-                          dir === "rtl" ? "mr-2" : "ml-2",
-                          expandedItems[item.title] ? "rotate-180" : "",
-                        )}
-                      />
-                    )}
-                  </button>
-
-                  {item.items && expandedItems[item.title] && (
-                    <div
-                      className={cn(
-                        "mt-1 space-y-1",
-                        dir === "rtl"
-                          ? "mr-6 border-r pr-3"
-                          : "ml-6 border-l pl-3",
-                      )}
-                    >
-                      {item.items.map((subItem: any) => (
-                        <button
-                          key={subItem.title}
-                          onClick={() => {
-                            if (subItem.onClick) {
-                              subItem.onClick();
-                              setMobileMenuOpen(false);
-                            }
-                          }}
-                          className="flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm hover:bg-muted"
-                        >
-                          {subItem.title}
-                          {subItem.badge && (
-                            <Badge
-                              variant="outline"
-                              className={cn(
-                                "rounded-full px-2 py-0.5 text-xs",
-                                dir === "rtl" ? "mr-auto" : "ml-auto",
-                              )}
-                            >
-                              {subItem.badge}
-                            </Badge>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <SidebarNavigation
+              items={sidebarItems}
+              expandedItems={expandedItems}
+              onToggleExpanded={toggleExpanded}
+              onMobileItemClick={() => setMobileMenuOpen(false)}
+            />
           </ScrollArea>
 
-          <div className="border-t p-3">
-            <div className="space-y-1">
-              <button
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-muted"
-                onClick={toggleTheme}
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-                <span>{theme === "dark" ? t("light") : t("dark")}</span>
-              </button>
-              <button
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-muted"
-                onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-              >
-                <Languages className="h-5 w-5" />
-                <span>{language === "en" ? "العربية" : "English"}</span>
-              </button>
-              <button
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10"
-                onClick={() => {
-                  localStorage.removeItem("access_token");
-                  window.location.href = "/login";
-                }}
-              >
-                <LogOut className="h-5 w-5" />
-                <span>{t("logout")}</span>
-              </button>
+          <div className="border-t p-3 space-y-2">
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+              {t("settingsTitle" as any)}
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full gap-2 rounded-xl justify-start bg-transparent text-sm"
+              onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+            >
+              <Languages className="h-4 w-4" />
+              <span>
+                {t("language")}: {language === "ar" ? "العربية" : "English"}
+              </span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full gap-2 rounded-xl justify-start bg-transparent text-sm"
+              onClick={() => toggleTheme()}
+            >
+              {theme === "light" ? (
+                <Moon className="h-4 w-4" />
+              ) : (
+                <Sun className="h-4 w-4" />
+              )}
+              <span>
+                {theme === "light"
+                  ? t("darkTheme" as any)
+                  : t("lightTheme" as any)}
+              </span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full gap-2 rounded-xl justify-start text-red-500 hover:bg-red-500/10 hover:text-red-600 text-sm"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              {t("logout")}
+            </Button>
           </div>
         </div>
       </div>
@@ -984,126 +1188,54 @@ export function DesignaliCreative() {
           </div>
 
           <ScrollArea className="flex-1 px-3 py-2">
-            <div className="space-y-1">
-              {sidebarItems.map((item) => (
-                <div key={item.title} className="mb-1">
-                  <button
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium",
-                      item.isActive
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-muted",
-                    )}
-                    onClick={() => {
-                      if (item.items) {
-                        toggleExpanded(item.title);
-                      } else if (item.key === "home") {
-                        setCurrentLoftPage(null);
-                        setCurrentPigeonPage(null);
-                        setCurrentTasksPage(null);
-                        setCurrentInventoryPage(null);
-                        setCurrentNutritionPage(null);
-                        setActiveTab("home");
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </div>
-                    {item.badge && (
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "rounded-full px-2 py-0.5 text-xs",
-                          dir === "rtl" ? "mr-auto" : "ml-auto",
-                        )}
-                      >
-                        {item.badge}
-                      </Badge>
-                    )}
-                    {item.items && (
-                      <ChevronDown
-                        className={cn(
-                          "h-4 w-4 transition-transform",
-                          dir === "rtl" ? "mr-2" : "ml-2",
-                          expandedItems[item.title] ? "rotate-180" : "",
-                        )}
-                      />
-                    )}
-                  </button>
-
-                  {item.items && expandedItems[item.title] && (
-                    <div
-                      className={cn(
-                        "mt-1 space-y-1",
-                        dir === "rtl"
-                          ? "mr-6 border-r pr-3"
-                          : "ml-6 border-l pl-3",
-                      )}
-                    >
-                      {item.items.map((subItem: any) => (
-                        <button
-                          key={subItem.title}
-                          onClick={() => {
-                            if (subItem.onClick) {
-                              subItem.onClick();
-                            }
-                          }}
-                          className="flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm hover:bg-muted"
-                        >
-                          {subItem.title}
-                          {subItem.badge && (
-                            <Badge
-                              variant="outline"
-                              className={cn(
-                                "rounded-full px-2 py-0.5 text-xs",
-                                dir === "rtl" ? "mr-auto" : "ml-auto",
-                              )}
-                            >
-                              {subItem.badge}
-                            </Badge>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <SidebarNavigation
+              items={sidebarItems}
+              expandedItems={expandedItems}
+              onToggleExpanded={toggleExpanded}
+            />
           </ScrollArea>
 
-          <div className="border-t p-3">
-            <div className="space-y-1">
-              <button
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-muted"
-                onClick={toggleTheme}
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-                <span>{theme === "dark" ? t("light") : t("dark")}</span>
-              </button>
-              <button
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-muted"
-                onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-              >
-                <Languages className="h-5 w-5" />
-                <span>{language === "en" ? "العربية" : "English"}</span>
-              </button>
-              <button
-                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10"
-                onClick={() => {
-                  localStorage.removeItem("access_token");
-                  window.location.href = "/login";
-                }}
-              >
-                <LogOut className="h-5 w-5" />
-                <span>{t("logout")}</span>
-              </button>
+          <div className="border-t p-3 space-y-2">
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+              {t("settingsTitle" as any)}
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full gap-2 rounded-xl justify-start bg-transparent text-sm"
+              onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+            >
+              <Languages className="h-4 w-4" />
+              <span className="truncate">
+                {t("language")}: {language === "ar" ? "العربية" : "English"}
+              </span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full gap-2 rounded-xl justify-start bg-transparent text-sm"
+              onClick={() => toggleTheme()}
+            >
+              {theme === "light" ? (
+                <Moon className="h-4 w-4" />
+              ) : (
+                <Sun className="h-4 w-4" />
+              )}
+              <span className="truncate">
+                {theme === "light"
+                  ? t("darkTheme" as any)
+                  : t("lightTheme" as any)}
+              </span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full gap-2 rounded-xl justify-start text-red-500 hover:bg-red-500/10 hover:text-red-600 text-sm"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="truncate">{t("logout")}</span>
+            </Button>
           </div>
         </div>
       </div>
@@ -1122,44 +1254,49 @@ export function DesignaliCreative() {
         <main className="flex-1 p-4 md:p-6">
           {/* Loft Pages */}
           {currentLoftPage !== null ? (
-            <LoftPages
-              currentPage={currentLoftPage}
-              onBack={() => {
-                setCurrentLoftPage(null);
-                setActiveTab("home");
-              }}
-            />
+            <LoftPages currentPage={currentLoftPage} onBack={handleBack} />
           ) : currentPigeonPage !== null ? (
             <PigeonPages
               currentPage={currentPigeonPage}
-              onBack={() => {
-                setCurrentPigeonPage(null);
-                setActiveTab("home");
+              onBack={handleBack}
+              onNavigate={(page) => {
+                setCurrentPigeonPage(page);
+                window.history.pushState({}, "", `?tab=pigeons&view=${page}`);
               }}
             />
           ) : currentTasksPage !== null ? (
-            <TasksPages
-              currentPage={currentTasksPage}
-              onBack={() => {
-                setCurrentTasksPage(null);
-                setActiveTab("home");
-              }}
-            />
+            <TasksPages currentPage={currentTasksPage} onBack={handleBack} />
           ) : currentInventoryPage !== null ? (
             <InventoryPages
               currentPage={currentInventoryPage}
-              onBack={() => {
-                setCurrentInventoryPage(null);
-                setActiveTab("home");
-              }}
+              onBack={handleBack}
             />
           ) : currentNutritionPage !== null ? (
             <NutritionPages
               currentPage={currentNutritionPage}
-              onBack={() => {
-                setCurrentNutritionPage(null);
-                setActiveTab("home");
-              }}
+              onBack={handleBack}
+            />
+          ) : currentBreedingPage !== null ? (
+            <BreedingPages
+              currentPage={currentBreedingPage}
+              onBack={handleBack}
+            />
+          ) : currentTrainingPage !== null ? (
+            <TrainingPages
+              currentPage={currentTrainingPage}
+              onBack={handleBack}
+            />
+          ) : currentRacingPage !== null ? (
+            <RacingPages currentPage={currentRacingPage} onBack={handleBack} />
+          ) : currentFinancialPage !== null ? (
+            <FinancialPages
+              currentPage={currentFinancialPage}
+              onBack={handleBack}
+            />
+          ) : currentReportsPage !== null ? (
+            <ReportsPages
+              currentPage={currentReportsPage}
+              onBack={handleBack}
             />
           ) : (
             <Tabs
@@ -1168,8 +1305,6 @@ export function DesignaliCreative() {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"></div>
-
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -1178,160 +1313,8 @@ export function DesignaliCreative() {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <TabsContent value="home" className="space-y-8 mt-0">
-                    {/* Welcome Banner */}
-                    <section>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 p-8 text-white"
-                      >
-                        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                          <div className="space-y-4">
-                            <Badge className="bg-white/20 text-white hover:bg-white/30 rounded-xl">
-                              {t("premium")}
-                            </Badge>
-                            <h2 className="text-3xl font-bold">
-                              {t("welcomeTitle")}
-                            </h2>
-                            <p className="max-w-[600px] text-white/80">
-                              {t("welcomeDescription")}
-                            </p>
-                            <div className="flex flex-wrap gap-3">
-                              <Button className="rounded-2xl bg-white text-blue-700 hover:bg-white/90">
-                                <Plus
-                                  className={cn(
-                                    "h-4 w-4",
-                                    dir === "rtl" ? "ml-2" : "mr-2",
-                                  )}
-                                />
-                                {t("explorePlans")}
-                              </Button>
-                              <Button
-                                variant="outline"
-                                className="rounded-2xl bg-transparent border-white text-white hover:bg-white/10"
-                              >
-                                <Eye
-                                  className={cn(
-                                    "h-4 w-4",
-                                    dir === "rtl" ? "ml-2" : "mr-2",
-                                  )}
-                                />
-                                {t("takeATour")}
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="hidden lg:block">
-                            <motion.div
-                              animate={{ y: [0, -10, 0] }}
-                              transition={{
-                                duration: 3,
-                                repeat: Number.POSITIVE_INFINITY,
-                                ease: "easeInOut",
-                              }}
-                              className="relative"
-                            >
-                              <Bird className="h-32 w-32 text-white/80" />
-                            </motion.div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </section>
-
-                    {/* Statistics Cards */}
-                    {/* Statistics Cards */}
-                    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      <motion.div
-                        whileHover={{ scale: 1.02, y: -5 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Card className="overflow-hidden rounded-3xl border-2 hover:border-blue-500/50 transition-all duration-300">
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm text-muted-foreground">
-                                  {t("totalPigeons")}
-                                </p>
-                                {isLoading ? (
-                                  <Skeleton className="h-9 w-20 rounded-lg" />
-                                ) : (
-                                  <p className="text-3xl font-bold text-foreground">
-                                    {stats?.total ?? 0}
-                                  </p>
-                                )}
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {t("pigeon")}
-                                </p>
-                              </div>
-                              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10">
-                                <Bird className="h-7 w-7 text-blue-500" />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-
-                      <motion.div
-                        whileHover={{ scale: 1.02, y: -5 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Card className="overflow-hidden rounded-3xl border-2 hover:border-green-500/50 transition-all duration-300">
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm text-muted-foreground">
-                                  {language === "ar" ? "بصحة جيدة" : "Healthy"}
-                                </p>
-                                {isLoading ? (
-                                  <Skeleton className="h-9 w-20 rounded-lg" />
-                                ) : (
-                                  <p className="text-3xl font-bold text-foreground">
-                                    {stats?.healthy ?? 0}
-                                  </p>
-                                )}
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {t("pigeon")}
-                                </p>
-                              </div>
-                              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500/10">
-                                <Heart className="h-7 w-7 text-green-500" />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-
-                      <motion.div
-                        whileHover={{ scale: 1.02, y: -5 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Card className="overflow-hidden rounded-3xl border-2 hover:border-red-500/50 transition-all duration-300">
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm text-muted-foreground">
-                                  {language === "ar" ? "مريض" : "Sick"}
-                                </p>
-                                {isLoading ? (
-                                  <Skeleton className="h-9 w-20 rounded-lg" />
-                                ) : (
-                                  <p className="text-3xl font-bold text-foreground">
-                                    {stats?.sick ?? 0}
-                                  </p>
-                                )}
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {t("pigeon")}
-                                </p>
-                              </div>
-                              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10">
-                                <Activity className="h-7 w-7 text-red-500" />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    </section>
+                  <TabsContent value="home" className="mt-0">
+                    <DashboardHome />
 
                     {/* Daily Tasks and Alerts */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -2661,6 +2644,91 @@ export function DesignaliCreative() {
           )}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur-sm md:hidden safe-area-bottom">
+        <div className="grid grid-cols-5 gap-1 px-2 py-2">
+          <button
+            onClick={() => {
+              resetAllPages();
+              setActiveTab("home");
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-xs transition-colors",
+              activeTab === "home" &&
+                currentLoftPage === null &&
+                currentPigeonPage === null
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Home className="h-5 w-5" />
+            <span className="truncate">{t("home")}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              resetAllPages();
+              setCurrentPigeonPage("all");
+              setActiveTab("pigeons");
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-xs transition-colors",
+              currentPigeonPage !== null
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Bird className="h-5 w-5" />
+            <span className="truncate">{t("pigeons")}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              resetAllPages();
+              setCurrentTasksPage("today");
+              setActiveTab("tasks");
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-xs transition-colors",
+              currentTasksPage !== null
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <ClipboardList className="h-5 w-5" />
+            <span className="truncate">{t("dailyTasks")}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              resetAllPages();
+              setCurrentBreedingPage("pairings");
+              setActiveTab("breeding");
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-xs transition-colors",
+              currentBreedingPage !== null
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Heart className="h-5 w-5" />
+            <span className="truncate">{t("breeding")}</span>
+          </button>
+
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Menu className="h-5 w-5" />
+            <span className="truncate">{t("more" as any)}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Spacer for bottom navigation on mobile */}
+      <div className="h-20 md:hidden" />
     </div>
   );
 }

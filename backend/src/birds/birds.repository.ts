@@ -52,21 +52,8 @@ export class BirdsRepository {
     });
   }
 
-  async findByName(name: string, loftId: string): Promise<Bird | null> {
-    return this.prisma.bird.findFirst({
-      where: {
-        name,
-        loftId,
-      },
-    });
-  }
-
   async count(where?: Prisma.BirdWhereInput): Promise<number> {
     return this.prisma.bird.count({ where });
-  }
-
-  async findLoft(id: string) {
-    return this.prisma.loft.findUnique({ where: { id } });
   }
 
   async update(id: string, data: Prisma.BirdUpdateInput): Promise<Bird> {
@@ -76,9 +63,13 @@ export class BirdsRepository {
     });
   }
 
-  async delete(id: string): Promise<Bird> {
+  async remove(id: string): Promise<Bird> {
     return this.prisma.bird.delete({
       where: { id },
     });
+  }
+
+  async findLoft(id: string) {
+    return this.prisma.loft.findUnique({ where: { id } });
   }
 }

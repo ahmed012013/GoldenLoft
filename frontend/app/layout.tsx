@@ -1,5 +1,5 @@
 import React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Cairo } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { LanguageProvider } from "@/lib/language-context";
@@ -19,8 +19,9 @@ const _cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "Designali Creative",
-  description: "Creative Suite - Professional Design Tools",
+  title: "مدير لوفت الحمام | Pigeon Loft Manager",
+  description:
+    "نظام إدارة لوفت الحمام الاحترافي - Professional Pigeon Loft Management System",
   generator: "v0.app",
   icons: {
     icon: [
@@ -40,6 +41,17 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
   },
 };
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
+};
 
 export default function RootLayout({
   children,
@@ -47,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="ar" className="dark" suppressHydrationWarning>
       <body
         className={`${_geist.variable} ${_geistMono.variable} ${_cairo.variable} font-sans antialiased`}
       >

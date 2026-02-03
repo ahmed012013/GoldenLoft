@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Bird as BirdIcon,
   Plus,
@@ -12,12 +12,20 @@ import {
   Eye,
   Heart,
   Trophy,
-  Calendar,
+  Calendar as CalendarIcon,
   Activity,
   Stethoscope,
   Syringe,
   Pill,
+  Upload,
+  Pencil,
+  Trash2,
 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
+import { toast } from "sonner";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,16 +69,51 @@ import { cn } from "@/lib/utils";
 import apiClient from "@/lib/api-client";
 import { useLanguage } from "@/lib/language-context";
 import { BirdModal } from "./bird-modal";
-
+import { useBirdMutations } from "@/hooks/useBirdMutations";
+import { useLofts } from "@/hooks/useLofts";
 import { useBirds } from "@/hooks/useBirds";
 import { Bird } from "@shared/interfaces/bird.interface";
-import { BirdGender, BirdStatus } from "@shared/enums/bird.enums";
+import { BirdGender, BirdStatus, BirdType } from "@shared/enums/bird.enums";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Separator } from "@/components/ui/separator";
+
+// Form Schema
+const formSchema = z.object({
+  ringNumber: z.string().min(3, "Ring number is required"),
+  name: z.string().min(2, "Name is required"),
+  gender: z.nativeEnum(BirdGender).optional(),
+  color: z.string().min(1, "Color is required"),
+  status: z.nativeEnum(BirdStatus).optional(),
+  type: z.nativeEnum(BirdType).optional(),
+  birthDate: z.date().optional(),
+  loft: z.string().min(1, "Loft is required"),
+  father: z.string().optional(),
+  mother: z.string().optional(),
+  totalRaces: z.coerce.number().min(0).default(0),
+  wins: z.coerce.number().min(0).default(0),
+  weight: z.string().optional(),
+  notes: z.string().optional(),
+});
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 interface PigeonPagesProps {
   currentPage: "all" | "add" | "pedigree" | "health";
   onBack: () => void;
+  onNavigate?: (page: "all" | "add" | "pedigree" | "health") => void;
 }
 
 // Sample pigeon data
@@ -250,14 +293,181 @@ const sampleHealthRecords = [
   },
 ];
 
-export function PigeonPages({ currentPage, onBack }: PigeonPagesProps) {
+export function PigeonPages({
+  currentPage,
+  onBack,
+  onNavigate,
+}: PigeonPagesProps) {
   const { t, dir, language } = useLanguage();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [genderFilter, setGenderFilter] = useState("all");
   const [selectedPigeon, setSelectedPigeon] = useState<Bird | null>(null);
   const [showPedigreeModal, setShowPedigreeModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const { lofts } = useLofts();
+  const { createBird, updateBird, deleteBird } = useBirdMutations();
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      ringNumber: "",
+      name: "",
+      gender: BirdGender.MALE,
+      color: "",
+      status: BirdStatus.HEALTHY,
+      type: BirdType.UNKNOWN,
+      totalRaces: 0,
+      wins: 0,
+      weight: "",
+      notes: "",
+      loft: "",
+      father: "",
+      mother: "",
+    },
+  });
+
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size must be less than 2MB");
+        return;
+      }
+      const validTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("File must be JPG, PNG, or WEBP");
+        return;
+      }
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  }
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        key !== "loft" &&
+        key !== "father" &&
+        key !== "mother"
+      ) {
+        if (key === "birthDate" && value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+
+    formData.append("loftId", data.loft);
+    if (data.father) formData.append("fatherId", data.father);
+    if (data.mother) formData.append("motherId", data.mother);
+    if (selectedFile) formData.append("image", selectedFile);
+
+    if (editingId) {
+      updateBird.mutate(
+        { id: editingId, data: formData },
+        {
+          onSuccess: () => {
+            toast.success(t("pigeonUpdated") || "Pigeon updated successfully");
+            form.reset();
+            setEditingId(null);
+            setPreviewUrl(null);
+            setSelectedFile(null);
+            if (onNavigate) {
+              onNavigate("all");
+            } else {
+              onBack();
+            }
+          },
+          onError: (error: any) => {
+            toast.error(error.message || "Failed to update pigeon");
+          },
+        },
+      );
+    } else {
+      createBird.mutate(formData as any, {
+        onSuccess: () => {
+          toast.success(t("pigeonCreated") || "Pigeon created successfully");
+          form.reset();
+          setPreviewUrl(null);
+          setSelectedFile(null);
+          if (onNavigate) {
+            onNavigate("all");
+          } else {
+            onBack();
+          }
+        },
+        onError: (error: Error) => {
+          toast.error(error.message || "Failed to create pigeon");
+        },
+      });
+    }
+  }
+
+  const handleDelete = (id: string) => {
+    // In a real app, use a proper dialog. Using window.confirm for simplicity or if you prefer
+    // But since the user asked for deletion, let's make it direct or add a small confirmation logic
+    // We can use the toast generic with a promise or just simple confirm
+    if (
+      confirm(
+        language === "ar"
+          ? "هل أنت متأكد من حذف هذه الحمامة؟"
+          : "Are you sure you want to delete this pigeon?",
+      )
+    ) {
+      deleteBird.mutate(id, {
+        onSuccess: () => {
+          toast.success(
+            language === "ar" ? "تم حذف الحمامة" : "Pigeon deleted",
+          );
+        },
+        onError: () => {
+          toast.error(
+            language === "ar" ? "خطأ في الحذف" : "Error deleting pigeon",
+          );
+        },
+      });
+    }
+  };
+
+  const handleEdit = (pigeon: Bird) => {
+    setEditingId(pigeon.id);
+    form.reset({
+      ringNumber: pigeon.ringNumber,
+      name: pigeon.name,
+      gender: pigeon.gender as BirdGender,
+      color: pigeon.color,
+      status: pigeon.status as BirdStatus,
+      type: pigeon.type as BirdType,
+      birthDate: pigeon.birthDate ? new Date(pigeon.birthDate) : undefined,
+      loft: pigeon.loftId || pigeon.loft?.id || "",
+      father: pigeon.fatherId || "",
+      mother: pigeon.motherId || "",
+      totalRaces: pigeon.totalRaces || 0,
+      wins: pigeon.wins || 0,
+      weight: pigeon.weight || "",
+      notes: pigeon.notes || "",
+    });
+    setPreviewUrl(
+      pigeon.image && pigeon.image.startsWith("/")
+        ? `${API_URL}${pigeon.image}`
+        : pigeon.image || null,
+    );
+
+    if (onNavigate) {
+      onNavigate("add");
+    }
+  };
 
   const {
     data: birds,
@@ -343,6 +553,415 @@ export function PigeonPages({ currentPage, onBack }: PigeonPagesProps) {
     }
   };
 
+  const renderAddPigeon = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">
+            {editingId
+              ? language === "ar"
+                ? "تعديل بيانات"
+                : "Edit Pigeon"
+              : t("addNewPigeon")}
+          </h1>
+          <p className="text-muted-foreground">
+            {language === "ar" ? "أدخل بيانات الحمام" : "Enter pigeon details"}
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setEditingId(null);
+            form.reset();
+            setPreviewUrl(null);
+            onBack();
+          }}
+          className="rounded-2xl"
+        >
+          {t("cancel")}
+        </Button>
+      </div>
+
+      <Card className="rounded-3xl border-none shadow-lg">
+        <CardContent className="p-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* Image Upload Section */}
+              <div className="flex flex-col items-center justify-center gap-4">
+                <div
+                  className="relative group cursor-pointer"
+                  onClick={() =>
+                    document.getElementById("pigeon-image-upload")?.click()
+                  }
+                >
+                  <div
+                    className={cn(
+                      "w-32 h-32 rounded-full border-2 border-dashed flex items-center justify-center overflow-hidden transition-all",
+                      previewUrl
+                        ? "border-primary"
+                        : "border-muted-foreground/30 hover:border-primary/50",
+                    )}
+                  >
+                    {previewUrl ? (
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                        <Upload className="w-6 h-6" />
+                        <span className="text-xs font-medium">Upload</span>
+                      </div>
+                    )}
+                  </div>
+                  <Input
+                    id="pigeon-image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  Max 2MB. Format: JPG, PNG, WEBP
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="ringNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("ringNumber")} *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="EGY-2024-XXX"
+                          className="rounded-xl"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("pigeonName")} *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={
+                            language === "ar" ? "اسم الطائر" : "Bird Name"
+                          }
+                          className="rounded-xl"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("gender")}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl">
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={BirdGender.MALE}>
+                            {t("male")}
+                          </SelectItem>
+                          <SelectItem value={BirdGender.FEMALE}>
+                            {t("female")}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="color"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("color")}</FormLabel>
+                      <Input className="rounded-xl" {...field} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="birthDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>{t("birthDate")}</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal rounded-xl",
+                                !field.value && "text-muted-foreground",
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("status")}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={BirdStatus.HEALTHY}>
+                            {t("healthy")}
+                          </SelectItem>
+                          <SelectItem value={BirdStatus.SICK}>
+                            {t("sick")}
+                          </SelectItem>
+                          <SelectItem value={BirdStatus.UNDER_OBSERVATION}>
+                            {t("observation")}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("breed")}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl">
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={BirdType.RACING}>
+                            {language === "ar" ? "زاجل" : "Racing"}
+                          </SelectItem>
+                          <SelectItem value={BirdType.ORNAMENTAL}>
+                            {language === "ar" ? "زينة" : "Ornamental"}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="loft"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("loft")} *</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl">
+                            <SelectValue placeholder={t("selectLoft")} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {lofts?.map((loft) => (
+                            <SelectItem key={loft.id} value={loft.id}>
+                              {loft.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="father"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("father")}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl">
+                            <SelectValue placeholder={t("selectFather")} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {birds
+                            ?.filter((b) => b.gender === "male")
+                            .map((bird) => (
+                              <SelectItem key={bird.id} value={bird.id}>
+                                {bird.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="mother"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("mother")}</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl">
+                            <SelectValue placeholder={t("selectMother")} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {birds
+                            ?.filter((b) => b.gender === "female")
+                            .map((bird) => (
+                              <SelectItem key={bird.id} value={bird.id}>
+                                {bird.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="weight"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("weight")}</FormLabel>
+                      <Input
+                        placeholder="450g"
+                        className="rounded-xl"
+                        {...field}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="md:col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {language === "ar" ? "ملاحظات" : "Notes"}
+                        </FormLabel>
+                        <Textarea className="rounded-xl" {...field} />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={onBack}
+                  className="rounded-xl"
+                >
+                  {t("cancel")}
+                </Button>
+                <Button
+                  type="submit"
+                  className="rounded-xl px-8"
+                  disabled={createBird.isPending || updateBird.isPending}
+                >
+                  {createBird.isPending || updateBird.isPending
+                    ? "Saving..."
+                    : editingId
+                      ? language === "ar"
+                        ? "حفظ التعديلات"
+                        : "Save Changes"
+                      : t("savePigeon")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   const renderAllPigeons = () => (
     <div className="space-y-6">
       {/* Header */}
@@ -351,10 +970,6 @@ export function PigeonPages({ currentPage, onBack }: PigeonPagesProps) {
           <h1 className="text-3xl font-bold">{t("allPigeonsTitle")}</h1>
           <p className="text-muted-foreground">{t("pigeonManagementTitle")}</p>
         </div>
-        <Button className="rounded-2xl" onClick={() => setShowAddModal(true)}>
-          <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-          {t("addNewPigeon")}
-        </Button>
       </div>
 
       {/* Statistics */}
@@ -545,7 +1160,7 @@ export function PigeonPages({ currentPage, onBack }: PigeonPagesProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-xl"
+                        className="h-8 w-8 rounded-xl text-blue-500 hover:text-blue-600 hover:bg-blue-50"
                         onClick={() => {
                           setSelectedPigeon(pigeon);
                           setShowPedigreeModal(true);
@@ -556,9 +1171,18 @@ export function PigeonPages({ currentPage, onBack }: PigeonPagesProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-xl"
+                        className="h-8 w-8 rounded-xl text-green-500 hover:text-green-600 hover:bg-green-50"
+                        onClick={() => handleEdit(pigeon)}
                       >
-                        <Edit className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => handleDelete(pigeon.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -1149,6 +1773,7 @@ export function PigeonPages({ currentPage, onBack }: PigeonPagesProps) {
       transition={{ duration: 0.3 }}
     >
       {currentPage === "all" && renderAllPigeons()}
+      {currentPage === "add" && renderAddPigeon()}
 
       {currentPage === "pedigree" && renderPedigree()}
       {currentPage === "health" && renderHealthRecords()}

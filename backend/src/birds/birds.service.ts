@@ -7,6 +7,8 @@ import { BirdsRepository } from './birds.repository';
 import { CreateBirdDto } from '@shared/dtos/create-bird.dto';
 import { GetBirdsDto } from '@shared/dtos/get-birds.dto';
 import { BirdGender, BirdStatus, BirdType } from '@shared/enums/bird.enums';
+import { Prisma } from '@prisma/client';
+import { UpdateBirdDto } from '@shared/dtos/update-bird.dto';
 
 @Injectable()
 export class BirdsService {
@@ -153,54 +155,25 @@ export class BirdsService {
     }
     return bird;
   }
-
   async update(
     userId: string,
     id: string,
-    updateBirdDto: Partial<CreateBirdDto & { image?: string }>
+    updateBirdDto: UpdateBirdDto & { image?: string }
   ) {
+    // Check ownership
     const bird = await this.birdsRepository.findOne({ id });
-
-    if (!bird) {
+    if (!bird || bird.loft.userId !== userId) {
       throw new NotFoundException(`Bird with ID ${id} not found`);
     }
 
-    if (bird.loft.userId !== userId) {
-      throw new NotFoundException(`Bird with ID ${id} not found`);
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { fatherId, motherId, loftId, birthDate, ...rest } = updateBirdDto;
 
-    // Check for duplicate name if name is being updated
-    if (updateBirdDto.name && updateBirdDto.name !== bird.name) {
-      const existingBird = await this.birdsRepository.findByName(
-        updateBirdDto.name,
-        bird.loftId
-      );
-      if (existingBird && existingBird.id !== id) {
-        throw new BadRequestException(
-          'A bird with this name already exists in this loft'
-        );
-      }
-    }
-
-    // Build update data
-    const updateData: any = {
-      ...(updateBirdDto.name && { name: updateBirdDto.name }),
-      ...(updateBirdDto.gender && { gender: updateBirdDto.gender }),
-      ...(updateBirdDto.color && { color: updateBirdDto.color }),
-      ...(updateBirdDto.status && { status: updateBirdDto.status }),
-      ...(updateBirdDto.type && { type: updateBirdDto.type }),
-      ...(updateBirdDto.birthDate && {
-        birthDate: new Date(updateBirdDto.birthDate),
-      }),
-      ...(updateBirdDto.weight !== undefined && {
-        weight: updateBirdDto.weight,
-      }),
-      ...(updateBirdDto.notes !== undefined && { notes: updateBirdDto.notes }),
-      ...(updateBirdDto.image !== undefined && { image: updateBirdDto.image }),
-      ...(updateBirdDto.totalRaces !== undefined && {
-        totalRaces: updateBirdDto.totalRaces,
-      }),
-      ...(updateBirdDto.wins !== undefined && { wins: updateBirdDto.wins }),
+    const updateData: Prisma.BirdUpdateInput = {
+      ...rest,
+      ...(fatherId && { father: { connect: { id: fatherId } } }),
+      ...(motherId && { mother: { connect: { id: motherId } } }),
+      ...(birthDate && { birthDate: new Date(birthDate) }),
     };
 
     return this.birdsRepository.update(id, updateData);
@@ -208,15 +181,9 @@ export class BirdsService {
 
   async remove(userId: string, id: string) {
     const bird = await this.birdsRepository.findOne({ id });
-
-    if (!bird) {
+    if (!bird || bird.loft.userId !== userId) {
       throw new NotFoundException(`Bird with ID ${id} not found`);
     }
-
-    if (bird.loft.userId !== userId) {
-      throw new NotFoundException(`Bird with ID ${id} not found`);
-    }
-
-    return this.birdsRepository.delete(id);
+    return this.birdsRepository.remove(id);
   }
 }

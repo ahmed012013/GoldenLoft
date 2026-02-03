@@ -17,6 +17,7 @@ export interface Bird {
   nameEn?: string;
   totalRaces: number;
   wins: number;
+  notes?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 

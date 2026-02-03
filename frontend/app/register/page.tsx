@@ -63,7 +63,7 @@ export default function RegisterPage() {
       const payload = {
         email,
         password,
-        loftName: fullName || "My New Loft", // Default if empty, but required
+        name: fullName || "My New Loft", // Default if empty, but required
       };
 
       const API_URL =

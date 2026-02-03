@@ -1,23 +1,12 @@
-# Node modules at all levels
 node_modules
-**/node_modules
-
-# Environment variables at all levels
+# Keep environment variables out of version control
 .env
 .env.*
-**/.env
-**/.env.*
-!.env.example
-!**/.env.example
+! .env.example
 
-# Build outputs
 dist
-**/dist
 /generated/prisma
-
-# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-

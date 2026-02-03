@@ -252,11 +252,11 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
   const getPriorityText = (priority: string) => {
     switch (priority) {
       case "high":
-        return t("priorityHigh");
+        return t("priorityHigh" as any);
       case "medium":
-        return t("priorityMedium");
+        return t("priorityMedium" as any);
       case "low":
-        return t("priorityLow");
+        return t("priorityLow" as any);
       default:
         return "";
     }
@@ -286,8 +286,12 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">{t("todayTasksTitle")}</h1>
-            <p className="text-muted-foreground">{t("dailyTasksManagement")}</p>
+            <h1 className="text-3xl font-bold">
+              {t("todayTasksTitle" as any)}
+            </h1>
+            <p className="text-muted-foreground">
+              {t("dailyTasksManagement" as any)}
+            </p>
           </div>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -296,60 +300,60 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
               <Plus
                 className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")}
               />
-              {t("addNewTask")}
+              {t("addNewTask" as any)}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg rounded-3xl">
             <DialogHeader>
-              <DialogTitle>{t("addNewTask")}</DialogTitle>
+              <DialogTitle>{t("addNewTask" as any)}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label>{t("taskName")}</Label>
+                <Label>{t("taskName" as any)}</Label>
                 <Input
-                  placeholder={t("taskNamePlaceholder")}
+                  placeholder={t("taskNamePlaceholder" as any)}
                   className="rounded-xl"
                 />
               </div>
               <div className="space-y-2">
-                <Label>{t("taskDescription")}</Label>
+                <Label>{t("taskDescription" as any)}</Label>
                 <Textarea
-                  placeholder={t("taskDescriptionPlaceholder")}
+                  placeholder={t("taskDescriptionPlaceholder" as any)}
                   className="rounded-xl"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>{t("taskTime")}</Label>
+                  <Label>{t("taskTime" as any)}</Label>
                   <Input type="time" className="rounded-xl" />
                 </div>
                 <div className="space-y-2">
-                  <Label>{t("taskCategory")}</Label>
+                  <Label>{t("taskCategory" as any)}</Label>
                   <Select>
                     <SelectTrigger className="rounded-xl">
-                      <SelectValue placeholder={t("selectCategory")} />
+                      <SelectValue placeholder={t("selectCategory" as any)} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="feeding">
-                        {t("categoryFeeding")}
+                        {t("categoryFeeding" as any)}
                       </SelectItem>
                       <SelectItem value="cleaning">
-                        {t("categoryCleaning")}
+                        {t("categoryCleaning" as any)}
                       </SelectItem>
                       <SelectItem value="health">
-                        {t("categoryHealth")}
+                        {t("categoryHealth" as any)}
                       </SelectItem>
                       <SelectItem value="training">
-                        {t("categoryTraining")}
+                        {t("categoryTraining" as any)}
                       </SelectItem>
                       <SelectItem value="medication">
-                        {t("categoryMedication")}
+                        {t("categoryMedication" as any)}
                       </SelectItem>
                       <SelectItem value="water">
-                        {t("categoryWater")}
+                        {t("categoryWater" as any)}
                       </SelectItem>
                       <SelectItem value="maintenance">
-                        {t("categoryMaintenance")}
+                        {t("categoryMaintenance" as any)}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -357,28 +361,34 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>{t("taskPriority")}</Label>
+                  <Label>{t("taskPriority" as any)}</Label>
                   <Select>
                     <SelectTrigger className="rounded-xl">
-                      <SelectValue placeholder={t("selectPriority")} />
+                      <SelectValue placeholder={t("selectPriority" as any)} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="high">{t("priorityHigh")}</SelectItem>
-                      <SelectItem value="medium">
-                        {t("priorityMedium")}
+                      <SelectItem value="high">
+                        {t("priorityHigh" as any)}
                       </SelectItem>
-                      <SelectItem value="low">{t("priorityLow")}</SelectItem>
+                      <SelectItem value="medium">
+                        {t("priorityMedium" as any)}
+                      </SelectItem>
+                      <SelectItem value="low">
+                        {t("priorityLow" as any)}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>{t("assignedLoft")}</Label>
+                  <Label>{t("assignedLoft" as any)}</Label>
                   <Select>
                     <SelectTrigger className="rounded-xl">
-                      <SelectValue placeholder={t("selectLoft")} />
+                      <SelectValue placeholder={t("selectLoft" as any)} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t("allLoftsAssign")}</SelectItem>
+                      <SelectItem value="all">
+                        {t("allLoftsAssign" as any)}
+                      </SelectItem>
                       <SelectItem value="main">
                         {language === "ar" ? "اللوفت الرئيسي" : "Main Loft"}
                       </SelectItem>
@@ -393,29 +403,37 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>{t("repeatTask")}</Label>
+                <Label>{t("repeatTask" as any)}</Label>
                 <Select>
                   <SelectTrigger className="rounded-xl">
-                    <SelectValue placeholder={t("repeatNone")} />
+                    <SelectValue placeholder={t("repeatNone" as any)} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">{t("repeatNone")}</SelectItem>
-                    <SelectItem value="daily">{t("repeatDaily")}</SelectItem>
-                    <SelectItem value="weekly">{t("repeatWeekly")}</SelectItem>
+                    <SelectItem value="none">
+                      {t("repeatNone" as any)}
+                    </SelectItem>
+                    <SelectItem value="daily">
+                      {t("repeatDaily" as any)}
+                    </SelectItem>
+                    <SelectItem value="weekly">
+                      {t("repeatWeekly" as any)}
+                    </SelectItem>
                     <SelectItem value="monthly">
-                      {t("repeatMonthly")}
+                      {t("repeatMonthly" as any)}
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex gap-3 pt-4">
-                <Button className="flex-1 rounded-2xl">{t("saveTask")}</Button>
+                <Button className="flex-1 rounded-2xl">
+                  {t("saveTask" as any)}
+                </Button>
                 <Button
                   variant="outline"
                   className="rounded-2xl bg-transparent"
                   onClick={() => setIsAddDialogOpen(false)}
                 >
-                  {t("cancel")}
+                  {t("cancel" as any)}
                 </Button>
               </div>
             </div>
@@ -439,7 +457,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             <div className="flex items-center gap-4">
               <div className="text-center">
                 <p className="text-4xl font-bold">{progressPercent}%</p>
-                <p className="text-sm text-white/80">{t("completed")}</p>
+                <p className="text-sm text-white/80">{t("completed" as any)}</p>
               </div>
             </div>
           </div>
@@ -454,7 +472,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("totalTasks")}
+                  {t("totalTasks" as any)}
                 </p>
                 <p className="text-2xl font-bold">{totalCount}</p>
               </div>
@@ -467,7 +485,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("pendingTasks")}
+                  {t("pendingTasks" as any)}
                 </p>
                 <p className="text-2xl font-bold text-amber-500">
                   {pendingCount}
@@ -482,7 +500,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("completedToday")}
+                  {t("completedToday" as any)}
                 </p>
                 <p className="text-2xl font-bold text-green-500">
                   {completedCount}
@@ -497,7 +515,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("overdueTasks")}
+                  {t("overdueTasks" as any)}
                 </p>
                 <p className="text-2xl font-bold text-red-500">0</p>
               </div>
@@ -511,7 +529,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
       <Card className="rounded-3xl">
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <CardTitle>{t("todayTasksTitle")}</CardTitle>
+            <CardTitle>{t("todayTasksTitle" as any)}</CardTitle>
             <div className="flex gap-2">
               <Select value={filterCategory} onValueChange={setFilterCategory}>
                 <SelectTrigger className="w-[140px] rounded-xl">
@@ -523,14 +541,16 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                     {language === "ar" ? "جميع الفئات" : "All Categories"}
                   </SelectItem>
                   <SelectItem value="feeding">
-                    {t("categoryFeeding")}
+                    {t("categoryFeeding" as any)}
                   </SelectItem>
                   <SelectItem value="cleaning">
-                    {t("categoryCleaning")}
+                    {t("categoryCleaning" as any)}
                   </SelectItem>
-                  <SelectItem value="health">{t("categoryHealth")}</SelectItem>
+                  <SelectItem value="health">
+                    {t("categoryHealth" as any)}
+                  </SelectItem>
                   <SelectItem value="training">
-                    {t("categoryTraining")}
+                    {t("categoryTraining" as any)}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -588,10 +608,10 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                       <span className="flex items-center gap-1">
                         <Repeat className="h-3 w-3" />
                         {task.repeat === "daily"
-                          ? t("repeatDaily")
+                          ? t("repeatDaily" as any)
                           : task.repeat === "weekly"
-                            ? t("repeatWeekly")
-                            : t("repeatMonthly")}
+                            ? t("repeatWeekly" as any)
+                            : t("repeatMonthly" as any)}
                       </span>
                     )}
                   </div>
@@ -599,7 +619,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                 <div className="flex items-center gap-2">
                   {task.status !== "completed" && (
                     <Button size="sm" className="rounded-xl">
-                      {t("markAsComplete")}
+                      {t("markAsComplete" as any)}
                     </Button>
                   )}
                   <DropdownMenu>
@@ -615,11 +635,11 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem>
                         <Edit className="h-4 w-4 mr-2" />
-                        {t("editTask")}
+                        {t("editTask" as any)}
                       </DropdownMenuItem>
                       <DropdownMenuItem className="text-red-500">
                         <Trash className="h-4 w-4 mr-2" />
-                        {t("deleteTask")}
+                        {t("deleteTask" as any)}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -635,13 +655,13 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
   // Task Schedule Page
   const renderTaskSchedule = () => {
     const days = [
-      t("sun"),
-      t("mon"),
-      t("tue"),
-      t("wed"),
-      t("thu"),
-      t("fri"),
-      t("sat"),
+      t("sun" as any),
+      t("mon" as any),
+      t("tue" as any),
+      t("wed" as any),
+      t("thu" as any),
+      t("fri" as any),
+      t("sat" as any),
     ];
     const weekDates = Array.from({ length: 7 }, (_, i) => {
       const date = new Date(currentWeekStart);
@@ -665,15 +685,17 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
               />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">{t("taskScheduleTitle")}</h1>
+              <h1 className="text-3xl font-bold">
+                {t("taskScheduleTitle" as any)}
+              </h1>
               <p className="text-muted-foreground">
-                {t("dailyTasksManagement")}
+                {t("dailyTasksManagement" as any)}
               </p>
             </div>
           </div>
           <Button className="rounded-2xl">
             <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-            {t("addNewTask")}
+            {t("addNewTask" as any)}
           </Button>
         </div>
 
@@ -695,7 +717,9 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                   className={cn("h-5 w-5", dir === "rtl" && "rotate-180")}
                 />
               </Button>
-              <h2 className="text-lg font-semibold">{t("weeklySchedule")}</h2>
+              <h2 className="text-lg font-semibold">
+                {t("weeklySchedule" as any)}
+              </h2>
               <Button
                 variant="ghost"
                 size="icon"
@@ -803,10 +827,10 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                         <Badge variant="outline" className="rounded-xl">
                           <Repeat className="h-3 w-3 mr-1" />
                           {task.repeat === "daily"
-                            ? t("repeatDaily")
+                            ? t("repeatDaily" as any)
                             : task.repeat === "weekly"
-                              ? t("repeatWeekly")
-                              : t("repeatMonthly")}
+                              ? t("repeatWeekly" as any)
+                              : t("repeatMonthly" as any)}
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between mt-3">
@@ -851,8 +875,12 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">{t("completedTasksTitle")}</h1>
-            <p className="text-muted-foreground">{t("dailyTasksManagement")}</p>
+            <h1 className="text-3xl font-bold">
+              {t("completedTasksTitle" as any)}
+            </h1>
+            <p className="text-muted-foreground">
+              {t("dailyTasksManagement" as any)}
+            </p>
           </div>
         </div>
         <div className="relative w-full md:w-72">
@@ -933,7 +961,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
       {/* Completed Tasks List */}
       <Card className="rounded-3xl">
         <CardHeader>
-          <CardTitle>{t("completedTasksTitle")}</CardTitle>
+          <CardTitle>{t("completedTasksTitle" as any)}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -971,7 +999,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                   variant="outline"
                   className="rounded-xl bg-green-500/10 text-green-500 border-green-500/30"
                 >
-                  {t("completed")}
+                  {t("completed" as any)}
                 </Badge>
               </motion.div>
             ))}

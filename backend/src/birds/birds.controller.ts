@@ -2,8 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
-  Delete,
   Body,
   Query,
   Param,
@@ -23,8 +21,10 @@ import { extname } from 'path';
 import { BirdsService } from './birds.service';
 import { CreateBirdDto } from '@shared/dtos/create-bird.dto';
 import { GetBirdsDto } from '@shared/dtos/get-birds.dto';
+import { UpdateBirdDto } from '@shared/dtos/update-bird.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
+import { Delete, Patch } from '@nestjs/common';
 
 @UseGuards(JwtAuthGuard)
 @Controller('birds')
@@ -102,13 +102,49 @@ export class BirdsController {
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.birdsService.findOne(req.user.userId, id);
   }
-
-  @Patch(':id')
+  @Post(':id') // Using POST for update with file upload if needed, or stick to PATCH
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/^image\/(jpg|jpeg|png|webp)$/)) {
+          return cb(
+            new BadRequestException(
+              'Validation failed (expected type is /^image\\/(jpg|jpeg|png|webp)$/)'
+            ),
+            false
+          );
+        }
+        cb(null, true);
+      },
+      storage: diskStorage({
+        destination: './uploads/birds',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = uuidv4() + extname(file.originalname);
+          cb(null, uniqueSuffix);
+        },
+      }),
+    })
+  )
+  @Patch(':id') // Supporting Patch for standard updates
   update(
     @Request() req: RequestWithUser,
     @Param('id') id: string,
-    @Body() updateBirdDto: Partial<CreateBirdDto>
+    @Body() updateBirdDto: UpdateBirdDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 })],
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
+    )
+    file?: Express.Multer.File
   ) {
+    if (file) {
+      return this.birdsService.update(req.user.userId, id, {
+        ...updateBirdDto,
+        image: `/uploads/birds/${file.filename}`,
+      });
+    }
     return this.birdsService.update(req.user.userId, id, updateBirdDto);
   }
 

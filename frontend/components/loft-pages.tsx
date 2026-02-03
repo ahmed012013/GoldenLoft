@@ -136,6 +136,19 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
     queryFn: fetchLofts,
   });
 
+  // Fetch bird stats for occupancy
+  const { data: birdStats } = useQuery({
+    queryKey: ["birds/stats"],
+    queryFn: async () => {
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`${API_URL}/birds/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return { total: 0 };
+      return res.json();
+    },
+  });
+
   // Settings state
   const [settingsData, setSettingsData] = useState({
     autoClimate: true,
@@ -597,13 +610,7 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
                   <Bird className="h-5 w-5 text-green-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">
-                    {lofts.reduce(
-                      (acc: number, loft: any) =>
-                        acc + (loft._count?.birds || 0),
-                      0,
-                    )}
-                  </p>
+                  <p className="text-2xl font-bold">{birdStats?.total || 0}</p>
                   <p className="text-xs text-muted-foreground">
                     {t("currentOccupancy")}
                   </p>
@@ -716,11 +723,11 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
                         {t("currentOccupancy")}
                       </span>
                       <span className="font-medium">
-                        {loft._count?.birds || 0}
+                        {loft._count?.birds || 0} / 50
                       </span>
                     </div>
                     <Progress
-                      value={(loft._count?.birds || 0) * 2}
+                      value={((loft._count?.birds || 0) / 50) * 100}
                       className="h-2 rounded-xl"
                     />
                   </div>

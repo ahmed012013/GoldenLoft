@@ -80,10 +80,6 @@ export default function LoginPage() {
 
       const data = await res.json();
       localStorage.setItem("access_token", data.access_token);
-      // Store user info for display
-      if (data.user) {
-        localStorage.setItem("user_info", JSON.stringify(data.user));
-      }
       toast.success("Login successful! Welcome back.");
       window.location.href = "/dashboard";
     } catch (err: any) {

@@ -264,25 +264,25 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
       case "inStock":
         return (
           <Badge className="rounded-xl bg-green-500/10 text-green-500 hover:bg-green-500/20">
-            {t("inStock")}
+            {t("inStock" as any)}
           </Badge>
         );
       case "lowStock":
         return (
           <Badge className="rounded-xl bg-amber-500/10 text-amber-500 hover:bg-amber-500/20">
-            {t("lowStock")}
+            {t("lowStock" as any)}
           </Badge>
         );
       case "outOfStock":
         return (
           <Badge className="rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20">
-            {t("outOfStock")}
+            {t("outOfStock" as any)}
           </Badge>
         );
       case "expiringSoon":
         return (
           <Badge className="rounded-xl bg-orange-500/10 text-orange-500 hover:bg-orange-500/20">
-            {t("expiringSoon")}
+            {t("expiringSoon" as any)}
           </Badge>
         );
       default:
@@ -324,12 +324,12 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
     };
 
     const feedTypes = [
-      { value: "seed", label: t("feedTypeSeed") },
-      { value: "grain", label: t("feedTypeGrain") },
-      { value: "pellet", label: t("feedTypePellet") },
-      { value: "mix", label: t("feedTypeMix") },
-      { value: "grit", label: t("feedTypeGrit") },
-      { value: "supplement", label: t("feedTypeSupplement") },
+      { value: "seed", label: t("feedTypeSeed" as any) },
+      { value: "grain", label: t("feedTypeGrain" as any) },
+      { value: "pellet", label: t("feedTypePellet" as any) },
+      { value: "mix", label: t("feedTypeMix" as any) },
+      { value: "grit", label: t("feedTypeGrit" as any) },
+      { value: "supplement", label: t("feedTypeSupplement" as any) },
     ];
 
     return (
@@ -341,7 +341,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalItems")}
+                    {t("totalItems" as any)}
                   </p>
                   <p className="text-3xl font-bold">{stats.total}</p>
                 </div>
@@ -357,7 +357,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("lowStockItems")}
+                    {t("lowStockItems" as any)}
                   </p>
                   <p className="text-3xl font-bold text-amber-500">
                     {stats.lowStock}
@@ -375,7 +375,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("outOfStock")}
+                    {t("outOfStock" as any)}
                   </p>
                   <p className="text-3xl font-bold text-red-500">
                     {stats.outOfStock}
@@ -393,7 +393,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalInventoryValue")}
+                    {t("totalInventoryValue" as any)}
                   </p>
                   <p className="text-3xl font-bold text-green-500">
                     ${stats.totalValue}
@@ -430,7 +430,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex gap-2">
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger className="w-[150px] rounded-2xl">
-                    <SelectValue placeholder={t("itemType")} />
+                    <SelectValue placeholder={t("itemType" as any)} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">
@@ -445,14 +445,20 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                 </Select>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                   <SelectTrigger className="w-[150px] rounded-2xl">
-                    <SelectValue placeholder={t("status")} />
+                    <SelectValue placeholder={t("status" as any)} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t("allStatuses")}</SelectItem>
-                    <SelectItem value="inStock">{t("inStock")}</SelectItem>
-                    <SelectItem value="lowStock">{t("lowStock")}</SelectItem>
+                    <SelectItem value="all">
+                      {t("allStatuses" as any)}
+                    </SelectItem>
+                    <SelectItem value="inStock">
+                      {t("inStock" as any)}
+                    </SelectItem>
+                    <SelectItem value="lowStock">
+                      {t("lowStock" as any)}
+                    </SelectItem>
                     <SelectItem value="outOfStock">
-                      {t("outOfStock")}
+                      {t("outOfStock" as any)}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -468,12 +474,12 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                           dir === "rtl" ? "ml-2" : "mr-2",
                         )}
                       />
-                      {t("addItem")}
+                      {t("addItem" as any)}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
-                      <DialogTitle>{t("addItem")}</DialogTitle>
+                      <DialogTitle>{t("addItem" as any)}</DialogTitle>
                       <DialogDescription>
                         {language === "ar"
                           ? "أضف صنف علف جديد للمخزون"
@@ -482,7 +488,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid gap-2">
-                        <Label>{t("itemName")}</Label>
+                        <Label>{t("itemName" as any)}</Label>
                         <Input
                           placeholder={
                             language === "ar"
@@ -494,7 +500,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                          <Label>{t("itemType")}</Label>
+                          <Label>{t("itemType" as any)}</Label>
                           <Select>
                             <SelectTrigger className="rounded-xl">
                               <SelectValue
@@ -515,7 +521,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                           </Select>
                         </div>
                         <div className="grid gap-2">
-                          <Label>{t("unit")}</Label>
+                          <Label>{t("unit" as any)}</Label>
                           <Select>
                             <SelectTrigger className="rounded-xl">
                               <SelectValue
@@ -527,10 +533,14 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                               />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="kg">{t("unitKg")}</SelectItem>
-                              <SelectItem value="g">{t("unitG")}</SelectItem>
+                              <SelectItem value="kg">
+                                {t("unitKg" as any)}
+                              </SelectItem>
+                              <SelectItem value="g">
+                                {t("unitG" as any)}
+                              </SelectItem>
                               <SelectItem value="bag">
-                                {t("unitBag")}
+                                {t("unitBag" as any)}
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -538,7 +548,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                          <Label>{t("quantity")}</Label>
+                          <Label>{t("quantity" as any)}</Label>
                           <Input
                             type="number"
                             placeholder="0"
@@ -546,7 +556,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                           />
                         </div>
                         <div className="grid gap-2">
-                          <Label>{t("minStock")}</Label>
+                          <Label>{t("minStock" as any)}</Label>
                           <Input
                             type="number"
                             placeholder="0"
@@ -556,7 +566,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                          <Label>{t("unitPrice")}</Label>
+                          <Label>{t("unitPrice" as any)}</Label>
                           <Input
                             type="number"
                             placeholder="0.00"
@@ -564,12 +574,12 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                           />
                         </div>
                         <div className="grid gap-2">
-                          <Label>{t("expiryDate")}</Label>
+                          <Label>{t("expiryDate" as any)}</Label>
                           <Input type="date" className="rounded-xl" />
                         </div>
                       </div>
                       <div className="grid gap-2">
-                        <Label>{t("supplier")}</Label>
+                        <Label>{t("supplier" as any)}</Label>
                         <Input
                           placeholder={
                             language === "ar" ? "اسم المورد" : "Supplier name"
@@ -584,13 +594,13 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                         onClick={() => setIsAddDialogOpen(false)}
                         className="rounded-xl bg-transparent"
                       >
-                        {t("cancel")}
+                        {t("cancel" as any)}
                       </Button>
                       <Button
                         onClick={() => setIsAddDialogOpen(false)}
                         className="rounded-xl"
                       >
-                        {t("saveItem")}
+                        {t("saveItem" as any)}
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -605,13 +615,13 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("itemName")}</TableHead>
-                <TableHead>{t("itemType")}</TableHead>
-                <TableHead>{t("quantity")}</TableHead>
-                <TableHead>{t("minStock")}</TableHead>
-                <TableHead>{t("unitPrice")}</TableHead>
-                <TableHead>{t("expiryDate")}</TableHead>
-                <TableHead>{t("status")}</TableHead>
+                <TableHead>{t("itemName" as any)}</TableHead>
+                <TableHead>{t("itemType" as any)}</TableHead>
+                <TableHead>{t("quantity" as any)}</TableHead>
+                <TableHead>{t("minStock" as any)}</TableHead>
+                <TableHead>{t("unitPrice" as any)}</TableHead>
+                <TableHead>{t("expiryDate" as any)}</TableHead>
+                <TableHead>{t("status" as any)}</TableHead>
                 <TableHead className="text-center">
                   {language === "ar" ? "إجراءات" : "Actions"}
                 </TableHead>
@@ -674,12 +684,12 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
     };
 
     const medTypes = [
-      { value: "vaccine", label: t("medTypeVaccine") },
-      { value: "antibiotic", label: t("medTypeAntibiotic") },
-      { value: "vitamin", label: t("medTypeVitamin") },
-      { value: "antiparasitic", label: t("medTypeAntiparasitic") },
-      { value: "probiotic", label: t("medTypeProbiotic") },
-      { value: "other", label: t("medTypeOther") },
+      { value: "vaccine", label: t("medTypeVaccine" as any) },
+      { value: "antibiotic", label: t("medTypeAntibiotic" as any) },
+      { value: "vitamin", label: t("medTypeVitamin" as any) },
+      { value: "antiparasitic", label: t("medTypeAntiparasitic" as any) },
+      { value: "probiotic", label: t("medTypeProbiotic" as any) },
+      { value: "other", label: t("medTypeOther" as any) },
     ];
 
     return (
@@ -691,7 +701,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalItems")}
+                    {t("totalItems" as any)}
                   </p>
                   <p className="text-3xl font-bold">{stats.total}</p>
                 </div>
@@ -707,7 +717,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("lowStockItems")}
+                    {t("lowStockItems" as any)}
                   </p>
                   <p className="text-3xl font-bold text-amber-500">
                     {stats.lowStock}
@@ -725,7 +735,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("expiringItems")}
+                    {t("expiringItems" as any)}
                   </p>
                   <p className="text-3xl font-bold text-orange-500">
                     {stats.expiringSoon}
@@ -743,7 +753,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalInventoryValue")}
+                    {t("totalInventoryValue" as any)}
                   </p>
                   <p className="text-3xl font-bold text-green-500">
                     ${stats.totalValue}
@@ -798,7 +808,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex gap-2">
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger className="w-[150px] rounded-2xl">
-                    <SelectValue placeholder={t("itemType")} />
+                    <SelectValue placeholder={t("itemType" as any)} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">
@@ -815,7 +825,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                   <Plus
                     className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")}
                   />
-                  {t("addItem")}
+                  {t("addItem" as any)}
                 </Button>
               </div>
             </div>
@@ -827,14 +837,14 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("itemName")}</TableHead>
-                <TableHead>{t("itemType")}</TableHead>
-                <TableHead>{t("quantity")}</TableHead>
-                <TableHead>{t("minStock")}</TableHead>
-                <TableHead>{t("unitPrice")}</TableHead>
-                <TableHead>{t("expiryDate")}</TableHead>
-                <TableHead>{t("supplier")}</TableHead>
-                <TableHead>{t("status")}</TableHead>
+                <TableHead>{t("itemName" as any)}</TableHead>
+                <TableHead>{t("itemType" as any)}</TableHead>
+                <TableHead>{t("quantity" as any)}</TableHead>
+                <TableHead>{t("minStock" as any)}</TableHead>
+                <TableHead>{t("unitPrice" as any)}</TableHead>
+                <TableHead>{t("expiryDate" as any)}</TableHead>
+                <TableHead>{t("supplier" as any)}</TableHead>
+                <TableHead>{t("status" as any)}</TableHead>
                 <TableHead className="text-center">
                   {language === "ar" ? "إجراءات" : "Actions"}
                 </TableHead>
@@ -897,15 +907,15 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
     };
 
     const equipTypes = [
-      { value: "feeder", label: t("equipTypeFeeder") },
-      { value: "drinker", label: t("equipTypeDrinker") },
-      { value: "nestBox", label: t("equipTypeNestBox") },
-      { value: "perch", label: t("equipTypePerch") },
-      { value: "trap", label: t("equipTypeTrap") },
-      { value: "cage", label: t("equipTypeCage") },
-      { value: "cleaning", label: t("equipTypeCleaning") },
-      { value: "training", label: t("equipTypeTraining") },
-      { value: "other", label: t("equipTypeOther") },
+      { value: "feeder", label: t("equipTypeFeeder" as any) },
+      { value: "drinker", label: t("equipTypeDrinker" as any) },
+      { value: "nestBox", label: t("equipTypeNestBox" as any) },
+      { value: "perch", label: t("equipTypePerch" as any) },
+      { value: "trap", label: t("equipTypeTrap" as any) },
+      { value: "cage", label: t("equipTypeCage" as any) },
+      { value: "cleaning", label: t("equipTypeCleaning" as any) },
+      { value: "training", label: t("equipTypeTraining" as any) },
+      { value: "other", label: t("equipTypeOther" as any) },
     ];
 
     return (
@@ -917,7 +927,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalItems")}
+                    {t("totalItems" as any)}
                   </p>
                   <p className="text-3xl font-bold">{stats.total}</p>
                 </div>
@@ -967,7 +977,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalInventoryValue")}
+                    {t("totalInventoryValue" as any)}
                   </p>
                   <p className="text-3xl font-bold text-green-500">
                     ${stats.totalValue}
@@ -1006,7 +1016,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
               <div className="flex gap-2">
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger className="w-[150px] rounded-2xl">
-                    <SelectValue placeholder={t("itemType")} />
+                    <SelectValue placeholder={t("itemType" as any)} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">
@@ -1023,7 +1033,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                   <Plus
                     className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")}
                   />
-                  {t("addItem")}
+                  {t("addItem" as any)}
                 </Button>
               </div>
             </div>
@@ -1058,7 +1068,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-muted-foreground">
-                        {t("quantity")}:
+                        {t("quantity" as any)}:
                       </span>
                       <span className="font-medium">
                         {" "}
@@ -1067,7 +1077,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                     </div>
                     <div>
                       <span className="text-muted-foreground">
-                        {t("unitPrice")}:
+                        {t("unitPrice" as any)}:
                       </span>
                       <span className="font-medium"> ${item.price}</span>
                     </div>
@@ -1079,7 +1089,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                     </div>
                     <div>
                       <span className="text-muted-foreground">
-                        {t("purchaseDate")}:
+                        {t("purchaseDate" as any)}:
                       </span>
                       <span className="font-medium"> {item.purchaseDate}</span>
                     </div>
@@ -1096,7 +1106,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
                           dir === "rtl" ? "ml-1" : "mr-1",
                         )}
                       />
-                      {t("editItem")}
+                      {t("editItem" as any)}
                     </Button>
                     <Button
                       variant="ghost"
@@ -1118,11 +1128,11 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
   const getPageTitle = () => {
     switch (currentPage) {
       case "feed":
-        return t("feedManagement");
+        return t("feedManagement" as any);
       case "medications":
-        return t("medicationsManagement");
+        return t("medicationsManagement" as any);
       case "equipment":
-        return t("equipmentManagement");
+        return t("equipmentManagement" as any);
     }
   };
 
@@ -1161,7 +1171,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
             <div>
               <h1 className="text-2xl font-bold">{getPageTitle()}</h1>
               <p className="text-sm text-muted-foreground">
-                {t("inventoryManagement")}
+                {t("inventoryManagement" as any)}
               </p>
             </div>
           </div>
