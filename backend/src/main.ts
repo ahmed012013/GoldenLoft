@@ -3,6 +3,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+<<<<<<< HEAD
+=======
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+>>>>>>> c7e00d1 (swap)
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,12 +16,19 @@ async function bootstrap() {
       whitelist: true,
       transform: true,
       exceptionFactory: (errors) => {
+<<<<<<< HEAD
         console.log('Validation Errors:', JSON.stringify(errors, null, 2));
+=======
+>>>>>>> c7e00d1 (swap)
         return new BadRequestException(errors);
       },
       validationError: { target: false, value: false },
     })
   );
+<<<<<<< HEAD
+=======
+  app.useGlobalFilters(new HttpExceptionFilter());
+>>>>>>> c7e00d1 (swap)
   // Security P0: Strict CORS
   app.enableCors({
     origin: process.env.CORS_ORIGINS
@@ -37,12 +48,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+<<<<<<< HEAD
   console.log(
     'DATABASE_URL Present:',
     process.env.DATABASE_URL
       ? process.env.DATABASE_URL.slice(0, 10) + '...'
       : 'FALSE'
   );
+=======
+>>>>>>> c7e00d1 (swap)
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap().catch((err) => console.error(err));

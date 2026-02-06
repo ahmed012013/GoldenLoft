@@ -9,6 +9,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum HealthType {
+<<<<<<< HEAD
   CHECKUP = 'CHECKUP',
   TREATMENT = 'TREATMENT',
   DISEASE = 'DISEASE',
@@ -18,6 +19,22 @@ export enum HealthType {
 export enum HealthStatus {
   RECOVERED = 'RECOVERED',
   ONGOING = 'ONGOING',
+=======
+  CHECKUP = 'checkup',
+  TREATMENT = 'treatment',
+  ILLNESS = 'illness',
+  VACCINATION = 'vaccination',
+  INJURY = 'injury',
+  OTHER = 'other',
+}
+
+export enum HealthStatus {
+  HEALTHY = 'healthy',
+  SICK = 'sick',
+  UNDER_OBSERVATION = 'under_observation',
+  RECOVERED = 'recovered',
+  DECEASED = 'deceased',
+>>>>>>> c7e00d1 (swap)
 }
 
 export class CreateHealthRecordDto {
@@ -40,6 +57,14 @@ export class CreateHealthRecordDto {
   @IsOptional()
   vetName?: string;
 
+<<<<<<< HEAD
+=======
+  @ApiPropertyOptional({ example: 'Additional notes' })
+  @IsString()
+  @IsOptional()
+  notes?: string;
+
+>>>>>>> c7e00d1 (swap)
   @ApiProperty({ enum: HealthType })
   @IsEnum(HealthType)
   type: HealthType;

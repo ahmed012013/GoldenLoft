@@ -33,7 +33,10 @@ apiClient.interceptors.request.use(
         ? localStorage.getItem("access_token")
         : null;
     if (token) {
+<<<<<<< HEAD
       // console.log('Attaching Token:', token.slice(0, 10) + '...');
+=======
+>>>>>>> c7e00d1 (swap)
       config.headers.Authorization = `Bearer ${token}`;
     } else {
       console.warn("No token found in localStorage");

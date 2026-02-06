@@ -69,6 +69,11 @@ import { cn } from "@/lib/utils";
 import apiClient from "@/lib/api-client";
 import { useLanguage } from "@/lib/language-context";
 import { BirdModal } from "./bird-modal";
+<<<<<<< HEAD
+=======
+import { HealthRecordsList } from "./health-records-list";
+import { AddHealthRecordDialog } from "./add-health-record-dialog";
+>>>>>>> c7e00d1 (swap)
 import { useBirdMutations } from "@/hooks/useBirdMutations";
 import { useLofts } from "@/hooks/useLofts";
 import { useBirds } from "@/hooks/useBirds";
@@ -116,6 +121,7 @@ interface PigeonPagesProps {
   onNavigate?: (page: "all" | "add" | "pedigree" | "health") => void;
 }
 
+<<<<<<< HEAD
 // Sample pigeon data
 const samplePigeons = [
   {
@@ -293,6 +299,8 @@ const sampleHealthRecords = [
   },
 ];
 
+=======
+>>>>>>> c7e00d1 (swap)
 export function PigeonPages({
   currentPage,
   onBack,
@@ -312,6 +320,10 @@ export function PigeonPages({
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+<<<<<<< HEAD
+=======
+  const [showHealthModal, setShowHealthModal] = useState(false);
+>>>>>>> c7e00d1 (swap)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -981,7 +993,11 @@ export function PigeonPages({
                 <p className="text-sm text-muted-foreground">
                   {t("totalPigeons")}
                 </p>
+<<<<<<< HEAD
                 <p className="text-2xl font-bold">{samplePigeons.length}</p>
+=======
+                <p className="text-2xl font-bold">{filteredPigeons.length}</p>
+>>>>>>> c7e00d1 (swap)
               </div>
               <BirdIcon className="h-8 w-8 text-blue-500" />
             </div>
@@ -996,8 +1012,14 @@ export function PigeonPages({
                 </p>
                 <p className="text-2xl font-bold text-green-500">
                   {
+<<<<<<< HEAD
                     samplePigeons.filter((p) => p.status === BirdStatus.HEALTHY)
                       .length
+=======
+                    filteredPigeons.filter(
+                      (p) => p.status === BirdStatus.HEALTHY,
+                    ).length
+>>>>>>> c7e00d1 (swap)
                   }
                 </p>
               </div>
@@ -1012,7 +1034,11 @@ export function PigeonPages({
                 <p className="text-sm text-muted-foreground">{t("male")}</p>
                 <p className="text-2xl font-bold text-blue-500">
                   {
+<<<<<<< HEAD
                     samplePigeons.filter((p) => p.gender === BirdGender.MALE)
+=======
+                    filteredPigeons.filter((p) => p.gender === BirdGender.MALE)
+>>>>>>> c7e00d1 (swap)
                       .length
                   }
                 </p>
@@ -1028,8 +1054,14 @@ export function PigeonPages({
                 <p className="text-sm text-muted-foreground">{t("female")}</p>
                 <p className="text-2xl font-bold text-pink-500">
                   {
+<<<<<<< HEAD
                     samplePigeons.filter((p) => p.gender === BirdGender.FEMALE)
                       .length
+=======
+                    filteredPigeons.filter(
+                      (p) => p.gender === BirdGender.FEMALE,
+                    ).length
+>>>>>>> c7e00d1 (swap)
                   }
                 </p>
               </div>
@@ -1600,6 +1632,7 @@ export function PigeonPages({
     </div>
   );
 
+<<<<<<< HEAD
   const renderHealthRecords = () => (
     <div className="space-y-6">
       {/* Header */}
@@ -1762,6 +1795,29 @@ export function PigeonPages({
           </div>
         </CardContent>
       </Card>
+=======
+  const renderHealth = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">
+            {language === "ar" ? "السجلات الصحية" : "Health Records"}
+          </h1>
+          <p className="text-muted-foreground">
+            {language === "ar"
+              ? "إدارة الحالة الصحية والتطعيمات"
+              : "Manage health status and vaccinations"}
+          </p>
+        </div>
+      </div>
+
+      <HealthRecordsList onAddClick={() => setShowHealthModal(true)} />
+
+      <AddHealthRecordDialog
+        open={showHealthModal}
+        onOpenChange={setShowHealthModal}
+      />
+>>>>>>> c7e00d1 (swap)
     </div>
   );
 
@@ -1776,7 +1832,11 @@ export function PigeonPages({
       {currentPage === "add" && renderAddPigeon()}
 
       {currentPage === "pedigree" && renderPedigree()}
+<<<<<<< HEAD
       {currentPage === "health" && renderHealthRecords()}
+=======
+      {currentPage === "health" && renderHealth()}
+>>>>>>> c7e00d1 (swap)
 
       {/* Bird Modal */}
       <BirdModal

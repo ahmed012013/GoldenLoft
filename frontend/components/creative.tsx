@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 "use client";
+=======
+﻿"use client";
+>>>>>>> c7e00d1 (swap)
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Award,
   Bell,
+<<<<<<< HEAD
   BookOpen,
   Bookmark,
   Brush,
@@ -27,24 +32,45 @@ import {
   Palette,
   PanelLeft,
   Play,
+=======
+  ChevronDown,
+  Cloud,
+  Download,
+  Grid,
+  Heart,
+  Home,
+  Lightbulb,
+  Menu,
+  MessageSquare,
+  PanelLeft,
+>>>>>>> c7e00d1 (swap)
   Plus,
   Search,
   Settings,
   Share2,
+<<<<<<< HEAD
   Sparkles,
   Star,
   Trash,
   TrendingUp,
   Users,
   Video,
+=======
+  Trash,
+  TrendingUp,
+  Users,
+>>>>>>> c7e00d1 (swap)
   Wand2,
   Clock,
   Eye,
   Archive,
   ArrowUpDown,
   MoreHorizontal,
+<<<<<<< HEAD
   Type,
   CuboidIcon,
+=======
+>>>>>>> c7e00d1 (swap)
   X,
   Moon,
   Sun,
@@ -105,6 +131,7 @@ import { DashboardHome } from "@/components/dashboard-home";
 import { SidebarNavigation } from "@/components/sidebar-navigation";
 import { useRouter } from "next/navigation";
 
+<<<<<<< HEAD
 // Sample data for apps
 const apps = [
   {
@@ -405,6 +432,8 @@ const communityPosts = [
   },
 ];
 
+=======
+>>>>>>> c7e00d1 (swap)
 // Sample data for sidebar navigation
 // Sidebar items will be generated dynamically with translations
 
@@ -1108,7 +1137,12 @@ export function DesignaliCreative() {
             >
               <Languages className="h-4 w-4" />
               <span>
+<<<<<<< HEAD
                 {t("language")}: {language === "ar" ? "العربية" : "English"}
+=======
+                {t("language")}:{" "}
+                {language === "ar" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
+>>>>>>> c7e00d1 (swap)
               </span>
             </Button>
             <Button
@@ -1207,7 +1241,12 @@ export function DesignaliCreative() {
             >
               <Languages className="h-4 w-4" />
               <span className="truncate">
+<<<<<<< HEAD
                 {t("language")}: {language === "ar" ? "العربية" : "English"}
+=======
+                {t("language")}:{" "}
+                {language === "ar" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
+>>>>>>> c7e00d1 (swap)
               </span>
             </Button>
             <Button
@@ -1340,7 +1379,11 @@ export function DesignaliCreative() {
                                 {
                                   task:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "تنظيف اللوفت الرئيسي"
+=======
+                                      ? "ØªÙ†Ø¸ÙŠÙ Ø§Ù„Ù„ÙˆÙØª Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ"
+>>>>>>> c7e00d1 (swap)
                                       : "Clean main loft",
                                   time: "08:00",
                                   completed: true,
@@ -1348,7 +1391,11 @@ export function DesignaliCreative() {
                                 {
                                   task:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "تقديم الطعام الصباحي"
+=======
+                                      ? "ØªÙ‚Ø¯ÙŠÙ… Ø§Ù„Ø·Ø¹Ø§Ù… Ø§Ù„ØµØ¨Ø§Ø­ÙŠ"
+>>>>>>> c7e00d1 (swap)
                                       : "Morning feeding",
                                   time: "09:00",
                                   completed: true,
@@ -1356,7 +1403,11 @@ export function DesignaliCreative() {
                                 {
                                   task:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "فحص الحمام المريض"
+=======
+                                      ? "ÙØ­Øµ Ø§Ù„Ø­Ù…Ø§Ù… Ø§Ù„Ù…Ø±ÙŠØ¶"
+>>>>>>> c7e00d1 (swap)
                                       : "Check sick pigeons",
                                   time: "10:00",
                                   completed: false,
@@ -1364,7 +1415,11 @@ export function DesignaliCreative() {
                                 {
                                   task:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "تغيير المياه"
+=======
+                                      ? "ØªØºÙŠÙŠØ± Ø§Ù„Ù…ÙŠØ§Ù‡"
+>>>>>>> c7e00d1 (swap)
                                       : "Change water",
                                   time: "11:00",
                                   completed: false,
@@ -1372,7 +1427,11 @@ export function DesignaliCreative() {
                                 {
                                   task:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "تسجيل البيانات اليومية"
+=======
+                                      ? "ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ÙŠÙˆÙ…ÙŠØ©"
+>>>>>>> c7e00d1 (swap)
                                       : "Record daily data",
                                   time: "12:00",
                                   completed: false,
@@ -1459,55 +1518,97 @@ export function DesignaliCreative() {
                                 {
                                   alert:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "حمامة رقم 127 تحتاج فحص طبي عاجل"
+=======
+                                      ? "Ø­Ù…Ø§Ù…Ø© Ø±Ù‚Ù… 127 ØªØ­ØªØ§Ø¬ ÙØ­Øµ Ø·Ø¨ÙŠ Ø¹Ø§Ø¬Ù„"
+>>>>>>> c7e00d1 (swap)
                                       : "Pigeon #127 needs urgent medical check",
                                   priority: "high",
                                   time:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "منذ ساعة"
+=======
+                                      ? "Ù…Ù†Ø° Ø³Ø§Ø¹Ø©"
+>>>>>>> c7e00d1 (swap)
                                       : "1 hour ago",
                                 },
                                 {
                                   alert:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "مخزون العلف منخفض - يجب إعادة الطلب"
+=======
+                                      ? "Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ø¹Ù„Ù Ù…Ù†Ø®ÙØ¶ - ÙŠØ¬Ø¨ Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø·Ù„Ø¨"
+>>>>>>> c7e00d1 (swap)
                                       : "Feed stock is low - reorder needed",
                                   priority: "high",
                                   time:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "منذ 2 ساعة"
+=======
+                                      ? "Ù…Ù†Ø° 2 Ø³Ø§Ø¹Ø©"
+>>>>>>> c7e00d1 (swap)
                                       : "2 hours ago",
                                 },
                                 {
                                   alert:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "موعد تطعيم 15 حمامة غداً"
+=======
+                                      ? "Ù…ÙˆØ¹Ø¯ ØªØ·Ø¹ÙŠÙ… 15 Ø­Ù…Ø§Ù…Ø© ØºØ¯Ø§Ù‹"
+>>>>>>> c7e00d1 (swap)
                                       : "15 pigeons vaccination due tomorrow",
                                   priority: "medium",
                                   time:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "منذ 3 ساعات"
+=======
+                                      ? "Ù…Ù†Ø° 3 Ø³Ø§Ø¹Ø§Øª"
+>>>>>>> c7e00d1 (swap)
                                       : "3 hours ago",
                                 },
                                 {
                                   alert:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "سباق الأسبوع القادم - تأكد من التسجيل"
+=======
+                                      ? "Ø³Ø¨Ø§Ù‚ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ Ø§Ù„Ù‚Ø§Ø¯Ù… - ØªØ£ÙƒØ¯ Ù…Ù† Ø§Ù„ØªØ³Ø¬ÙŠÙ„"
+>>>>>>> c7e00d1 (swap)
                                       : "Next week race - confirm registration",
                                   priority: "medium",
                                   time:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "منذ 5 ساعات"
+=======
+                                      ? "Ù…Ù†Ø° 5 Ø³Ø§Ø¹Ø§Øª"
+>>>>>>> c7e00d1 (swap)
                                       : "5 hours ago",
                                 },
                                 {
                                   alert:
                                     language === "ar"
+<<<<<<< HEAD
                                       ? "تحديث بيانات 3 حمامات جديدة"
                                       : "Update data for 3 new pigeons",
                                   priority: "low",
                                   time:
                                     language === "ar" ? "منذ يوم" : "1 day ago",
+=======
+                                      ? "ØªØ­Ø¯ÙŠØ« Ø¨ÙŠØ§Ù†Ø§Øª 3 Ø­Ù…Ø§Ù…Ø§Øª Ø¬Ø¯ÙŠØ¯Ø©"
+                                      : "Update data for 3 new pigeons",
+                                  priority: "low",
+                                  time:
+                                    language === "ar"
+                                      ? "Ù…Ù†Ø° ÙŠÙˆÙ…"
+                                      : "1 day ago",
+>>>>>>> c7e00d1 (swap)
                                 },
                               ].map((item, index) => (
                                 <motion.div
@@ -1562,6 +1663,7 @@ export function DesignaliCreative() {
                       </section>
                     </div>
                   </TabsContent>
+<<<<<<< HEAD
 
                   <TabsContent value="apps" className="space-y-8 mt-0">
                     <section>
@@ -2638,6 +2740,8 @@ export function DesignaliCreative() {
                       </div>
                     </section>
                   </TabsContent>
+=======
+>>>>>>> c7e00d1 (swap)
                 </motion.div>
               </AnimatePresence>
             </Tabs>
