@@ -26,12 +26,43 @@ export class BirdsRepository {
       cursor,
       where,
       orderBy,
-      include: {
-        loft: true,
-        father: true,
-        mother: true,
+      select: {
+        id: true,
+        ringNumber: true,
+        name: true,
+        gender: true,
+        status: true,
+        color: true,
+        type: true,
+        birthDate: true,
+        totalRaces: true,
+        wins: true,
+        weight: true,
+        image: true,
+        createdAt: true,
+        loft: {
+          select: {
+            id: true,
+            name: true,
+            userId: true,
+          },
+        },
+        father: {
+          select: {
+            id: true,
+            ringNumber: true,
+            name: true,
+          },
+        },
+        mother: {
+          select: {
+            id: true,
+            ringNumber: true,
+            name: true,
+          },
+        },
       },
-    });
+    }) as any;
   }
 
   async findOne(

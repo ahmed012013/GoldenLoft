@@ -15,7 +15,25 @@ GoldenLoft is a modern Pigeon Management System designed to help fanciers track 
 
 ## Getting Started
 
-### 1. Database Setup
+### Option 1: Docker (Recommended) 🐳
+
+The easiest way to run GoldenLoft is using Docker:
+
+```bash
+# Copy environment file
+cp .env.docker.example .env.docker
+
+# Edit .env.docker with your values
+
+# Build and start all services
+docker-compose --env-file .env.docker up -d
+```
+
+**📖 See [DOCKER.md](./DOCKER.md) for complete Docker deployment guide.**
+
+### Option 2: Manual Setup
+
+#### 1. Database Setup
 
 Ensure your PostgreSQL database is running. Update the connection string in `backend/.env`.
 

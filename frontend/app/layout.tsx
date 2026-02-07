@@ -1,6 +1,5 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Cairo } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { LanguageProvider } from "@/lib/language-context";
 import { ThemeProvider } from "@/lib/theme-context";
@@ -8,15 +7,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/query-provider";
 import "./globals.css";
 
-const _geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
-const _geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-});
-const _cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  variable: "--font-cairo",
-});
+// Font fallbacks for environments without internet access (e.g. Docker build)
+const _geist = { variable: "--font-geist-sans" };
+const _geistMono = { variable: "--font-geist-mono" };
+const _cairo = { variable: "--font-cairo" };
 
 export const metadata: Metadata = {
   title: "مدير لوفت الحمام | Pigeon Loft Manager",

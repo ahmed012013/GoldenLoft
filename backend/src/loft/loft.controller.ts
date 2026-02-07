@@ -14,6 +14,7 @@ import { CreateLoftDto } from './dto/create-loft.dto';
 import { UpdateLoftDto } from './dto/update-loft.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 interface RequestWithUser {
   user: { userId: string };
@@ -34,6 +35,7 @@ export class LoftController {
 
   @Get('my-loft')
   @ApiOperation({ summary: 'Get lofts belonging to the current user' })
+  @Throttle({ default: { limit: 100, ttl: 60000 } })
   getMyLofts(@Request() req: RequestWithUser) {
     return this.loftService.findManyByUserId(req.user.userId);
   }

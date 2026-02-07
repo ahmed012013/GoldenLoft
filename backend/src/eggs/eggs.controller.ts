@@ -15,6 +15,7 @@ import { UpdateEggDto } from './dto/update-egg.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('eggs')
 @ApiBearerAuth()
@@ -31,12 +32,14 @@ export class EggsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all eggs' })
+  @Throttle({ default: { limit: 100, ttl: 60000 } })
   findAll(@Request() req: RequestWithUser) {
     return this.eggsService.findAll(req.user.userId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific egg' })
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.eggsService.findOne(req.user.userId, id);
   }

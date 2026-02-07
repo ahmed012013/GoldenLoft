@@ -13,6 +13,7 @@ import { CreateLifeEventDto } from './dto/create-life-event.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('life-events')
 @ApiBearerAuth()
@@ -32,6 +33,7 @@ export class LifeEventsController {
 
   @Get('bird/:birdId')
   @ApiOperation({ summary: 'Get all events for a specific bird' })
+  @Throttle({ default: { limit: 100, ttl: 60000 } })
   findAllByBird(
     @Request() req: RequestWithUser,
     @Param('birdId') birdId: string

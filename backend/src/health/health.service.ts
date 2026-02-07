@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateHealthRecordDto } from './dto/create-health-record.dto';
+import { UpdateHealthRecordDto } from './dto/update-health-record.dto';
 
 @Injectable()
 export class HealthService {
@@ -24,18 +25,39 @@ export class HealthService {
 
     // Remove birdId from rest to avoid Prisma error
     const { birdId, ...rest } = dto;
-    return this.prisma.healthRecord.create({
-      data: {
-        ...rest,
-        bird: { connect: { id: birdId } },
-      },
+    // Determine new bird status based on health record
+    let newStatus: string | undefined;
+    if (dto.status === 'sick') newStatus = 'SICK';
+    else if (dto.status === 'healthy' || dto.status === 'recovered')
+      newStatus = 'HEALTHY';
+    else if (dto.status === 'under_observation')
+      newStatus = 'UNDER_OBSERVATION';
+
+    // Transaction to create record and update bird status
+    return this.prisma.$transaction(async (tx) => {
+      const record = await tx.healthRecord.create({
+        data: {
+          ...rest,
+          bird: { connect: { id: birdId } },
+        },
+      });
+
+      if (newStatus) {
+        await tx.bird.update({
+          where: { id: birdId },
+          data: { status: newStatus },
+        });
+      }
+
+      return record;
     });
   }
 
-  async findAll(userId: string) {
+  async findAll(userId: string, birdId?: string) {
     return this.prisma.healthRecord.findMany({
       where: {
         bird: {
+          id: birdId,
           loft: {
             userId: userId,
           },
@@ -48,5 +70,56 @@ export class HealthService {
       },
       orderBy: { date: 'desc' },
     });
+  }
+
+  async update(userId: string, id: string, dto: UpdateHealthRecordDto) {
+    const record = await this.prisma.healthRecord.findUnique({
+      where: { id },
+      include: { bird: { include: { loft: true } } },
+    });
+
+    if (!record) throw new NotFoundException('Record not found');
+    if (record.bird.loft.userId !== userId) {
+      throw new BadRequestException('Access denied');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { birdId, ...rest } = dto;
+
+    let newStatus: string | undefined;
+    if (dto.status === 'sick') newStatus = 'SICK';
+    else if (dto.status === 'healthy' || dto.status === 'recovered')
+      newStatus = 'HEALTHY';
+    else if (dto.status === 'under_observation')
+      newStatus = 'UNDER_OBSERVATION';
+
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.healthRecord.update({
+        where: { id },
+        data: rest,
+      });
+
+      if (newStatus) {
+        await tx.bird.update({
+          where: { id: record.birdId },
+          data: { status: newStatus },
+        });
+      }
+      return updated;
+    });
+  }
+
+  async remove(userId: string, id: string) {
+    const record = await this.prisma.healthRecord.findUnique({
+      where: { id },
+      include: { bird: { include: { loft: true } } },
+    });
+
+    if (!record) throw new NotFoundException('Record not found');
+    if (record.bird.loft.userId !== userId) {
+      throw new BadRequestException('Access denied');
+    }
+
+    return this.prisma.healthRecord.delete({ where: { id } });
   }
 }

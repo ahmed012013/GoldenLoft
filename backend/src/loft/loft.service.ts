@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateLoftDto } from './dto/create-loft.dto';
 import { UpdateLoftDto } from './dto/update-loft.dto';
@@ -28,8 +32,17 @@ export class LoftService {
   }
 
   async update(id: string, userId: string, data: UpdateLoftDto) {
-    const count = await this.prisma.loft.count({ where: { id, userId } });
-    if (count === 0) throw new Error('Loft not found or access denied');
+    const loft = await this.prisma.loft.findUnique({
+      where: { id },
+    });
+
+    if (!loft) {
+      throw new NotFoundException('Loft not found');
+    }
+
+    if (loft.userId !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
 
     return this.prisma.loft.update({
       where: { id },
@@ -38,8 +51,17 @@ export class LoftService {
   }
 
   async remove(id: string, userId: string) {
-    const count = await this.prisma.loft.count({ where: { id, userId } });
-    if (count === 0) throw new Error('Loft not found or access denied');
+    const loft = await this.prisma.loft.findUnique({
+      where: { id },
+    });
+
+    if (!loft) {
+      throw new NotFoundException('Loft not found');
+    }
+
+    if (loft.userId !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
 
     return this.prisma.loft.delete({
       where: { id },

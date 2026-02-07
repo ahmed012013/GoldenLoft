@@ -69,6 +69,8 @@ import { cn } from "@/lib/utils";
 import apiClient from "@/lib/api-client";
 import { useLanguage } from "@/lib/language-context";
 import { BirdModal } from "./bird-modal";
+import { HealthRecordsList } from "./health-records-list";
+import { AddHealthRecordDialog } from "./add-health-record-dialog";
 import { useBirdMutations } from "@/hooks/useBirdMutations";
 import { useLofts } from "@/hooks/useLofts";
 import { useBirds } from "@/hooks/useBirds";
@@ -116,183 +118,6 @@ interface PigeonPagesProps {
   onNavigate?: (page: "all" | "add" | "pedigree" | "health") => void;
 }
 
-// Sample pigeon data
-const samplePigeons = [
-  {
-    id: "P001",
-    ringNumber: "EGY-2024-001",
-    name: "الصقر الذهبي",
-    nameEn: "Golden Falcon",
-    gender: "male",
-    color: "أزرق مطوق",
-    colorEn: "Blue Bar",
-    breed: "زاجل بلجيكي",
-    breedEn: "Belgian Racing",
-    birthDate: "2023-03-15",
-    father: "EGY-2022-045",
-    mother: "EGY-2022-089",
-    loft: "اللوفت الرئيسي",
-    loftEn: "Main Loft",
-    status: "healthy",
-    weight: "450g",
-    lastCheckup: "2024-01-10",
-    nextVaccination: "2024-02-15",
-    races: 12,
-    wins: 5,
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: "P002",
-    ringNumber: "EGY-2024-002",
-    name: "النجمة الفضية",
-    nameEn: "Silver Star",
-    gender: "female",
-    color: "أحمر مطوق",
-    colorEn: "Red Bar",
-    breed: "زاجل ألماني",
-    breedEn: "German Racing",
-    birthDate: "2023-04-20",
-    father: "EGY-2022-067",
-    mother: "EGY-2022-112",
-    loft: "لوفت التفريخ",
-    loftEn: "Breeding Loft",
-    status: "healthy",
-    weight: "420g",
-    lastCheckup: "2024-01-08",
-    nextVaccination: "2024-02-20",
-    races: 8,
-    wins: 3,
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: "P003",
-    ringNumber: "EGY-2024-003",
-    name: "البرق الأسود",
-    nameEn: "Black Lightning",
-    gender: "male",
-    color: "أسود",
-    colorEn: "Black",
-    breed: "زاجل هولندي",
-    breedEn: "Dutch Racing",
-    birthDate: "2023-05-10",
-    father: "EGY-2022-034",
-    mother: "EGY-2022-078",
-    loft: "اللوفت الرئيسي",
-    loftEn: "Main Loft",
-    status: "observation",
-    weight: "460g",
-    lastCheckup: "2024-01-12",
-    nextVaccination: "2024-02-10",
-    races: 15,
-    wins: 7,
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: "P004",
-    ringNumber: "EGY-2024-004",
-    name: "الأميرة البيضاء",
-    nameEn: "White Princess",
-    gender: "female",
-    color: "أبيض",
-    colorEn: "White",
-    breed: "زاجل إنجليزي",
-    breedEn: "English Racing",
-    birthDate: "2023-06-01",
-    father: "EGY-2022-056",
-    mother: "EGY-2022-098",
-    loft: "لوفت الزغاليل",
-    loftEn: "Young Birds Loft",
-    status: "sick",
-    weight: "410g",
-    lastCheckup: "2024-01-15",
-    nextVaccination: "2024-02-25",
-    races: 5,
-    wins: 1,
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: "P005",
-    ringNumber: "EGY-2024-005",
-    name: "العاصفة الرمادية",
-    nameEn: "Gray Storm",
-    gender: "male",
-    color: "رمادي",
-    colorEn: "Gray",
-    breed: "زاجل بولندي",
-    breedEn: "Polish Racing",
-    birthDate: "2023-02-28",
-    father: "EGY-2022-023",
-    mother: "EGY-2022-067",
-    loft: "اللوفت الرئيسي",
-    loftEn: "Main Loft",
-    status: "healthy",
-    weight: "470g",
-    lastCheckup: "2024-01-05",
-    nextVaccination: "2024-02-05",
-    races: 20,
-    wins: 10,
-    image: "/placeholder.svg?height=100&width=100",
-  },
-];
-
-// Sample health records
-const sampleHealthRecords = [
-  {
-    id: "H001",
-    pigeonId: "EGY-2024-001",
-    pigeonName: "الصقر الذهبي",
-    date: "2024-01-10",
-    type: "checkup",
-    description: "فحص دوري - الحالة ممتازة",
-    descriptionEn: "Routine checkup - Excellent condition",
-    veterinarian: "د. أحمد محمد",
-    veterinarianEn: "Dr. Ahmed Mohamed",
-    status: "recovered",
-  },
-  {
-    id: "H002",
-    pigeonId: "EGY-2024-003",
-    pigeonName: "البرق الأسود",
-    date: "2024-01-12",
-    type: "treatment",
-    description: "علاج التهاب خفيف في الجهاز التنفسي",
-    descriptionEn: "Treatment for mild respiratory infection",
-    medication: "أموكسيسيلين",
-    medicationEn: "Amoxicillin",
-    dosage: "0.5ml مرتين يومياً",
-    dosageEn: "0.5ml twice daily",
-    veterinarian: "د. سارة علي",
-    veterinarianEn: "Dr. Sara Ali",
-    status: "ongoing",
-  },
-  {
-    id: "H003",
-    pigeonId: "EGY-2024-004",
-    pigeonName: "الأميرة البيضاء",
-    date: "2024-01-15",
-    type: "illness",
-    description: "أعراض برد - حاجة للعزل والعلاج",
-    descriptionEn: "Cold symptoms - Requires isolation and treatment",
-    symptoms: "عطس، إفرازات أنفية",
-    symptomsEn: "Sneezing, nasal discharge",
-    veterinarian: "د. أحمد محمد",
-    veterinarianEn: "Dr. Ahmed Mohamed",
-    status: "ongoing",
-  },
-  {
-    id: "H004",
-    pigeonId: "EGY-2024-002",
-    pigeonName: "النجمة الفضية",
-    date: "2024-01-08",
-    type: "vaccination",
-    description: "تطعيم ضد الباراميكسو",
-    descriptionEn: "Paramyxo vaccination",
-    veterinarian: "د. سارة علي",
-    veterinarianEn: "Dr. Sara Ali",
-    status: "recovered",
-  },
-];
-
 export function PigeonPages({
   currentPage,
   onBack,
@@ -312,6 +137,7 @@ export function PigeonPages({
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showHealthModal, setShowHealthModal] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -981,7 +807,7 @@ export function PigeonPages({
                 <p className="text-sm text-muted-foreground">
                   {t("totalPigeons")}
                 </p>
-                <p className="text-2xl font-bold">{samplePigeons.length}</p>
+                <p className="text-2xl font-bold">{filteredPigeons.length}</p>
               </div>
               <BirdIcon className="h-8 w-8 text-blue-500" />
             </div>
@@ -996,8 +822,9 @@ export function PigeonPages({
                 </p>
                 <p className="text-2xl font-bold text-green-500">
                   {
-                    samplePigeons.filter((p) => p.status === BirdStatus.HEALTHY)
-                      .length
+                    filteredPigeons.filter(
+                      (p) => p.status === BirdStatus.HEALTHY,
+                    ).length
                   }
                 </p>
               </div>
@@ -1012,7 +839,7 @@ export function PigeonPages({
                 <p className="text-sm text-muted-foreground">{t("male")}</p>
                 <p className="text-2xl font-bold text-blue-500">
                   {
-                    samplePigeons.filter((p) => p.gender === BirdGender.MALE)
+                    filteredPigeons.filter((p) => p.gender === BirdGender.MALE)
                       .length
                   }
                 </p>
@@ -1028,8 +855,9 @@ export function PigeonPages({
                 <p className="text-sm text-muted-foreground">{t("female")}</p>
                 <p className="text-2xl font-bold text-pink-500">
                   {
-                    samplePigeons.filter((p) => p.gender === BirdGender.FEMALE)
-                      .length
+                    filteredPigeons.filter(
+                      (p) => p.gender === BirdGender.FEMALE,
+                    ).length
                   }
                 </p>
               </div>
@@ -1600,168 +1428,27 @@ export function PigeonPages({
     </div>
   );
 
-  const renderHealthRecords = () => (
+  const renderHealth = () => (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("healthRecordsTitle")}</h1>
-          <p className="text-muted-foreground">{t("pigeonManagementTitle")}</p>
+          <h1 className="text-3xl font-bold">
+            {language === "ar" ? "السجلات الصحية" : "Health Records"}
+          </h1>
+          <p className="text-muted-foreground">
+            {language === "ar"
+              ? "إدارة الحالة الصحية والتطعيمات"
+              : "Manage health status and vaccinations"}
+          </p>
         </div>
-        <Button className="rounded-2xl">
-          <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-          {t("addHealthRecord")}
-        </Button>
       </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Card className="rounded-3xl">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{t("checkup")}</p>
-                <p className="text-2xl font-bold text-green-500">
-                  {
-                    sampleHealthRecords.filter((r) => r.type === "checkup")
-                      .length
-                  }
-                </p>
-              </div>
-              <Stethoscope className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="rounded-3xl">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {t("vaccination")}
-                </p>
-                <p className="text-2xl font-bold text-blue-500">
-                  {
-                    sampleHealthRecords.filter((r) => r.type === "vaccination")
-                      .length
-                  }
-                </p>
-              </div>
-              <Syringe className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="rounded-3xl">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {t("treatment")}
-                </p>
-                <p className="text-2xl font-bold text-amber-500">
-                  {
-                    sampleHealthRecords.filter((r) => r.type === "treatment")
-                      .length
-                  }
-                </p>
-              </div>
-              <Pill className="h-8 w-8 text-amber-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="rounded-3xl">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{t("illness")}</p>
-                <p className="text-2xl font-bold text-red-500">
-                  {
-                    sampleHealthRecords.filter((r) => r.type === "illness")
-                      .length
-                  }
-                </p>
-              </div>
-              <Activity className="h-8 w-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <HealthRecordsList onAddClick={() => setShowHealthModal(true)} />
 
-      {/* Health Records Table */}
-      <Card className="rounded-3xl">
-        <CardHeader>
-          <CardTitle>{t("healthRecordsTitle")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-2xl border overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("recordDate")}</TableHead>
-                  <TableHead>{t("pigeonName")}</TableHead>
-                  <TableHead>{t("recordType")}</TableHead>
-                  <TableHead>{t("loftDescription")}</TableHead>
-                  <TableHead>{t("veterinarian")}</TableHead>
-                  <TableHead>{t("status")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sampleHealthRecords.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        {record.date}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <BirdIcon className="h-4 w-4 text-primary" />
-                        {record.pigeonName}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "rounded-xl",
-                          getRecordTypeColor(record.type),
-                        )}
-                      >
-                        {getRecordTypeText(record.type)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
-                      {language === "ar"
-                        ? record.description
-                        : record.descriptionEn}
-                    </TableCell>
-                    <TableCell>
-                      {language === "ar"
-                        ? record.veterinarian
-                        : record.veterinarianEn}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "rounded-xl",
-                          record.status === "recovered"
-                            ? "bg-green-500/10 text-green-500 border-green-500/30"
-                            : "bg-amber-500/10 text-amber-500 border-amber-500/30",
-                        )}
-                      >
-                        {record.status === "recovered"
-                          ? t("recovered")
-                          : t("ongoing")}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <AddHealthRecordDialog
+        open={showHealthModal}
+        onOpenChange={setShowHealthModal}
+      />
     </div>
   );
 
@@ -1776,7 +1463,7 @@ export function PigeonPages({
       {currentPage === "add" && renderAddPigeon()}
 
       {currentPage === "pedigree" && renderPedigree()}
-      {currentPage === "health" && renderHealthRecords()}
+      {currentPage === "health" && renderHealth()}
 
       {/* Bird Modal */}
       <BirdModal

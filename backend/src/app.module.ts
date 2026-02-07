@@ -13,23 +13,48 @@ import { BirdsModule } from './birds/birds.module';
 import { PairingsModule } from './pairings/pairings.module';
 import { EggsModule } from './eggs/eggs.module';
 import { LifeEventsModule } from './life-events/life-events.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as Joi from 'joi';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { SentryModule } from '@sentry/nestjs/setup';
+import { CacheModule } from './common/modules/cache.module';
 
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
+        DATABASE_URL: Joi.string().required(),
+        JWT_SECRET: Joi.string().required().min(32),
+        JWT_REFRESH_SECRET: Joi.string().required().min(32),
+        PORT: Joi.number().default(4000),
+        CORS_ORIGINS: Joi.string().required(),
+        THROTTLE_TTL: Joi.number().default(60000),
+        THROTTLE_LIMIT: Joi.number().default(20),
+        SENTRY_DSN: Joi.string().optional(),
+      }),
     }),
-    ThrottlerModule.forRoot([
-      {
-        ttl: 60000,
-        limit: 20,
-      },
-    ]),
+    PrometheusModule.register(),
+    SentryModule.forRoot(),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          ttl: config.get('THROTTLE_TTL') ?? 60000,
+          limit: config.get('THROTTLE_LIMIT') ?? 20,
+        },
+      ],
+    }),
+    CacheModule,
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
@@ -43,6 +68,7 @@ import { join } from 'path';
     EggsModule,
     LifeEventsModule,
     HealthModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [

@@ -8,14 +8,20 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  name      String
-  lofts     Loft[]
-  pairings  Pairing[]
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  password           String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  name               String
+  hashedRefreshToken String?
+  tokenVersion       Int       @default(0)
+  lofts              Loft[]
+  pairings           Pairing[]
+  tasks              Task[]
+
+  @@index([email])
+  @@index([tokenVersion])
 }
 
 model Loft {
@@ -58,6 +64,11 @@ model Bird {
   lifeEvents       LifeEvent[]
   pairingsAsFemale Pairing[]      @relation("FemalePairing")
   pairingsAsMale   Pairing[]      @relation("MalePairing")
+
+  @@index([loftId])
+  @@index([ringNumber])
+  @@index([gender])
+  @@index([status])
 }
 
 model HealthRecord {
@@ -67,9 +78,14 @@ model HealthRecord {
   vetName     String?
   type        String
   status      String
+  notes       String?  // New field
   birdId      String
   createdAt   DateTime @default(now())
   bird        Bird     @relation(fields: [birdId], references: [id])
+
+  @@index([birdId])
+  @@index([date])
+  @@index([status])
 }
 
 model Pairing {
@@ -86,6 +102,12 @@ model Pairing {
   female    Bird          @relation("FemalePairing", fields: [femaleId], references: [id])
   male      Bird          @relation("MalePairing", fields: [maleId], references: [id])
   user      User          @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([maleId])
+  @@index([femaleId])
+  @@index([status])
+  @@index([startDate])
 }
 
 model Egg {
@@ -98,6 +120,11 @@ model Egg {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   pairing           Pairing   @relation(fields: [pairingId], references: [id])
+
+  @@index([pairingId])
+  @@index([status])
+  @@index([hatchDateExpected])
+  @@index([layDate])
 }
 
 model LifeEvent {
@@ -108,6 +135,10 @@ model LifeEvent {
   type        LifeEventType
   createdAt   DateTime      @default(now())
   bird        Bird          @relation(fields: [birdId], references: [id])
+
+  @@index([birdId])
+  @@index([date])
+  @@index([type])
 }
 
 enum PairingStatus {
@@ -129,4 +160,19 @@ enum LifeEventType {
   TRANSFER
   RACE
   OTHER
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  isCompleted Boolean  @default(false)
+  dueDate     DateTime?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([dueDate])
 }

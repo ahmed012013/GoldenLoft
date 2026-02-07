@@ -15,6 +15,7 @@ import { UpdatePairingDto } from './dto/update-pairing.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('pairings')
 @ApiBearerAuth()
@@ -34,6 +35,7 @@ export class PairingsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all pairings' })
+  @Throttle({ default: { limit: 100, ttl: 60000 } })
   findAll(@Request() req: RequestWithUser) {
     return this.pairingsService.findAll(req.user.userId);
   }
@@ -46,6 +48,7 @@ export class PairingsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific pairing' })
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.pairingsService.findOne(req.user.userId, id);
   }

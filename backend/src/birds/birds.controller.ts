@@ -25,6 +25,7 @@ import { UpdateBirdDto } from '@shared/dtos/update-bird.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
 import { Delete, Patch } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 
 @UseGuards(JwtAuthGuard)
 @Controller('birds')
@@ -76,21 +77,25 @@ export class BirdsController {
   }
 
   @Get()
+  @Throttle({ default: { limit: 100, ttl: 60000 } })
   findAll(@Request() req: RequestWithUser, @Query() query: GetBirdsDto) {
     return this.birdsService.findAll(req.user.userId, query);
   }
 
   @Get('stats')
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   getStats(@Request() req: RequestWithUser) {
     return this.birdsService.getStats(req.user.userId);
   }
 
   @Get(':id/pedigree')
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   getPedigree(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.birdsService.getPedigree(req.user.userId, id);
   }
 
   @Get('by-ring/:ringNumber')
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   findByRingNumber(
     @Request() req: RequestWithUser,
     @Param('ringNumber') ringNumber: string
@@ -99,10 +104,11 @@ export class BirdsController {
   }
 
   @Get(':id')
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.birdsService.findOne(req.user.userId, id);
   }
-  @Post(':id') // Using POST for update with file upload if needed, or stick to PATCH
+  @Patch(':id')
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter: (req, file, cb) => {
@@ -125,7 +131,6 @@ export class BirdsController {
       }),
     })
   )
-  @Patch(':id') // Supporting Patch for standard updates
   update(
     @Request() req: RequestWithUser,
     @Param('id') id: string,

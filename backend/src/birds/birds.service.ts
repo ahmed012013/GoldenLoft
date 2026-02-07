@@ -9,10 +9,14 @@ import { GetBirdsDto } from '@shared/dtos/get-birds.dto';
 import { BirdGender, BirdStatus, BirdType } from '@shared/enums/bird.enums';
 import { Prisma } from '@prisma/client';
 import { UpdateBirdDto } from '@shared/dtos/update-bird.dto';
+import { CacheService } from '../common/services/cache.service';
 
 @Injectable()
 export class BirdsService {
-  constructor(private birdsRepository: BirdsRepository) {}
+  constructor(
+    private birdsRepository: BirdsRepository,
+    private cacheService: CacheService
+  ) {}
 
   async create(
     userId: string,
@@ -47,7 +51,7 @@ export class BirdsService {
       );
     }
 
-    return this.birdsRepository.create({
+    const result = await this.birdsRepository.create({
       ringNumber: createBirdDto.ringNumber,
       name: createBirdDto.name,
       gender: createBirdDto.gender || BirdGender.UNKNOWN,
@@ -70,16 +74,25 @@ export class BirdsService {
       notes: createBirdDto.notes,
       image: createBirdDto.image,
     });
+
+    // Invalidate cache
+    await this.cacheService.invalidate(`birds:${userId}:*`);
+
+    return result;
   }
 
   async findAll(userId: string, query?: GetBirdsDto) {
     const { gender, status, search, skip, take } = query || {};
 
-    return this.birdsRepository.findAll({
+    const cacheKey = `birds:${userId}:${JSON.stringify(query)}`;
+    const cached = await this.cacheService.get(cacheKey);
+    if (cached) return cached;
+
+    const result = await this.birdsRepository.findAll({
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,
       where: {
-        loft: { userId }, // Enforce User Check
+        loft: { userId },
         gender: gender ? { equals: gender } : undefined,
         status: status ? { equals: status } : undefined,
         OR: search
@@ -93,6 +106,9 @@ export class BirdsService {
         createdAt: 'desc',
       },
     });
+
+    await this.cacheService.set(cacheKey, result, 300); // 5 minutes
+    return result;
   }
 
   async findOne(userId: string, id: string) {
@@ -169,21 +185,34 @@ export class BirdsService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { fatherId, motherId, loftId, birthDate, ...rest } = updateBirdDto;
 
-    const updateData: Prisma.BirdUpdateInput = {
+    const updateData: any = {
       ...rest,
       ...(fatherId && { father: { connect: { id: fatherId } } }),
       ...(motherId && { mother: { connect: { id: motherId } } }),
+      ...(loftId && { loft: { connect: { id: loftId } } }),
       ...(birthDate && { birthDate: new Date(birthDate) }),
     };
 
-    return this.birdsRepository.update(id, updateData);
+    const result = await this.birdsRepository.update(id, updateData);
+
+    // Invalidate cache
+    await this.cacheService.invalidate(`birds:${userId}:*`);
+
+    return result;
   }
 
   async remove(userId: string, id: string) {
+    // Check ownership
     const bird = await this.birdsRepository.findOne({ id });
     if (!bird || bird.loft.userId !== userId) {
       throw new NotFoundException(`Bird with ID ${id} not found`);
     }
-    return this.birdsRepository.remove(id);
+
+    const result = await this.birdsRepository.remove(id);
+
+    // Invalidate cache
+    await this.cacheService.invalidate(`birds:${userId}:*`);
+
+    return result;
   }
 }

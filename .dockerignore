@@ -1,0 +1,12 @@
+**/node_modules
+**/.git
+backend/dist
+frontend/.next
+frontend/out
+*.ps1
+.env
+.env.*
+!.env.docker.example
+README.md
+readme1.md
+DOCKER.md
