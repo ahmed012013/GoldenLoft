@@ -51,7 +51,10 @@ export class CreateHealthRecordDto {
   @ApiPropertyOptional({ example: 'Additional notes' })
   @IsString()
   @IsOptional()
+<<<<<<< HEAD
   @MaxLength(1000, { message: 'Notes must not exceed 1000 characters' })
+=======
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
   notes?: string;
 
   @ApiProperty({ enum: HealthType })

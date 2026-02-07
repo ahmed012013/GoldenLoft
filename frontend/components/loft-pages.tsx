@@ -115,7 +115,7 @@ async function createLoft(data: any) {
 }
 
 interface LoftPagesProps {
-  currentPage: "all" | "add" | "settings";
+  currentPage: "all" | "settings";
   onBack: () => void;
 }
 

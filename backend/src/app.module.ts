@@ -13,11 +13,16 @@ import { BirdsModule } from './birds/birds.module';
 import { PairingsModule } from './pairings/pairings.module';
 import { EggsModule } from './eggs/eggs.module';
 import { LifeEventsModule } from './life-events/life-events.module';
+<<<<<<< HEAD
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { SentryModule } from '@sentry/nestjs/setup';
 import { CacheModule } from './common/modules/cache.module';
+=======
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
 
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -29,6 +34,7 @@ import { TasksModule } from './tasks/tasks.module';
       isGlobal: true,
       envFilePath: '.env',
       validationSchema: Joi.object({
+<<<<<<< HEAD
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
@@ -40,6 +46,12 @@ import { TasksModule } from './tasks/tasks.module';
         THROTTLE_TTL: Joi.number().default(60000),
         THROTTLE_LIMIT: Joi.number().default(20),
         SENTRY_DSN: Joi.string().optional(),
+=======
+        JWT_SECRET: Joi.string()
+          .required()
+          .min(10)
+          .message('JWT_SECRET must be at least 10 characters long'),
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
       }),
     }),
     PrometheusModule.register(),

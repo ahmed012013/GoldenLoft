@@ -56,16 +56,23 @@ export class HealthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all health records' })
+<<<<<<< HEAD
   @Throttle({ default: { limit: 100, ttl: 60000 } })
+=======
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
   findAll(@Request() req: RequestWithUser, @Query('birdId') birdId?: string) {
     return this.healthService.findAll(req.user.userId, birdId);
   }
 
   @Patch(':id')
+<<<<<<< HEAD
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a health record' })
   @Throttle({ default: { limit: 10, ttl: 60000 } })
+=======
+  @ApiOperation({ summary: 'Update a health record' })
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
   update(
     @Request() req: RequestWithUser,
     @Param('id') id: string,
@@ -75,10 +82,14 @@ export class HealthController {
   }
 
   @Delete(':id')
+<<<<<<< HEAD
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a health record' })
   @Throttle({ default: { limit: 10, ttl: 60000 } })
+=======
+  @ApiOperation({ summary: 'Delete a health record' })
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.healthService.remove(req.user.userId, id);
   }

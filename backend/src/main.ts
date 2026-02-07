@@ -4,8 +4,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+<<<<<<< HEAD
 import * as Sentry from '@sentry/nestjs';
 import helmet from 'helmet';
+=======
+>>>>>>> 88e78687a30bce7452bdae409be33945f90fcfc2
 
 async function bootstrap() {
   // Sentry is initialized via instrument.ts (as per @sentry/nestjs v8+)
