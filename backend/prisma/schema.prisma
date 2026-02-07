@@ -67,10 +67,7 @@ model HealthRecord {
   vetName     String?
   type        String
   status      String
-<<<<<<< HEAD
-=======
   notes       String?  // New field
->>>>>>> c7e00d1 (swap)
   birdId      String
   createdAt   DateTime @default(now())
   bird        Bird     @relation(fields: [birdId], references: [id])

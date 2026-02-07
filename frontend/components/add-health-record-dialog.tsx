@@ -193,7 +193,7 @@ export function AddHealthRecordDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto px-1">
             {/* Bird Selection (only if not pre-selected) */}
             {!birdId && !recordToEdit && (
               <FormField

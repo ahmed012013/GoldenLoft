@@ -102,7 +102,7 @@ export class BirdsController {
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
     return this.birdsService.findOne(req.user.userId, id);
   }
-  @Post(':id') // Using POST for update with file upload if needed, or stick to PATCH
+  @Patch(':id')
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter: (req, file, cb) => {
@@ -125,7 +125,6 @@ export class BirdsController {
       }),
     })
   )
-  @Patch(':id') // Supporting Patch for standard updates
   update(
     @Request() req: RequestWithUser,
     @Param('id') id: string,

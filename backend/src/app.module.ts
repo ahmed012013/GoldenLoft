@@ -14,10 +14,7 @@ import { PairingsModule } from './pairings/pairings.module';
 import { EggsModule } from './eggs/eggs.module';
 import { LifeEventsModule } from './life-events/life-events.module';
 import { ConfigModule } from '@nestjs/config';
-<<<<<<< HEAD
-=======
 import * as Joi from 'joi';
->>>>>>> c7e00d1 (swap)
 
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -27,15 +24,12 @@ import { join } from 'path';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-<<<<<<< HEAD
-=======
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string()
           .required()
           .min(10)
           .message('JWT_SECRET must be at least 10 characters long'),
       }),
->>>>>>> c7e00d1 (swap)
     }),
     ThrottlerModule.forRoot([
       {

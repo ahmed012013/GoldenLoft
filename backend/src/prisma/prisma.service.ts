@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-import { Injectable, OnModuleInit } from '@nestjs/common';
-=======
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
->>>>>>> c7e00d1 (swap)
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-<<<<<<< HEAD
-  async onModuleInit() {
-    await this.$connect();
-=======
   private readonly logger = new Logger(PrismaService.name);
 
   constructor(configService: ConfigService) {
@@ -38,6 +30,5 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       this.logger.error('Failed to connect to database', e);
       throw e;
     }
->>>>>>> c7e00d1 (swap)
   }
 }

@@ -5,10 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateHealthRecordDto } from './dto/create-health-record.dto';
-<<<<<<< HEAD
-=======
 import { UpdateHealthRecordDto } from './dto/update-health-record.dto';
->>>>>>> c7e00d1 (swap)
 
 @Injectable()
 export class HealthService {
@@ -28,20 +25,6 @@ export class HealthService {
 
     // Remove birdId from rest to avoid Prisma error
     const { birdId, ...rest } = dto;
-<<<<<<< HEAD
-    return this.prisma.healthRecord.create({
-      data: {
-        ...rest,
-        bird: { connect: { id: birdId } },
-      },
-    });
-  }
-
-  async findAll(userId: string) {
-    return this.prisma.healthRecord.findMany({
-      where: {
-        bird: {
-=======
     // Determine new bird status based on health record
     let newStatus: string | undefined;
     if (dto.status === 'sick') newStatus = 'SICK';
@@ -75,7 +58,6 @@ export class HealthService {
       where: {
         bird: {
           id: birdId,
->>>>>>> c7e00d1 (swap)
           loft: {
             userId: userId,
           },
@@ -89,8 +71,6 @@ export class HealthService {
       orderBy: { date: 'desc' },
     });
   }
-<<<<<<< HEAD
-=======
 
   async update(userId: string, id: string, dto: UpdateHealthRecordDto) {
     const record = await this.prisma.healthRecord.findUnique({
@@ -105,14 +85,6 @@ export class HealthService {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { birdId, ...rest } = dto;
-    // birdId usually shouldn't be changed, but if provided we might ignore or handle.
-    // For safety, let's ignore birdId change for now or allow it if bird ownership is checked.
-    // Simplest is to exclude birdId from update to allow ownership stability.
-
-    // If status changed, we might want to update bird status again?
-    // For now, let's just update the record. Logic to update bird status on EDIT is complex (what if it was the *latest* record?)
-    // User requested "update statistics" and "save/edit"
-    // Let's re-apply the status update logic if status is present in dto
 
     let newStatus: string | undefined;
     if (dto.status === 'sick') newStatus = 'SICK';
@@ -150,5 +122,4 @@ export class HealthService {
 
     return this.prisma.healthRecord.delete({ where: { id } });
   }
->>>>>>> c7e00d1 (swap)
 }

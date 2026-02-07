@@ -43,61 +43,17 @@ function Safe-Run {
     }
 }
 
-function Diagnose-Npm {
-    Write-Log "Running NPM Diagnostics..." "Magenta"
+function Scan-Conflicts {
+    Write-Log "Scanning for merge conflicts..." "Cyan"
+    $ConflictPattern = "<<<<<<< HEAD"
+    $Files = Get-ChildItem -Recurse -File -Exclude "node_modules",".git","dist",".next" | Select-String -Pattern $ConflictPattern -List
     
-    $Paths = @(
-        "$PSScriptRoot\.npmrc",
-        "$PSScriptRoot\frontend\.npmrc",
-        "$PSScriptRoot\backend\.npmrc",
-        "$env:USERPROFILE\.npmrc"
-    )
-    
-    foreach ($P in $Paths) {
-        if (Test-Path $P) {
-            Write-VerboseLog "Found .npmrc at: $P"
-            try {
-                $Raw = Get-Content $P -Raw
-                # Regex safe quoting using single quotes
-                $Pattern = '(?i)(_authToken=)[^\r\n]+'
-                $Safe = $Raw -replace $Pattern, '$1[HIDDEN]'
-                Write-VerboseLog "Content:`n$Safe"
-            } catch {
-                Write-VerboseLog "Could not read $P"
-            }
+    if ($Files) {
+        Write-Log "??? Merge conflicts detected in the following files:" "Red"
+        foreach ($F in $Files) {
+            Write-Host "  - $($F.Path)" -ForegroundColor Red
         }
+        throw "Merge conflicts found. Please resolve them before pushing."
     }
-
-    Write-Log "Attempting fix: Clearing npm cache..." "Yellow"
-    Start-Process npm -ArgumentList "cache","clean","--force" -NoNewWindow -Wait
-    
-    Write-Log "Recommendation: If issues persist, install Node.js LTS." "Magenta"
-}
-
-function Run-NpmCommand {
-    param([string]$Cmd, [string]$Path)
-    
-    Push-Location $Path
-    try {
-        Write-VerboseLog "Executing '$Cmd' in $Path..."
-        $Proc = Start-Process -FilePath "powershell" -ArgumentList "-Command", "$Cmd" -NoNewWindow -Wait -PassThru
-        
-        if ($Proc.ExitCode -ne 0) {
-            Write-Log "Command '$Cmd' failed with exit code $($Proc.ExitCode)." "Yellow"
-            Diagnose-Npm
-            
-            Write-Log "Retrying command with --workspaces=false..." "Yellow"
-            $RetryCmd = "$Cmd --workspaces=false"
-            $RetryProc = Start-Process -FilePath "powershell" -ArgumentList "-Command", "$RetryCmd" -NoNewWindow -Wait -PassThru
-            
-            if ($RetryProc.ExitCode -ne 0) {
-                throw "Command failed even after diagnostics and retry."
-            } else {
-                Write-Log "Retry succeeded!" "Green"
-            }
-        }
-    }
-    finally {
-        Pop-Location
-    }
+    Write-Log "No conflicts found." "Green"
 }

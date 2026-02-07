@@ -127,6 +127,34 @@ export function HealthRecordsList({
     }
   };
 
+  const getTypeText = (type: string) => {
+    if (language === "ar") {
+      switch (type.toLowerCase()) {
+        case "checkup": return "فحص";
+        case "treatment": return "علاج";
+        case "vaccination": return "تطعيم";
+        case "illness": return "مرض";
+        case "injury": return "إصابة";
+        default: return "أخرى";
+      }
+    }
+    return type;
+  };
+
+  const getStatusText = (status: string) => {
+    if (language === "ar") {
+      switch (status.toLowerCase()) {
+        case "healthy": return "سليم";
+        case "sick": return "مريض";
+        case "recovered": return "تعافى";
+        case "under_observation": return "تحت المراقبة";
+        case "deceased": return "متوفى";
+        default: return status;
+      }
+    }
+    return status.replace("_", " ");
+  };
+
   const filteredRecords =
     records?.filter(
       (record: any) =>
@@ -184,6 +212,9 @@ export function HealthRecordsList({
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-start">
+                      {language === "ar" ? "الطائر" : "Bird"}
+                    </TableHead>
+                    <TableHead className="text-start">
                       {language === "ar" ? "التاريخ" : "Date"}
                     </TableHead>
                     <TableHead className="text-start">
@@ -207,6 +238,9 @@ export function HealthRecordsList({
                   {filteredRecords.map((record: any) => (
                     <TableRow key={record.id}>
                       <TableCell className="font-medium whitespace-nowrap text-start">
+                        {record.bird?.name || record.bird?.ringNumber || "-"}
+                      </TableCell>
+                      <TableCell className="font-medium whitespace-nowrap text-start">
                         {format(new Date(record.date), "MMM d, yyyy")}
                       </TableCell>
                       <TableCell className="text-start">
@@ -214,7 +248,7 @@ export function HealthRecordsList({
                           <div className="p-1 rounded-md bg-muted">
                             {getRecordIcon(record.type)}
                           </div>
-                          <span className="capitalize">{record.type}</span>
+                          <span className="capitalize">{getTypeText(record.type)}</span>
                         </div>
                       </TableCell>
                       <TableCell
@@ -236,7 +270,7 @@ export function HealthRecordsList({
                           variant="secondary"
                           className={getStatusColor(record.status)}
                         >
-                          {record.status.replace("_", " ")}
+                          {getStatusText(record.status)}
                         </Badge>
                       </TableCell>
                       <TableCell>

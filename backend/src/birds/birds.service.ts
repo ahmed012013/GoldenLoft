@@ -173,6 +173,7 @@ export class BirdsService {
       ...rest,
       ...(fatherId && { father: { connect: { id: fatherId } } }),
       ...(motherId && { mother: { connect: { id: motherId } } }),
+      ...(loftId && { loft: { connect: { id: loftId } } }),
       ...(birthDate && { birthDate: new Date(birthDate) }),
     };
 

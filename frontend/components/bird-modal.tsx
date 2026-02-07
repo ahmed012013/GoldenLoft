@@ -213,10 +213,7 @@ export function BirdModal({
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit, (errors) => {
-<<<<<<< HEAD
                   console.log("Validation errors:", errors);
-=======
->>>>>>> c7e00d1 (swap)
                   toast({
                     title: "Validation Error",
                     description: `Please check: ${Object.keys(errors).join(", ")}`,

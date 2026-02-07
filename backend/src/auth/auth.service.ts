@@ -22,11 +22,7 @@ export class AuthService {
     if (existing) {
       throw new ConflictException('Email already in use');
     }
-<<<<<<< HEAD
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-=======
     const hashedPassword = await bcrypt.hash(dto.password, 12);
->>>>>>> c7e00d1 (swap)
     const user = await this.userService.create({
       email: dto.email,
       password: hashedPassword,
@@ -47,18 +43,11 @@ export class AuthService {
     pass: string
   ): Promise<Partial<User> | null> {
     const user = await this.userService.findOne(email);
-<<<<<<< HEAD
     console.log(`Validating user: ${email}`, user ? 'Found' : 'Not Found');
     if (!user) return null;
 
     const isMatch = await bcrypt.compare(pass, user.password);
     console.log(`Password match for ${email}:`, isMatch);
-=======
-
-    if (!user) return null;
-
-    const isMatch = await bcrypt.compare(pass, user.password);
->>>>>>> c7e00d1 (swap)
 
     if (isMatch) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

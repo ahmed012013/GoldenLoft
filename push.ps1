@@ -18,12 +18,16 @@ Set-Location $scriptPath
 
 Write-Log "--- Starting GoldenLoft Auto-Maintenance ---" "Cyan"
 
-# 1. Checks
+# 0. Pre-checks
+Safe-Run "Conflict Scan" { Scan-Conflicts } -Critical $true
+
+# 1. Environment Checks
 if (-not $SkipFrontend -or -not $SkipBackend) {
     Safe-Run "Check Node and NPM" {
-        if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "Node.js missing." }
-        if (-not (Get-Command npm -ErrorAction SilentlyContinue)) { throw "npm missing." }
-        Write-Log "Node Check OK" "Gray"
+        $NodeVer = node -v
+        $NpmVer = npm -v
+        Write-Log "Node: $NodeVer, NPM: $NpmVer" "Gray"
+        if (-not $NodeVer) { throw "Node.js missing." }
     } -Critical $true
 }
 
@@ -31,14 +35,21 @@ if (-not $SkipFrontend -or -not $SkipBackend) {
 if (-not $SkipFrontend) {
     if (Test-Path "$scriptPath\frontend") {
         Safe-Run "Frontend Format" {
-            Run-NpmCommand "npm run format" "$scriptPath\frontend"
+            Push-Location "$scriptPath\frontend"
+            try {
+                # Use cmd /c to avoid Win32 errors with npm scripts
+                cmd /c "npm run format"
+                if ($LASTEXITCODE -ne 0) { throw "Format failed" }
+            } finally { Pop-Location }
         }
         Safe-Run "Frontend Lint Fix" {
+             Push-Location "$scriptPath\frontend"
              try {
-                Run-NpmCommand "npm run lint:fix" "$scriptPath\frontend"
+                cmd /c "npm run lint:fix"
+                if ($LASTEXITCODE -ne 0) { Write-Log "Lint warnings present." "Yellow" }
              } catch {
                 Write-Log "Linting check failed but proceeding." "Yellow"
-             }
+             } finally { Pop-Location }
         }
     }
 }
@@ -47,7 +58,11 @@ if (-not $SkipFrontend) {
 if (-not $SkipBackend) {
     if (Test-Path "$scriptPath\backend") {
         Safe-Run "Backend Format" {
-            Run-NpmCommand "npm run format" "$scriptPath\backend"
+            Push-Location "$scriptPath\backend"
+            try {
+                cmd /c "npm run format"
+                if ($LASTEXITCODE -ne 0) { throw "Format failed" }
+            } finally { Pop-Location }
         }
     }
 }
