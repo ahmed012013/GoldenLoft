@@ -10,16 +10,19 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGINS=http://localhost:3000,http://13.62.223.35:3000
     restart: always
 
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: "http://13.62.223.35:3002"
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:3002
+      - NEXT_PUBLIC_API_URL=http://13.62.223.35:3002
     depends_on:
       - backend
     restart: always
