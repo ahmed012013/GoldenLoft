@@ -16,6 +16,23 @@ import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
 // ...
+const carouselSlides = [
+  {
+    title: "تتبع إنتاجية حمامك",
+    description: "سجل وخزن معلومات دقيقة عن كل طائر، بما في ذلك النسب، التكاثر، والصحة.",
+    image: "/images/register/slide1.jpg", // You can update these paths later
+  },
+  {
+    title: "إدارة سباقات احترافية",
+    description: "نظم بيانات السباقات وحلل أداء طيورك للوصول إلى أفضل النتائج.",
+    image: "/images/register/slide2.jpg",
+  },
+  {
+    title: "رعاية صحية متكاملة",
+    description: "جدول التطعيمات والعلاجات وتلقى تنبيهات للحفاظ على صحة طيورك.",
+    image: "/images/register/slide3.jpg",
+  },
+];
 
 export default function RegisterPage() {
   const [api, setApi] = React.useState<CarouselApi>();
