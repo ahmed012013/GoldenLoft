@@ -1,0 +1,22 @@
+node_modules
+# Keep environment variables out of version control
+.env
+.env.*
+! .env.example
+
+dist
+/generated/prisma
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+backend/debug_boot.js
+playwright-report/
+readme1.md
+test-results/
+testsprite_tests/
+
+# User content and system files
+backend/uploads/
+.vscode/
+Thumbs.db
