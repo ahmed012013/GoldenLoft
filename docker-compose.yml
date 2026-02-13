@@ -11,6 +11,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
       - CORS_ORIGINS=http://localhost:3000,http://13.62.223.35:3000
+      - PORT=3002
     restart: always
 
   frontend:
