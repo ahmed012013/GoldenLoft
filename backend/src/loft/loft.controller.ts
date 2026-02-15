@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 interface RequestWithUser {
-  user: { userId: string };
+  user: { userId: string; id: string };
 }
 
 @UseGuards(JwtAuthGuard)
