@@ -18,8 +18,11 @@ function getApiErrorMessage(error: AxiosError): string {
   return "Something went wrong. Please try again.";
 }
 
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000",
+  baseURL: API_URL,
   headers: {
     // 'Content-Type': 'application/json', // Let axios set this, especially for FormData
   },

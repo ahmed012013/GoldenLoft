@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService
-  ) { }
+  ) {}
 
   async register(dto: RegisterUserDto) {
     const email = dto.email.toLowerCase();

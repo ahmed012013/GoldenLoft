@@ -11,7 +11,7 @@ import { BirdGender } from '@shared/enums/bird.enums';
 
 @Injectable()
 export class PairingsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreatePairingDto) {
     if (dto.maleId === dto.femaleId) {
@@ -123,7 +123,8 @@ export class PairingsService {
       where: { pairing: { userId }, status: 'HATCHED' },
     });
 
-    const hatchRate = totalEggs > 0 ? Math.round((hatchedEggs / totalEggs) * 100) : 0;
+    const hatchRate =
+      totalEggs > 0 ? Math.round((hatchedEggs / totalEggs) * 100) : 0;
 
     // Calculate eggs hatching in next 7 days
     const today = new Date();
@@ -141,6 +142,13 @@ export class PairingsService {
       },
     });
 
-    return { totalPairings, activePairings, totalEggs, hatchedEggs, hatchRate, eggsHatchingSoon };
+    return {
+      totalPairings,
+      activePairings,
+      totalEggs,
+      hatchedEggs,
+      hatchRate,
+      eggsHatchingSoon,
+    };
   }
 }

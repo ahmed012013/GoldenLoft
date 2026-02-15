@@ -1,17 +1,10 @@
-version: '3.8'
-
 services:
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    ports:
-      - "3002:3002"
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-      - CORS_ORIGINS=http://localhost:3000,http://13.62.223.35:3000
-      - PORT=3002
+    env_file:
+      - ./backend/.env
     restart: always
 
   frontend:
@@ -19,11 +12,32 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: "http://13.62.223.35:3002"
-    ports:
-      - "3000:3000"
+        NEXT_PUBLIC_API_URL: "https://goldenloft.duckdns.org/api"
     environment:
-      - NEXT_PUBLIC_API_URL=http://13.62.223.35:3002
+      - NEXT_PUBLIC_API_URL=https://goldenloft.duckdns.org/api
     depends_on:
       - backend
     restart: always
+
+  nginx:
+    image: nginx:1.25-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - frontend
+      - backend
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

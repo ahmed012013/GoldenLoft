@@ -1,22 +1,44 @@
-node_modules
-# Keep environment variables out of version control
+# Dependencies
+node_modules/
+
+# Environment Secrets (الخزنة)
 .env
 .env.*
-! .env.example
+!.env.example
 
-dist
+# Build outputs
+dist/
+.next/
+out/
+build/
 /generated/prisma
+
+# Logs & Debugging
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+debug.log
 backend/debug_boot.js
+
+# Testing
 playwright-report/
-readme1.md
 test-results/
 testsprite_tests/
+coverage/
 
-# User content and system files
+# Project specific
 backend/uploads/
+data/
+*.tar.gz
+readme1.md
+
+# System & IDEs
 .vscode/
+.idea/
 Thumbs.db
+.DS_Store
+
+# Temporary / Scripts
+.eslintcache
+.turbo

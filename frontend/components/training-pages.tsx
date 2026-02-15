@@ -276,9 +276,7 @@ export function TrainingPages({ currentPage, onBack }: TrainingPagesProps) {
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label>
-                  {language === "ar" ? "اسم المسار" : "Route Name"}
-                </Label>
+                <Label>{language === "ar" ? "اسم المسار" : "Route Name"}</Label>
                 <Input
                   placeholder={
                     language === "ar" ? "أدخل اسم المسار" : "Enter route name"
@@ -396,9 +394,7 @@ export function TrainingPages({ currentPage, onBack }: TrainingPagesProps) {
                   <p className="text-xs text-gray-500">
                     {language === "ar" ? "آخر تدريب" : "Last Training"}
                   </p>
-                  <p className="font-semibold text-xs">
-                    {route.lastTraining}
-                  </p>
+                  <p className="font-semibold text-xs">{route.lastTraining}</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -472,9 +468,7 @@ export function TrainingPages({ currentPage, onBack }: TrainingPagesProps) {
               <TableHead>
                 {language === "ar" ? "عدد الطيور" : "Pigeons"}
               </TableHead>
-              <TableHead>
-                {language === "ar" ? "المدة" : "Duration"}
-              </TableHead>
+              <TableHead>{language === "ar" ? "المدة" : "Duration"}</TableHead>
               <TableHead>
                 {language === "ar" ? "الارتفاع" : "Altitude"}
               </TableHead>
@@ -623,8 +617,7 @@ export function TrainingPages({ currentPage, onBack }: TrainingPagesProps) {
                     : "Total Training Hours"}
                 </p>
                 <p className="font-semibold">
-                  {pigeon.trainingHours}{" "}
-                  {language === "ar" ? "ساعة" : "hours"}
+                  {pigeon.trainingHours} {language === "ar" ? "ساعة" : "hours"}
                 </p>
               </div>
             </CardContent>

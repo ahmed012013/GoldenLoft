@@ -52,8 +52,6 @@ import { toast } from "sonner";
 import { useLanguage } from "@/lib/language-context";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 
-
-
 interface AddHealthRecordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -87,11 +85,19 @@ export function AddHealthRecordDialog({
     date: z.date({
       required_error: language === "ar" ? "التاريخ مطلوب" : "Date is required",
     }),
-    type: z.string().min(1, language === "ar" ? "النوع مطلوب" : "Type is required"),
-    description: z.string().min(1, language === "ar" ? "الوصف مطلوب" : "Description is required"),
+    type: z
+      .string()
+      .min(1, language === "ar" ? "النوع مطلوب" : "Type is required"),
+    description: z
+      .string()
+      .min(1, language === "ar" ? "الوصف مطلوب" : "Description is required"),
     vetName: z.string().optional(),
-    status: z.string().min(1, language === "ar" ? "الحالة مطلوبة" : "Status is required"),
-    birdId: z.string().min(1, language === "ar" ? "الحمامة مطلوبة" : "Bird is required"),
+    status: z
+      .string()
+      .min(1, language === "ar" ? "الحالة مطلوبة" : "Status is required"),
+    birdId: z
+      .string()
+      .min(1, language === "ar" ? "الحمامة مطلوبة" : "Bird is required"),
     notes: z.string().optional(),
   });
 
@@ -178,7 +184,10 @@ export function AddHealthRecordDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto" dir={dir}>
+      <DialogContent
+        className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto"
+        dir={dir}
+      >
         <DialogHeader>
           <DialogTitle>
             {recordToEdit
@@ -226,7 +235,9 @@ export function AddHealthRecordDialog({
                       <SelectContent>
                         {isLoadingBirds ? (
                           <div className="p-2 text-center text-xs text-muted-foreground">
-                            {language === "ar" ? "جاري التحميل..." : "Loading..."}
+                            {language === "ar"
+                              ? "جاري التحميل..."
+                              : "Loading..."}
                           </div>
                         ) : (
                           birds?.map((bird: any) => (
@@ -258,7 +269,11 @@ export function AddHealthRecordDialog({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={language === "ar" ? "اختر النوع" : "Select type"} />
+                        <SelectValue
+                          placeholder={
+                            language === "ar" ? "اختر النوع" : "Select type"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -311,7 +326,9 @@ export function AddHealthRecordDialog({
                           {field.value ? (
                             format(field.value, "PPP")
                           ) : (
-                            <span>{language === "ar" ? "اختر تاريخ" : "Pick a date"}</span>
+                            <span>
+                              {language === "ar" ? "اختر تاريخ" : "Pick a date"}
+                            </span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -398,7 +415,11 @@ export function AddHealthRecordDialog({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={language === "ar" ? "اختر الحالة" : "Select status"} />
+                        <SelectValue
+                          placeholder={
+                            language === "ar" ? "اختر الحالة" : "Select status"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

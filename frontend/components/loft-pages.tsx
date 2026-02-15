@@ -2,18 +2,9 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Bird,
-  Plus,
-  Search,
-  Warehouse,
-  ArrowLeft,
-} from "lucide-react";
+import { Bird, Plus, Search, Warehouse, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
@@ -25,7 +16,9 @@ import { LoftCard } from "./loft/ui/loft-card";
 import { LoftFormDialog } from "./loft/forms/loft-form-dialog";
 import { ViewLoftDialog } from "./loft/dialogs/view-loft-dialog";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import apiClient from "@/lib/api-client";
+
+// API_URL removed as it is handled by apiClient
 
 interface LoftPagesProps {
   currentPage: "all" | "add" | "settings";
@@ -49,23 +42,24 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
   const { data: birdStats } = useQuery({
     queryKey: ["birds/stats"],
     queryFn: async () => {
-      const token = localStorage.getItem("access_token");
-      const res = await fetch(`${API_URL}/birds/stats`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return { total: 0 };
-      return res.json();
+      try {
+        const res = await apiClient.get("/birds/stats");
+        return res.data;
+      } catch (error) {
+        return { total: 0 };
+      }
     },
   });
 
-  const filteredLofts = lofts?.filter((loft: any) => {
-    const name = loft.name || "";
-    const location = loft.location || "";
-    return (
-      name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      location.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }) || [];
+  const filteredLofts =
+    lofts?.filter((loft: any) => {
+      const name = loft.name || "";
+      const location = loft.location || "";
+      return (
+        name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        location.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }) || [];
 
   const handleDelete = (id: string) => {
     if (
@@ -121,7 +115,9 @@ export function LoftPages({ currentPage, onBack }: LoftPagesProps) {
           <Warehouse className="w-12 h-12 text-primary" />
         </div>
         <h2 className="text-2xl font-bold">
-          {language === "ar" ? "مرحباً بك في جولدن لوفت!" : "Welcome to Golden Loft!"}
+          {language === "ar"
+            ? "مرحباً بك في جولدن لوفت!"
+            : "Welcome to Golden Loft!"}
         </h2>
         <p className="max-w-md text-muted-foreground">
           {language === "ar"

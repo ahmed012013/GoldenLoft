@@ -10,7 +10,7 @@ import { EggStatus } from '@prisma/client';
 
 @Injectable()
 export class EggsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateEggDto) {
     // Verify Pairing Ownership
@@ -95,4 +95,3 @@ export class EggsService {
     return this.prisma.egg.delete({ where: { id } });
   }
 }
-

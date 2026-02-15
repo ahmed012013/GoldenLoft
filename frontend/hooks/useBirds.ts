@@ -15,7 +15,13 @@ export interface BirdsResponse {
   total: number;
 }
 
-export function useBirds({ search, status, gender, page = 1, limit = 20 }: UseBirdsQuery & { page?: number; limit?: number } = {}) {
+export function useBirds({
+  search,
+  status,
+  gender,
+  page = 1,
+  limit = 20,
+}: UseBirdsQuery & { page?: number; limit?: number } = {}) {
   return useQuery<BirdsResponse>({
     queryKey: ["birds", search, status, gender, page, limit],
     queryFn: async () => {

@@ -39,6 +39,7 @@ const carouselSlides = [
 ];
 
 import { Eye, EyeOff } from "lucide-react";
+import apiClient from "@/lib/api-client";
 
 export default function LoginPage() {
   const [api, setApi] = React.useState<CarouselApi>();
@@ -76,21 +77,18 @@ export default function LoginPage() {
     setSuccess("");
 
     try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await apiClient
+        .post("/auth/login", { email, password })
+        .catch((err) => {
+          if (err.response?.status === 401) {
+            throw new Error("Invalid credentials. Please try again.");
+          }
+          throw err;
+        });
 
-      if (!res.ok) {
-        throw new Error("Invalid credentials. Please try again.");
-      }
-
-      const data = await res.json();
+      const data = res.data;
       localStorage.setItem("access_token", data.access_token);
-      
+
       // Clear persistence state to ensure we start at Dashboard
       const keysToRemove = [
         "goldenloft_activeTab",
@@ -103,9 +101,9 @@ export default function LoginPage() {
         "goldenloft_currentTrainingPage",
         "goldenloft_currentRacingPage",
         "goldenloft_currentFinancialPage",
-        "goldenloft_currentReportsPage"
+        "goldenloft_currentReportsPage",
       ];
-      keysToRemove.forEach(key => localStorage.removeItem(key));
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
 
       // Set cookie for middleware access
       document.cookie = `access_token=${data.access_token}; path=/; max-age=86400; SameSite=Strict; Secure`;
@@ -318,10 +316,11 @@ export default function LoginPage() {
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${current === index
-                ? "bg-white w-8"
-                : "bg-white/40 hover:bg-white/60"
-                }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                current === index
+                  ? "bg-white w-8"
+                  : "bg-white/40 hover:bg-white/60"
+              }`}
               aria-label={`الانتقال للشريحة ${index + 1}`}
             />
           ))}

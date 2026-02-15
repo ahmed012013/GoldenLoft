@@ -9,29 +9,28 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "3001",
-        pathname: "/uploads/**",
+        protocol: "https",
+        hostname: "goldenloft.duckdns.org",
       },
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "3002",
-        pathname: "/uploads/**",
-      },
-      {
-        protocol: "http",
-        hostname: "13.62.223.35",
-        port: "3002",
-        pathname: "/uploads/**",
+        protocol: "https",
+        hostname: "res.cloudinary.com",
       },
       {
         protocol: "https",
         hostname: "placehold.co",
       },
+      // سيبنا دول احتياطي لو لسه فيه صور قديمة
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3002",
+        pathname: "/uploads/**",
+      },
     ],
   },
+  // تكتة "عزوز": بتخلي الفرونت يطير جوه الدوكر
+  output: "standalone",
 };
 
 export default nextConfig;

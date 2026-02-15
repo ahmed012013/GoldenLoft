@@ -75,17 +75,53 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/lib/theme-context";
 // Lazy load page components for better performance
-const LoftPages = lazy(() => import("@/components/loft-pages").then(m => ({ default: m.LoftPages })));
-const PigeonPages = lazy(() => import("@/components/pigeon-pages").then(m => ({ default: m.PigeonPages })));
-const TasksPages = lazy(() => import("@/components/tasks-pages").then(m => ({ default: m.TasksPages })));
-const InventoryPages = lazy(() => import("@/components/inventory-pages").then(m => ({ default: m.InventoryPages })));
-const NutritionPages = lazy(() => import("@/components/nutrition-pages").then(m => ({ default: m.NutritionPages })));
-const BreedingPages = lazy(() => import("@/components/breeding-pages").then(m => ({ default: m.BreedingPages })));
-const TrainingPages = lazy(() => import("@/components/training-pages").then(m => ({ default: m.TrainingPages })));
-const RacingPages = lazy(() => import("@/components/racing-pages").then(m => ({ default: m.RacingPages })));
-const FinancialPages = lazy(() => import("@/components/financial-pages").then(m => ({ default: m.FinancialPages })));
-const ReportsPages = lazy(() => import("@/components/reports-pages").then(m => ({ default: m.ReportsPages })));
-const DashboardHome = lazy(() => import("@/components/dashboard-home").then(m => ({ default: m.DashboardHome })));
+const LoftPages = lazy(() =>
+  import("@/components/loft-pages").then((m) => ({ default: m.LoftPages })),
+);
+const PigeonPages = lazy(() =>
+  import("@/components/pigeon-pages").then((m) => ({ default: m.PigeonPages })),
+);
+const TasksPages = lazy(() =>
+  import("@/components/tasks-pages").then((m) => ({ default: m.TasksPages })),
+);
+const InventoryPages = lazy(() =>
+  import("@/components/inventory-pages").then((m) => ({
+    default: m.InventoryPages,
+  })),
+);
+const NutritionPages = lazy(() =>
+  import("@/components/nutrition-pages").then((m) => ({
+    default: m.NutritionPages,
+  })),
+);
+const BreedingPages = lazy(() =>
+  import("@/components/breeding-pages").then((m) => ({
+    default: m.BreedingPages,
+  })),
+);
+const TrainingPages = lazy(() =>
+  import("@/components/training-pages").then((m) => ({
+    default: m.TrainingPages,
+  })),
+);
+const RacingPages = lazy(() =>
+  import("@/components/racing-pages").then((m) => ({ default: m.RacingPages })),
+);
+const FinancialPages = lazy(() =>
+  import("@/components/financial-pages").then((m) => ({
+    default: m.FinancialPages,
+  })),
+);
+const ReportsPages = lazy(() =>
+  import("@/components/reports-pages").then((m) => ({
+    default: m.ReportsPages,
+  })),
+);
+const DashboardHome = lazy(() =>
+  import("@/components/dashboard-home").then((m) => ({
+    default: m.DashboardHome,
+  })),
+);
 
 // Loading spinner for lazy components
 function PageLoader() {
@@ -101,6 +137,7 @@ import { useRouter } from "next/navigation";
 // Sample data for sidebar navigation
 // Sidebar items will be generated dynamically with translations
 
+import apiClient from "@/lib/api-client";
 
 export function DesignaliCreative() {
   const [userName, setUserName] = useState<string>("");
@@ -111,15 +148,8 @@ export function DesignaliCreative() {
       if (!token) return;
 
       try {
-        const response = await fetch("http://localhost:3002/auth/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserName(data.name);
-        }
+        const response = await apiClient.get("/auth/profile");
+        setUserName(response.data.name);
       } catch (error) {
         console.error("Failed to fetch profile:", error);
       }
@@ -718,7 +748,8 @@ export function DesignaliCreative() {
       <div
         className="absolute inset-0 -z-10 opacity-20"
         style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(120, 41, 190, 0.5) 0%, rgba(53, 71, 125, 0.5) 50%, rgba(0, 0, 0, 0) 100%)",
+          background:
+            "radial-gradient(circle at 50% 50%, rgba(120, 41, 190, 0.5) 0%, rgba(53, 71, 125, 0.5) 50%, rgba(0, 0, 0, 0) 100%)",
         }}
       />
 
@@ -991,7 +1022,10 @@ export function DesignaliCreative() {
                 onBack={handleBack}
               />
             ) : currentRacingPage !== null ? (
-              <RacingPages currentPage={currentRacingPage} onBack={handleBack} />
+              <RacingPages
+                currentPage={currentRacingPage}
+                onBack={handleBack}
+              />
             ) : currentFinancialPage !== null ? (
               <FinancialPages
                 currentPage={currentFinancialPage}
@@ -1107,7 +1141,7 @@ export function DesignaliCreative() {
                                           className={cn(
                                             "font-medium",
                                             item.completed &&
-                                            "line-through text-muted-foreground",
+                                              "line-through text-muted-foreground",
                                           )}
                                         >
                                           {item.task}

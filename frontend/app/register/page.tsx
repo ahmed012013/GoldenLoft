@@ -14,12 +14,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import { API_URL } from "@/lib/api-client";
 
 // ...
 const carouselSlides = [
   {
     title: "تتبع إنتاجية حمامك",
-    description: "سجل وخزن معلومات دقيقة عن كل طائر، بما في ذلك النسب، التكاثر، والصحة.",
+    description:
+      "سجل وخزن معلومات دقيقة عن كل طائر، بما في ذلك النسب، التكاثر، والصحة.",
     image: "/images/register/slide1.jpg", // You can update these paths later
   },
   {
@@ -65,8 +67,7 @@ export default function RegisterPage() {
         name: fullName || "My New Loft", // Default if empty, but required
       };
 
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      // API_URL imported from lib/api-client
       const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -366,10 +367,11 @@ export default function RegisterPage() {
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${current === index
-                ? "bg-white w-8"
-                : "bg-white/40 hover:bg-white/60"
-                }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                current === index
+                  ? "bg-white w-8"
+                  : "bg-white/40 hover:bg-white/60"
+              }`}
               aria-label={`الانتقال للشريحة ${index + 1}`}
             />
           ))}

@@ -96,7 +96,7 @@ async function main() {
     );
     const hatchDate = new Date(
       threeYearsAgo.getTime() +
-      Math.random() * (today.getTime() - threeYearsAgo.getTime())
+        Math.random() * (today.getTime() - threeYearsAgo.getTime())
     );
 
     // Ring Number

@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
-import { BirdsService } from './birds.service';
 import { BirdsController } from './birds.controller';
-import { PrismaModule } from '../prisma/prisma.module';
+import { BirdsService } from './birds.service';
 import { BirdsRepository } from './birds.repository';
+import { PrismaModule } from '../prisma/prisma.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module'; // السلكة الجديدة
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, CloudinaryModule], // لازم نImport هنا
   controllers: [BirdsController],
   providers: [BirdsService, BirdsRepository],
+  exports: [BirdsService],
 })
 export class BirdsModule {}

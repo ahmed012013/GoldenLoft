@@ -59,35 +59,41 @@ export function PigeonPages({
   const filteredPigeons = birdsData?.data || [];
   // const totalBirds = birdsData?.total || 0;
 
-  const handleDelete = useCallback((id: string) => {
-    if (
-      confirm(
-        language === "ar"
-          ? "هل أنت متأكد من حذف هذه الحمامة؟"
-          : "Are you sure you want to delete this pigeon?",
-      )
-    ) {
-      deleteBird.mutate(id, {
-        onSuccess: () => {
-          toast.success(
-            language === "ar" ? "تم حذف الحمامة" : "Pigeon deleted",
-          );
-        },
-        onError: () => {
-          toast.error(
-            language === "ar" ? "خطأ في الحذف" : "Error deleting pigeon",
-          );
-        },
-      });
-    }
-  }, [deleteBird, language]);
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (
+        confirm(
+          language === "ar"
+            ? "هل أنت متأكد من حذف هذه الحمامة؟"
+            : "Are you sure you want to delete this pigeon?",
+        )
+      ) {
+        deleteBird.mutate(id, {
+          onSuccess: () => {
+            toast.success(
+              language === "ar" ? "تم حذف الحمامة" : "Pigeon deleted",
+            );
+          },
+          onError: () => {
+            toast.error(
+              language === "ar" ? "خطأ في الحذف" : "Error deleting pigeon",
+            );
+          },
+        });
+      }
+    },
+    [deleteBird, language],
+  );
 
-  const handleEdit = useCallback((pigeon: Bird) => {
-    setEditingId(pigeon.id);
-    if (onNavigate) {
-      onNavigate("add");
-    }
-  }, [onNavigate]);
+  const handleEdit = useCallback(
+    (pigeon: Bird) => {
+      setEditingId(pigeon.id);
+      if (onNavigate) {
+        onNavigate("add");
+      }
+    },
+    [onNavigate],
+  );
 
   const handleView = useCallback((p: Bird) => {
     setSelectedPigeon(p);
@@ -96,7 +102,9 @@ export function PigeonPages({
 
   const renderAddPigeon = () => (
     <BirdForm
-      editingBird={editingId ? filteredPigeons?.find((b) => b.id === editingId) : null}
+      editingBird={
+        editingId ? filteredPigeons?.find((b) => b.id === editingId) : null
+      }
       onBack={() => {
         setEditingId(null);
         onBack();
@@ -148,8 +156,6 @@ export function PigeonPages({
         ))}
       </div>
 
-
-
       {/* Pedigree Modal (Accessed via View Button in BirdCard) */}
       <PedigreeDialog
         bird={selectedPigeon}
@@ -166,7 +172,9 @@ export function PigeonPages({
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold">{t("pedigreeTitle")}</h1>
-            <p className="text-muted-foreground">{t("pigeonManagementTitle")}</p>
+            <p className="text-muted-foreground">
+              {t("pigeonManagementTitle")}
+            </p>
           </div>
         </div>
 

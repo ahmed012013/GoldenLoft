@@ -2,10 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,7 +90,10 @@ export function BreedingPages({
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <h1
-              className={cn("text-2xl font-bold", dir === "rtl" && "text-right")}
+              className={cn(
+                "text-2xl font-bold",
+                dir === "rtl" && "text-right",
+              )}
             >
               {currentPage === "pairings" && t("pairingsTitle")}
               {currentPage === "eggs" && t("eggsTitle")}
@@ -121,7 +121,9 @@ function PairingsTab() {
   const { data: birdsData } = useBirds({ limit: 200 });
 
   const [showForm, setShowForm] = useState(false);
-  const [editingPairing, setEditingPairing] = useState<BackendPairing | null>(null);
+  const [editingPairing, setEditingPairing] = useState<BackendPairing | null>(
+    null,
+  );
 
   // Form state
   const [formMaleId, setFormMaleId] = useState("");
@@ -195,13 +197,18 @@ function PairingsTab() {
     }
   };
 
-  const handleStatusChange = async (id: string, newStatus: "ACTIVE" | "FINISHED") => {
+  const handleStatusChange = async (
+    id: string,
+    newStatus: "ACTIVE" | "FINISHED",
+  ) => {
     try {
       await updatePairing.mutateAsync({
         id,
         data: {
           status: newStatus,
-          ...(newStatus === "FINISHED" ? { endDate: new Date().toISOString() } : {}),
+          ...(newStatus === "FINISHED"
+            ? { endDate: new Date().toISOString() }
+            : {}),
         },
       });
       toast.success(t("statusUpdated" as any) || "تم تحديث الحالة");
@@ -270,7 +277,13 @@ function PairingsTab() {
 
       {/* Add Button */}
       <div className="flex justify-end">
-        <Button onClick={() => { resetForm(); setShowForm(true); }} className="gap-2">
+        <Button
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+          className="gap-2"
+        >
           <Plus className="h-4 w-4" />
           {t("addPairing")}
         </Button>
@@ -282,7 +295,9 @@ function PairingsTab() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">
-                {editingPairing ? (t("editPairing" as any) || "تعديل التزاوج") : t("addPairing")}
+                {editingPairing
+                  ? t("editPairing" as any) || "تعديل التزاوج"
+                  : t("addPairing")}
               </h3>
               <Button variant="ghost" size="sm" onClick={resetForm}>
                 <X className="h-4 w-4" />
@@ -291,9 +306,15 @@ function PairingsTab() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>{t("malePigeon")}</Label>
-                <Select value={formMaleId} onValueChange={setFormMaleId} disabled={!!editingPairing}>
+                <Select
+                  value={formMaleId}
+                  onValueChange={setFormMaleId}
+                  disabled={!!editingPairing}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder={t("selectMale" as any) || "اختر الذكر"} />
+                    <SelectValue
+                      placeholder={t("selectMale" as any) || "اختر الذكر"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {maleBirds.map((bird: any) => (
@@ -306,9 +327,15 @@ function PairingsTab() {
               </div>
               <div className="space-y-2">
                 <Label>{t("femalePigeon")}</Label>
-                <Select value={formFemaleId} onValueChange={setFormFemaleId} disabled={!!editingPairing}>
+                <Select
+                  value={formFemaleId}
+                  onValueChange={setFormFemaleId}
+                  disabled={!!editingPairing}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder={t("selectFemale" as any) || "اختر الأنثى"} />
+                    <SelectValue
+                      placeholder={t("selectFemale" as any) || "اختر الأنثى"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {femaleBirds.map((bird: any) => (
@@ -357,7 +384,7 @@ function PairingsTab() {
                 {(createPairing.isPending || updatePairing.isPending) && (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 )}
-                {editingPairing ? (t("save" as any) || "حفظ") : t("addPairing")}
+                {editingPairing ? t("save" as any) || "حفظ" : t("addPairing")}
               </Button>
             </div>
           </CardContent>
@@ -393,7 +420,7 @@ function PairingsTab() {
                           onClick={() =>
                             handleStatusChange(
                               pair.id,
-                              pair.status === "ACTIVE" ? "FINISHED" : "ACTIVE"
+                              pair.status === "ACTIVE" ? "FINISHED" : "ACTIVE",
                             )
                           }
                           style={{ cursor: "pointer" }}
@@ -425,16 +452,16 @@ function PairingsTab() {
                             {t("pairingDate")}
                           </p>
                           <p className="font-medium">
-                            {new Date(pair.startDate).toLocaleDateString("ar-EG")}
+                            {new Date(pair.startDate).toLocaleDateString(
+                              "ar-EG",
+                            )}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">
                             {t("nestBox")}
                           </p>
-                          <p className="font-medium">
-                            {pair.nestBox || "-"}
-                          </p>
+                          <p className="font-medium">{pair.nestBox || "-"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">
@@ -504,7 +531,7 @@ function EggsTab() {
   const [formCandlingResult, setFormCandlingResult] = useState("");
 
   const activePairings = (pairings as BackendPairing[]).filter(
-    (p) => p.status === "ACTIVE"
+    (p) => p.status === "ACTIVE",
   );
 
   const resetForm = () => {
@@ -562,7 +589,7 @@ function EggsTab() {
 
   const handleStatusChange = async (
     eggId: string,
-    newStatus: BackendEgg["status"]
+    newStatus: BackendEgg["status"],
   ) => {
     try {
       await updateEgg.mutateAsync({
@@ -628,7 +655,7 @@ function EggsTab() {
     const hatching = new Date(laying.getTime() + 18 * 24 * 60 * 60 * 1000);
     const today = new Date();
     const daysLeft = Math.ceil(
-      (hatching.getTime() - today.getTime()) / (24 * 60 * 60 * 1000)
+      (hatching.getTime() - today.getTime()) / (24 * 60 * 60 * 1000),
     );
     return daysLeft > 0 ? daysLeft : 0;
   };
@@ -636,7 +663,7 @@ function EggsTab() {
   const calculateIncubationDay = (layingDate: string) => {
     const days = Math.floor(
       (new Date().getTime() - new Date(layingDate).getTime()) /
-      (24 * 60 * 60 * 1000)
+        (24 * 60 * 60 * 1000),
     );
     return Math.max(0, days);
   };
@@ -652,7 +679,9 @@ function EggsTab() {
   const eggsList = eggs as BackendEgg[];
   const fertileCount = eggsList.filter((e) => e.status === "LAID").length;
   const hatchedCount = eggsList.filter((e) => e.status === "HATCHED").length;
-  const infertileCount = eggsList.filter((e) => e.status === "INFERTILE").length;
+  const infertileCount = eggsList.filter(
+    (e) => e.status === "INFERTILE",
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -683,9 +712,7 @@ function EggsTab() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
-              <p className="text-3xl font-bold text-blue-600">
-                {hatchedCount}
-              </p>
+              <p className="text-3xl font-bold text-blue-600">{hatchedCount}</p>
               <p className="text-sm text-muted-foreground">
                 {t("hatchedEggs")}
               </p>
@@ -742,9 +769,7 @@ function EggsTab() {
                 >
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={
-                        t("selectPairing" as any) || "اختر التزاوج"
-                      }
+                      placeholder={t("selectPairing" as any) || "اختر التزاوج"}
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -774,18 +799,14 @@ function EggsTab() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>
-                  {t("candlingResult" as any) || "نتيجة الكشف"}
-                </Label>
+                <Label>{t("candlingResult" as any) || "نتيجة الكشف"}</Label>
                 <Select
                   value={formCandlingResult}
                   onValueChange={setFormCandlingResult}
                 >
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={
-                        t("selectResult" as any) || "اختر النتيجة"
-                      }
+                      placeholder={t("selectResult" as any) || "اختر النتيجة"}
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -813,9 +834,7 @@ function EggsTab() {
                 {(createEgg.isPending || updateEgg.isPending) && (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 )}
-                {editingEgg
-                  ? t("save" as any) || "حفظ"
-                  : t("addEgg")}
+                {editingEgg ? t("save" as any) || "حفظ" : t("addEgg")}
               </Button>
             </div>
           </CardContent>
@@ -858,7 +877,8 @@ function EggsTab() {
                           {t("pairing" as any) || "التزاوج"}
                         </p>
                         <p className="font-medium">
-                          {egg.pairing?.male?.name} × {egg.pairing?.female?.name}
+                          {egg.pairing?.male?.name} ×{" "}
+                          {egg.pairing?.female?.name}
                         </p>
                       </div>
                       <div>
@@ -875,7 +895,9 @@ function EggsTab() {
                         </p>
                         <p className="font-medium">
                           {egg.hatchDateExpected
-                            ? new Date(egg.hatchDateExpected).toLocaleDateString("ar-EG")
+                            ? new Date(
+                                egg.hatchDateExpected,
+                              ).toLocaleDateString("ar-EG")
                             : "-"}
                         </p>
                       </div>
@@ -893,7 +915,9 @@ function EggsTab() {
                             {t("candlingDate" as any) || "تاريخ الكشف"}
                           </p>
                           <p className="font-medium">
-                            {new Date(egg.candlingDate).toLocaleDateString("ar-EG")}
+                            {new Date(egg.candlingDate).toLocaleDateString(
+                              "ar-EG",
+                            )}
                           </p>
                         </div>
                       )}
@@ -944,7 +968,9 @@ function EggsTab() {
                           variant="outline"
                           size="sm"
                           className="text-xs"
-                          onClick={() => handleStatusChange(egg.id, "INFERTILE")}
+                          onClick={() =>
+                            handleStatusChange(egg.id, "INFERTILE")
+                          }
                         >
                           ✕ {t("markInfertile" as any) || "غير مخصبة"}
                         </Button>
@@ -965,7 +991,10 @@ function EggsTab() {
 
 function SquabsTab() {
   const { t } = useLanguage();
-  const { data: birdsData, isLoading } = useBirds({ status: "squab", limit: 200 });
+  const { data: birdsData, isLoading } = useBirds({
+    status: "squab",
+    limit: 200,
+  });
 
   const squabs = birdsData?.data || [];
 
@@ -1061,7 +1090,7 @@ function SquabsTab() {
                           {Math.floor(
                             (new Date().getTime() -
                               new Date(squab.birthDate).getTime()) /
-                            (24 * 60 * 60 * 1000)
+                              (24 * 60 * 60 * 1000),
                           )}{" "}
                           {t("daysOld")}
                         </span>
@@ -1095,7 +1124,7 @@ function SquabsTab() {
                           </p>
                           <p className="font-medium">
                             {new Date(squab.birthDate).toLocaleDateString(
-                              "ar-EG"
+                              "ar-EG",
                             )}
                           </p>
                         </div>

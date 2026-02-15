@@ -42,15 +42,14 @@ export function OnboardingGuard({
 
     // Fallback: Dispatch popstate to notify creative.tsx
     // We construct the URL that creative.tsx expects
-    const url = tab === "lofts"
-      ? "?tab=lofts&view=all"
-      : "?tab=pigeons&view=all";
+    const url =
+      tab === "lofts" ? "?tab=lofts&view=all" : "?tab=pigeons&view=all";
 
     // Push state
     window.history.pushState({}, "", url);
     // Dispatch event
     // creative.tsx listens to 'popstate'
-    window.dispatchEvent(new Event('popstate'));
+    window.dispatchEvent(new Event("popstate"));
   };
 
   // If loading...
@@ -71,7 +70,10 @@ export function OnboardingGuard({
       return (
         <RequiredState
           title={t("loftRequired" as any) || "إضافة لوفت مطلوب"}
-          message={t("addLoftFirstMessage" as any) || "يجب عليك إضافة لوفت أولاً قبل أن تتمكن من استخدام باقي خصائص التطبيق."}
+          message={
+            t("addLoftFirstMessage" as any) ||
+            "يجب عليك إضافة لوفت أولاً قبل أن تتمكن من استخدام باقي خصائص التطبيق."
+          }
           buttonLabel={t("goToLoft" as any) || "الذهاب لإضافة لوفت"}
           action={() => triggerDashboardNav("lofts")}
           Icon={Home}
@@ -86,7 +88,10 @@ export function OnboardingGuard({
     return (
       <RequiredState
         title={t("loftRequired" as any) || "إضافة لوفت مطلوب"}
-        message={t("addLoftFirstMessage" as any) || "يجب عليك إضافة لوفت أولاً قبل أن تتمكن من استخدام باقي خصائص التطبيق."}
+        message={
+          t("addLoftFirstMessage" as any) ||
+          "يجب عليك إضافة لوفت أولاً قبل أن تتمكن من استخدام باقي خصائص التطبيق."
+        }
         buttonLabel={t("goToLoft" as any) || "الذهاب لإضافة لوفت"}
         action={() => triggerDashboardNav("lofts")}
         Icon={Home}
@@ -98,7 +103,10 @@ export function OnboardingGuard({
     return (
       <RequiredState
         title={t("birdRequired" as any) || "إضافة حمامة مطلوبة"}
-        message={t("addBirdFirstMessage" as any) || "يجب عليك إضافة حمامة واحدة على الأقل للمتابعة."}
+        message={
+          t("addBirdFirstMessage" as any) ||
+          "يجب عليك إضافة حمامة واحدة على الأقل للمتابعة."
+        }
         buttonLabel={t("goToPigeons" as any) || "الذهاب لإضافة حمامة"}
         action={() => triggerDashboardNav("pigeons")}
         Icon={Bird}

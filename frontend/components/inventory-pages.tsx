@@ -3,18 +3,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { inventoryService, InventoryItem } from "@/lib/services/inventory-service";
+import {
+  inventoryService,
+  InventoryItem,
+} from "@/lib/services/inventory-service";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/lib/language-context";
-import {
-  Wheat,
-  Pill,
-  Wrench,
-  ArrowLeft,
-  ArrowRight,
-} from "lucide-react";
+import { Wheat, Pill, Wrench, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { InventoryItemDialog } from "./inventory-item-dialog";
 import { InventoryFeedTab } from "./inventory/tabs/feed-tab";
@@ -40,7 +37,7 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
 
   // Fetch Inventory items
   const inventoryQuery = useQuery({
-    queryKey: ['inventory'],
+    queryKey: ["inventory"],
     queryFn: () => inventoryService.findAll(),
   });
 
@@ -50,41 +47,68 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
   const createItemMutation = useMutation({
     mutationFn: inventoryService.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+      queryClient.invalidateQueries({ queryKey: ["inventory"] });
       setIsAddDialogOpen(false);
-      toast.success(t("itemAdded" as any) || (language === "ar" ? "تمت إضافة العنصر بنجاح" : "Item added successfully"));
+      toast.success(
+        t("itemAdded" as any) ||
+          (language === "ar"
+            ? "تمت إضافة العنصر بنجاح"
+            : "Item added successfully"),
+      );
     },
     onError: (error: any) => {
-      toast.error(error.message || (language === "ar" ? "فشل إضافة العنصر" : "Failed to add item"));
-    }
+      toast.error(
+        error.message ||
+          (language === "ar" ? "فشل إضافة العنصر" : "Failed to add item"),
+      );
+    },
   });
 
   const updateItemMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string, data: any }) => inventoryService.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      inventoryService.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+      queryClient.invalidateQueries({ queryKey: ["inventory"] });
       setIsAddDialogOpen(false);
-      toast.success(t("itemUpdated" as any) || (language === "ar" ? "تم تحديث العنصر بنجاح" : "Item updated successfully"));
+      toast.success(
+        t("itemUpdated" as any) ||
+          (language === "ar"
+            ? "تم تحديث العنصر بنجاح"
+            : "Item updated successfully"),
+      );
     },
     onError: (error: any) => {
-      toast.error(error.message || (language === "ar" ? "فشل تحديث العنصر" : "Failed to update item"));
-    }
+      toast.error(
+        error.message ||
+          (language === "ar" ? "فشل تحديث العنصر" : "Failed to update item"),
+      );
+    },
   });
 
   const deleteItemMutation = useMutation({
     mutationFn: inventoryService.remove,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inventory'] });
-      toast.success(t("itemDeleted" as any) || (language === "ar" ? "تم حذف العنصر بنجاح" : "Item deleted successfully"));
+      queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      toast.success(
+        t("itemDeleted" as any) ||
+          (language === "ar"
+            ? "تم حذف العنصر بنجاح"
+            : "Item deleted successfully"),
+      );
     },
     onError: (error: any) => {
-      toast.error(error.message || (language === "ar" ? "فشل حذف العنصر" : "Failed to delete item"));
-    }
+      toast.error(
+        error.message ||
+          (language === "ar" ? "فشل حذف العنصر" : "Failed to delete item"),
+      );
+    },
   });
 
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [dialogMode, setDialogMode] = useState<"add" | "edit">("add");
-  const [dialogCategory, setDialogCategory] = useState<"feed" | "medications" | "equipment">("feed");
+  const [dialogCategory, setDialogCategory] = useState<
+    "feed" | "medications" | "equipment"
+  >("feed");
 
   const handleAddNew = (category: "feed" | "medications" | "equipment") => {
     setDialogMode("add");
@@ -93,7 +117,10 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
     setIsAddDialogOpen(true);
   };
 
-  const handleEdit = (item: InventoryItem, category: "feed" | "medications" | "equipment") => {
+  const handleEdit = (
+    item: InventoryItem,
+    category: "feed" | "medications" | "equipment",
+  ) => {
     setDialogMode("edit");
     setDialogCategory(category);
     setEditingItem(item);
@@ -108,13 +135,17 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
     const formattedData = { ...data };
 
     if (formattedData.expiryDate) {
-      formattedData.expiryDate = new Date(formattedData.expiryDate).toISOString();
+      formattedData.expiryDate = new Date(
+        formattedData.expiryDate,
+      ).toISOString();
     } else {
       formattedData.expiryDate = null;
     }
 
     if (formattedData.purchaseDate) {
-      formattedData.purchaseDate = new Date(formattedData.purchaseDate).toISOString();
+      formattedData.purchaseDate = new Date(
+        formattedData.purchaseDate,
+      ).toISOString();
     } else {
       formattedData.purchaseDate = null;
     }
@@ -129,43 +160,72 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
   };
 
   // Filter items based on current page and search/filters
-  const getFilteredItems = (category: 'feed' | 'medications' | 'equipment') => {
+  const getFilteredItems = (category: "feed" | "medications" | "equipment") => {
     const feedTypes = ["seed", "grain", "pellet", "mix", "grit", "supplement"];
-    const medTypes = ["vaccine", "antibiotic", "vitamin", "antiparasitic", "probiotic", "med_other"];
-    const equipTypes = ["feeder", "drinker", "nestBox", "perch", "trap", "cage", "cleaning", "training", "equip_other"];
+    const medTypes = [
+      "vaccine",
+      "antibiotic",
+      "vitamin",
+      "antiparasitic",
+      "probiotic",
+      "med_other",
+    ];
+    const equipTypes = [
+      "feeder",
+      "drinker",
+      "nestBox",
+      "perch",
+      "trap",
+      "cage",
+      "cleaning",
+      "training",
+      "equip_other",
+    ];
 
-    return allItems.filter(item => {
-      // 1. Filter by Category
-      if (category === 'feed') {
-        return feedTypes.includes(item.type);
-      }
-      if (category === 'medications') {
-        return medTypes.includes(item.type);
-      }
-      if (category === 'equipment') {
-        return equipTypes.includes(item.type);
-      }
-      return false;
-    }).filter((item: InventoryItem) => {
-      // 2. Search
-      if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      // 3. Filter Type
-      if (filterType !== 'all' && item.type !== filterType) return false;
-      // 4. Filter Status
-      if (category !== 'equipment') { // Equipment doesn't have the same status logic usually, or at least not "expiring"
-        const status = getComputedStatus(item);
-        if (filterStatus !== 'all' && status !== filterStatus) return false;
-      }
+    return allItems
+      .filter((item) => {
+        // 1. Filter by Category
+        if (category === "feed") {
+          return feedTypes.includes(item.type);
+        }
+        if (category === "medications") {
+          return medTypes.includes(item.type);
+        }
+        if (category === "equipment") {
+          return equipTypes.includes(item.type);
+        }
+        return false;
+      })
+      .filter((item: InventoryItem) => {
+        // 2. Search
+        if (
+          searchQuery &&
+          !item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+          return false;
+        // 3. Filter Type
+        if (filterType !== "all" && item.type !== filterType) return false;
+        // 4. Filter Status
+        if (category !== "equipment") {
+          // Equipment doesn't have the same status logic usually, or at least not "expiring"
+          const status = getComputedStatus(item);
+          if (filterStatus !== "all" && status !== filterStatus) return false;
+        }
 
-      return true;
-    });
+        return true;
+      });
   };
 
   const getComputedStatus = (item: InventoryItem) => {
-    if (item.quantity <= 0) return 'outOfStock';
-    if (item.quantity <= (item.minStock || 0)) return 'lowStock';
-    if (item.expiryDate && new Date(item.expiryDate) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) return 'expiringSoon'; // 30 days
-    return 'inStock';
+    if (item.quantity <= 0) return "outOfStock";
+    if (item.quantity <= (item.minStock || 0)) return "lowStock";
+    if (
+      item.expiryDate &&
+      new Date(item.expiryDate) <
+        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    )
+      return "expiringSoon"; // 30 days
+    return "inStock";
   };
 
   const getStatusBadge = (status: string) => {
@@ -179,19 +239,22 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
       case "lowStock":
         return (
           <Badge className="rounded-xl bg-amber-500/10 text-amber-500 hover:bg-amber-500/20">
-            {t("lowStock" as any) || (language === "ar" ? "مخزون منخفض" : "Low Stock")}
+            {t("lowStock" as any) ||
+              (language === "ar" ? "مخزون منخفض" : "Low Stock")}
           </Badge>
         );
       case "outOfStock":
         return (
           <Badge className="rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20">
-            {t("outOfStock" as any) || (language === "ar" ? "نفذ المخزون" : "Out of Stock")}
+            {t("outOfStock" as any) ||
+              (language === "ar" ? "نفذ المخزون" : "Out of Stock")}
           </Badge>
         );
       case "expiringSoon":
         return (
           <Badge className="rounded-xl bg-orange-500/10 text-orange-500 hover:bg-orange-500/20">
-            {t("expiringSoon" as any) || (language === "ar" ? "ينتهي قريباً" : "Expiring Soon")}
+            {t("expiringSoon" as any) ||
+              (language === "ar" ? "ينتهي قريباً" : "Expiring Soon")}
           </Badge>
         );
       default:
@@ -289,15 +352,15 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
           >
             {currentPage === "feed" && (
               <InventoryFeedTab
-                items={getFilteredItems('feed')}
+                items={getFilteredItems("feed")}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 filterType={filterType}
                 setFilterType={setFilterType}
                 filterStatus={filterStatus}
                 setFilterStatus={setFilterStatus}
-                onAdd={() => handleAddNew('feed')}
-                onEdit={(item) => handleEdit(item, 'feed')}
+                onAdd={() => handleAddNew("feed")}
+                onEdit={(item) => handleEdit(item, "feed")}
                 onDelete={handleDelete}
                 getStatusBadge={getStatusBadge}
                 getComputedStatus={getComputedStatus}
@@ -305,15 +368,15 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
             )}
             {currentPage === "medications" && (
               <InventoryMedicationsTab
-                items={getFilteredItems('medications')}
+                items={getFilteredItems("medications")}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 filterType={filterType}
                 setFilterType={setFilterType}
                 filterStatus={filterStatus}
                 setFilterStatus={setFilterStatus}
-                onAdd={() => handleAddNew('medications')}
-                onEdit={(item) => handleEdit(item, 'medications')}
+                onAdd={() => handleAddNew("medications")}
+                onEdit={(item) => handleEdit(item, "medications")}
                 onDelete={handleDelete}
                 getStatusBadge={getStatusBadge}
                 getComputedStatus={getComputedStatus}
@@ -321,13 +384,13 @@ export function InventoryPages({ currentPage, onBack }: InventoryPagesProps) {
             )}
             {currentPage === "equipment" && (
               <InventoryEquipmentTab
-                items={getFilteredItems('equipment')}
+                items={getFilteredItems("equipment")}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 filterType={filterType}
                 setFilterType={setFilterType}
-                onAdd={() => handleAddNew('equipment')}
-                onEdit={(item) => handleEdit(item, 'equipment')}
+                onAdd={() => handleAddNew("equipment")}
+                onEdit={(item) => handleEdit(item, "equipment")}
                 onDelete={handleDelete}
                 getConditionBadge={getConditionBadge}
               />

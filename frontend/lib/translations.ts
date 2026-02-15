@@ -327,8 +327,6 @@ export const translations = {
     equipTypeTraining: "Training Equipment",
     equipTypeOther: "Other",
 
-
-
     // Inventory Stats
     totalItems: "Total Items",
     lowStockItems: "Low Stock Items",
@@ -1037,8 +1035,6 @@ export const translations = {
     equipTypeCleaning: "أدوات تنظيف",
     equipTypeTraining: "معدات تدريب",
     equipTypeOther: "أخرى",
-
-
 
     // Inventory Stats
     totalItems: "إجمالي الأصناف",
