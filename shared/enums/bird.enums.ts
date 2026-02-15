@@ -11,6 +11,7 @@ export enum BirdStatus {
   SOLD = 'sold',
   DECEASED = 'deceased',
   UNKNOWN = 'unknown',
+  SQUAB = 'squab',
 }
 
 export enum BirdType {

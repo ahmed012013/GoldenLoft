@@ -11,6 +11,9 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 // 👇 السلوك اللي كانت مقطوعة يا هندسة
 import { TasksModule } from './tasks/tasks.module';
 import { PairingsModule } from './pairings/pairings.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { HealthModule } from './health/health.module';
+import { EggsModule } from './eggs/eggs.module';
 
 @Module({
   imports: [
@@ -24,8 +27,11 @@ import { PairingsModule } from './pairings/pairings.module';
     // 👇 ركب الموديولات هنا في "علبة الفيوزات" عشان يشتغلوا
     TasksModule,
     PairingsModule,
+    InventoryModule,
+    HealthModule,
+    EggsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
