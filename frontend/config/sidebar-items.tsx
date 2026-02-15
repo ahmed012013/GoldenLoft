@@ -27,8 +27,10 @@ interface SidebarItem {
     onClick?: () => void;
 }
 
+import { TranslationKey } from "../lib/translations";
+
 export function getSidebarItems(
-    t: (key: string) => string,
+    t: (key: TranslationKey) => string,
     state: NavigationState,
     actions: {
         resetAllPages: () => void;

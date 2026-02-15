@@ -8,15 +8,31 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/query-provider";
 import "./globals.css";
 
-const _geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
+// Google Fonts disabled due to network issues
+const _geist = { variable: "font-sans" };
+const _geistMono = { variable: "font-mono" };
+const _cairo = { variable: "font-cairo" };
+
+/*
+const _geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+  adjustFontFallback: false // Disable fallback adjustment to prevent build errors on network issues
+});
 const _geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
+  display: "swap",
+  adjustFontFallback: false
 });
 const _cairo = Cairo({
   subsets: ["arabic", "latin"],
   variable: "--font-cairo",
+  display: "swap",
+  adjustFontFallback: false
 });
+*/
 
 export const metadata: Metadata = {
   title: "مدير لوفت الحمام | Pigeon Loft Manager",

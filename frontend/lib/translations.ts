@@ -529,6 +529,7 @@ export const translations = {
 
     // Sidebar sub-items - Training
     trainingSchedule: "Training Schedule",
+    upcomingRaces: "Upcoming Races",
     raceResults: "Race Results",
     performance: "Performance",
 
@@ -1237,6 +1238,7 @@ export const translations = {
 
     // Sidebar sub-items - Training
     trainingSchedule: "جدول التدريب",
+    upcomingRaces: "السباقات القادمة",
     raceResults: "نتائج السباقات",
     performance: "الأداء",
 
