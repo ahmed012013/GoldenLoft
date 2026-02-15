@@ -201,11 +201,11 @@ export class TasksService {
     // Create completion record
     const completion = await this.prisma.taskCompletion.create({
       data: {
-        taskId: dto.taskId,
-        userId,
         completedAt: completionDate,
         notes: dto.notes,
         status: 'COMPLETED',
+        task: { connect: { id: dto.taskId } },
+        user: { connect: { id: userId } },
       },
     });
 
@@ -216,5 +216,18 @@ export class TasksService {
     }
 
     return completion;
+  }
+
+  async findRecentCompletions(userId: string, limit: number = 5) {
+    return this.prisma.taskCompletion.findMany({
+      where: { userId },
+      orderBy: { completedAt: 'desc' },
+      take: limit,
+      include: {
+        task: {
+          select: { title: true, category: true },
+        },
+      },
+    });
   }
 }

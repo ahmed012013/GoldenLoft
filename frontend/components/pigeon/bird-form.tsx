@@ -7,6 +7,7 @@ import * as z from "zod";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Calendar as CalendarIcon, Upload } from "lucide-react";
+import { compressImage } from "@/lib/image-compression";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -124,11 +125,11 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
     }
   }, [editingBird, form]);
 
-  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error("Image size must be less than 2MB");
+      if (file.size > 20 * 1024 * 1024) {
+        toast.error("Image size must be less than 20MB");
         return;
       }
       const validTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -136,9 +137,16 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
         toast.error("File must be JPG, PNG, or WEBP");
         return;
       }
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+
+      try {
+        const compressed = await compressImage(file);
+        setSelectedFile(compressed);
+        const url = URL.createObjectURL(compressed);
+        setPreviewUrl(url);
+      } catch (error) {
+        toast.error("Failed to process image");
+        console.error(error);
+      }
     }
   }
 

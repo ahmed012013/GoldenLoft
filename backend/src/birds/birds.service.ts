@@ -130,7 +130,17 @@ export class BirdsService {
       gender: BirdGender.FEMALE,
     });
 
-    return { total, healthy, sick, males, females };
+    const statusDistribution =
+      await this.birdsRepository.getStatusDistribution(userId);
+
+    // Map the groupBy result to a cleaner object if needed, or return as is
+    // Result format: [{ status: 'healthy', _count: { status: 10 } }, ...]
+    const statusBreakdown = statusDistribution.map((item) => ({
+      status: item.status,
+      count: item._count.status,
+    }));
+
+    return { total, healthy, sick, males, females, statusBreakdown };
   }
 
   async getPedigree(userId: string, id: string) {

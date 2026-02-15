@@ -14,6 +14,7 @@ import { PairingsModule } from './pairings/pairings.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { HealthModule } from './health/health.module';
 import { EggsModule } from './eggs/eggs.module';
+import { LifeEventsModule } from './life-events/life-events.module';
 
 @Module({
   imports: [
@@ -24,12 +25,12 @@ import { EggsModule } from './eggs/eggs.module';
     BirdsModule,
     LoftModule,
     CloudinaryModule,
-    // 👇 ركب الموديولات هنا في "علبة الفيوزات" عشان يشتغلوا
     TasksModule,
     PairingsModule,
     InventoryModule,
     HealthModule,
     EggsModule,
+    LifeEventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

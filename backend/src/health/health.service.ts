@@ -130,4 +130,17 @@ export class HealthService {
 
     return this.prisma.healthRecord.delete({ where: { id } });
   }
+
+  async findAllByUser(userId: string, limit: number = 5) {
+    return this.prisma.healthRecord.findMany({
+      where: { bird: { loft: { userId } } },
+      orderBy: { date: 'desc' },
+      take: limit,
+      include: {
+        bird: {
+          select: { name: true, ringNumber: true },
+        },
+      },
+    });
+  }
 }

@@ -44,7 +44,7 @@ export class BirdsController {
       const upload = await this.cloudinaryService.uploadFile(file);
       imageUrl = upload.secure_url;
     }
-    return this.birdsService.create(req.user.userId, {
+    return this.birdsService.create(req.user.id, {
       ...createBirdDto,
       image: imageUrl,
     });
@@ -63,7 +63,7 @@ export class BirdsController {
       const upload = await this.cloudinaryService.uploadFile(file);
       imageUrl = upload.secure_url;
     }
-    return this.birdsService.update(req.user.userId, id, {
+    return this.birdsService.update(req.user.id, id, {
       ...updateBirdDto,
       image: imageUrl,
     });
@@ -71,21 +71,21 @@ export class BirdsController {
 
   @Get()
   findAll(@Request() req: RequestWithUser, @Query() query: GetBirdsDto) {
-    return this.birdsService.findAll(req.user.userId, query);
+    return this.birdsService.findAll(req.user.id, query);
   }
 
   @Get('stats')
   getStats(@Request() req: RequestWithUser) {
-    return this.birdsService.getStats(req.user.userId);
+    return this.birdsService.getStats(req.user.id);
   }
 
   @Delete(':id')
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.birdsService.remove(req.user.userId, id);
+    return this.birdsService.remove(req.user.id, id);
   }
 
   @Get(':id')
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.birdsService.findOne(req.user.userId, id);
+    return this.birdsService.findOne(req.user.id, id);
   }
 }

@@ -29,25 +29,25 @@ export class PairingsController {
     @Request() req: RequestWithUser,
     @Body() createPairingDto: CreatePairingDto
   ) {
-    return this.pairingsService.create(req.user.userId, createPairingDto);
+    return this.pairingsService.create(req.user.id, createPairingDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all pairings' })
   findAll(@Request() req: RequestWithUser) {
-    return this.pairingsService.findAll(req.user.userId);
+    return this.pairingsService.findAll(req.user.id);
   }
 
   @Get('stats')
   @ApiOperation({ summary: 'Get pairing statistics' })
   getStats(@Request() req: RequestWithUser) {
-    return this.pairingsService.getStats(req.user.userId);
+    return this.pairingsService.getStats(req.user.id);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific pairing' })
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.pairingsService.findOne(req.user.userId, id);
+    return this.pairingsService.findOne(req.user.id, id);
   }
 
   @Patch(':id')
@@ -57,12 +57,12 @@ export class PairingsController {
     @Param('id') id: string,
     @Body() updatePairingDto: UpdatePairingDto
   ) {
-    return this.pairingsService.update(req.user.userId, id, updatePairingDto);
+    return this.pairingsService.update(req.user.id, id, updatePairingDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a pairing' })
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.pairingsService.remove(req.user.userId, id);
+    return this.pairingsService.remove(req.user.id, id);
   }
 }

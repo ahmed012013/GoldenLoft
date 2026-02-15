@@ -42,6 +42,7 @@ interface SidebarNavigationProps {
   expandedItems: Record<string, boolean>;
   onToggleExpanded: (title: string) => void;
   onMobileItemClick?: () => void;
+  userName?: string;
 }
 
 export function SidebarNavigation({
@@ -49,11 +50,14 @@ export function SidebarNavigation({
   expandedItems,
   onToggleExpanded,
   onMobileItemClick,
-}: SidebarNavigationProps) {
+  userName,
+}: SidebarNavigationProps & { userName?: string }) {
   const { t, dir } = useLanguage();
 
   return (
     <div className="flex flex-col h-full">
+
+
       {/* Main navigation */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {items.map((item) => (

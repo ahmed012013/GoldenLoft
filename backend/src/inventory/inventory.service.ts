@@ -55,4 +55,14 @@ export class InventoryService {
       where: { id },
     });
   }
+
+  async getTotalValue(userId: string) {
+    const result = await this.prisma.inventoryItem.aggregate({
+      where: { userId },
+      _sum: {
+        cost: true,
+      },
+    });
+    return result._sum.cost || 0;
+  }
 }

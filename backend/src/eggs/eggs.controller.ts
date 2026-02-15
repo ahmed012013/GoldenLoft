@@ -26,19 +26,19 @@ export class EggsController {
   @Post()
   @ApiOperation({ summary: 'Record a new egg' })
   create(@Request() req: RequestWithUser, @Body() createEggDto: CreateEggDto) {
-    return this.eggsService.create(req.user.userId, createEggDto);
+    return this.eggsService.create(req.user.id, createEggDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all eggs' })
   findAll(@Request() req: RequestWithUser) {
-    return this.eggsService.findAll(req.user.userId);
+    return this.eggsService.findAll(req.user.id);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific egg' })
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.eggsService.findOne(req.user.userId, id);
+    return this.eggsService.findOne(req.user.id, id);
   }
 
   @Patch(':id')
@@ -48,12 +48,12 @@ export class EggsController {
     @Param('id') id: string,
     @Body() updateEggDto: UpdateEggDto
   ) {
-    return this.eggsService.update(req.user.userId, id, updateEggDto);
+    return this.eggsService.update(req.user.id, id, updateEggDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an egg' })
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.eggsService.remove(req.user.userId, id);
+    return this.eggsService.remove(req.user.id, id);
   }
 }

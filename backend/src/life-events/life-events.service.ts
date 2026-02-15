@@ -60,4 +60,17 @@ export class LifeEventsService {
 
     return this.prisma.lifeEvent.delete({ where: { id } });
   }
+
+  async findAllByUser(userId: string, limit: number = 5) {
+    return this.prisma.lifeEvent.findMany({
+      where: { bird: { loft: { userId } } },
+      orderBy: { date: 'desc' },
+      take: limit,
+      include: {
+        bird: {
+          select: { name: true, ringNumber: true },
+        },
+      },
+    });
+  }
 }

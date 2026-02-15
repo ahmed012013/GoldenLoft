@@ -27,13 +27,13 @@ export class HealthController {
   @Post()
   @ApiOperation({ summary: 'Add a health record' })
   create(@Request() req: RequestWithUser, @Body() dto: CreateHealthRecordDto) {
-    return this.healthService.create(req.user.userId, dto);
+    return this.healthService.create(req.user.id, dto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all health records' })
   findAll(@Request() req: RequestWithUser, @Query('birdId') birdId?: string) {
-    return this.healthService.findAll(req.user.userId, birdId);
+    return this.healthService.findAll(req.user.id, birdId);
   }
 
   @Patch(':id')
@@ -43,12 +43,12 @@ export class HealthController {
     @Param('id') id: string,
     @Body() dto: UpdateHealthRecordDto
   ) {
-    return this.healthService.update(req.user.userId, id, dto);
+    return this.healthService.update(req.user.id, id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a health record' })
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.healthService.remove(req.user.userId, id);
+    return this.healthService.remove(req.user.id, id);
   }
 }

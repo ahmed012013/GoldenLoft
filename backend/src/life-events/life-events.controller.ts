@@ -27,7 +27,7 @@ export class LifeEventsController {
     @Request() req: RequestWithUser,
     @Body() createLifeEventDto: CreateLifeEventDto
   ) {
-    return this.lifeEventsService.create(req.user.userId, createLifeEventDto);
+    return this.lifeEventsService.create(req.user.id, createLifeEventDto);
   }
 
   @Get('bird/:birdId')
@@ -36,12 +36,12 @@ export class LifeEventsController {
     @Request() req: RequestWithUser,
     @Param('birdId') birdId: string
   ) {
-    return this.lifeEventsService.findAllByBird(req.user.userId, birdId);
+    return this.lifeEventsService.findAllByBird(req.user.id, birdId);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a life event' })
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.lifeEventsService.remove(req.user.userId, id);
+    return this.lifeEventsService.remove(req.user.id, id);
   }
 }

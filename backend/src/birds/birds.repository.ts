@@ -77,4 +77,14 @@ export class BirdsRepository {
   async findLoft(id: string) {
     return this.prisma.loft.findUnique({ where: { id } });
   }
+
+  async getStatusDistribution(userId: string) {
+    return this.prisma.bird.groupBy({
+      by: ['status'],
+      where: { loft: { userId } },
+      _count: {
+        status: true,
+      },
+    });
+  }
 }

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { CalendarIcon, Upload, Bird, Activity, Trophy } from "lucide-react";
 import { format } from "date-fns";
+import { compressImage } from "@/lib/image-compression";
 
 import { useToast } from "@/components/ui/use-toast";
 import { useBirdMutations } from "@/hooks/useBirdMutations";
@@ -104,14 +105,14 @@ export function BirdModal({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
-      // Validation
-      if (file.size > 2 * 1024 * 1024) {
+      // Validation - Relaxed to 20MB to allow client-side compression
+      if (file.size > 20 * 1024 * 1024) {
         toast({
           title: "Error",
-          description: "Image size must be less than 2MB",
+          description: "Image size must be less than 20MB",
           variant: "destructive",
         });
         return;
@@ -126,9 +127,18 @@ export function BirdModal({
         return;
       }
 
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      try {
+        const compressed = await compressImage(file);
+        setSelectedFile(compressed);
+        const url = URL.createObjectURL(compressed);
+        setPreviewUrl(url);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to compress image",
+          variant: "destructive",
+        });
+      }
     }
   }
 

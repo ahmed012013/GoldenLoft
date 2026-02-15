@@ -27,12 +27,12 @@ export class TasksController {
   @Post()
   create(@Request() req, @Body() createTaskDto: CreateTaskDto) {
     console.log('User from req:', req.user);
-    return this.tasksService.create(createTaskDto, req.user.userId);
+    return this.tasksService.create(createTaskDto, req.user.id);
   }
 
   @Post('complete')
   complete(@Request() req, @Body() completeTaskDto: CompleteTaskDto) {
-    return this.tasksService.complete(req.user.userId, completeTaskDto);
+    return this.tasksService.complete(req.user.id, completeTaskDto);
   }
 
   @Get()
@@ -54,7 +54,7 @@ export class TasksController {
     // Default to today if not provided (though required)
     const startDate = start || new Date().toISOString();
     const endDate = end || new Date().toISOString();
-    return this.tasksService.findAll(req.user.userId, startDate, endDate);
+    return this.tasksService.findAll(req.user.id, startDate, endDate);
   }
 
   @Get(':id')

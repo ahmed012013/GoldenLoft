@@ -13,6 +13,8 @@ interface StatusIndicatorProps {
   color: "blue" | "green" | "red" | "amber" | "purple";
   onClick?: () => void;
   isActive?: boolean;
+  hidden?: boolean;
+  prefix?: string;
 }
 
 interface StatusIndicatorsProps {
@@ -42,7 +44,7 @@ export function StatusIndicators({ items, title }: StatusIndicatorsProps) {
         </h3>
       )}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {items.map((item, index) => {
+        {items.filter(item => !item.hidden).map((item, index) => {
           const Icon = item.icon;
           const colorClass = colorMap[item.color];
 
@@ -67,7 +69,7 @@ export function StatusIndicators({ items, title }: StatusIndicatorsProps) {
                   {item.label}
                 </span>
                 <Badge variant="secondary" className="text-xs font-bold px-2">
-                  {item.count}
+                  {item.prefix}{item.count}
                 </Badge>
               </div>
             </button>

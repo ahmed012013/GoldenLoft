@@ -26,10 +26,7 @@ export class InventoryController {
     @Request() req: RequestWithUser,
     @Body() createInventoryItemDto: CreateInventoryItemDto
   ) {
-    return this.inventoryService.create(
-      req.user.userId,
-      createInventoryItemDto
-    );
+    return this.inventoryService.create(req.user.id, createInventoryItemDto);
   }
 
   @Get()
@@ -38,12 +35,12 @@ export class InventoryController {
     @Query('type') type?: string,
     @Query('status') status?: string
   ) {
-    return this.inventoryService.findAll(req.user.userId, { type, status });
+    return this.inventoryService.findAll(req.user.id, { type, status });
   }
 
   @Get(':id')
   findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.inventoryService.findOne(id, req.user.userId);
+    return this.inventoryService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
@@ -54,13 +51,13 @@ export class InventoryController {
   ) {
     return this.inventoryService.update(
       id,
-      req.user.userId,
+      req.user.id,
       updateInventoryItemDto
     );
   }
 
   @Delete(':id')
   remove(@Request() req: RequestWithUser, @Param('id') id: string) {
-    return this.inventoryService.remove(id, req.user.userId);
+    return this.inventoryService.remove(id, req.user.id);
   }
 }
