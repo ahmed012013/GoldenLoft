@@ -36,6 +36,7 @@ npx prisma migrate dev
 # Start Server
 npm run start:dev
 ```
+
 The backend runs on `http://localhost:4000` (default).
 
 ### 3. Frontend Setup
@@ -52,17 +53,20 @@ cp .env.example .env.local
 # Start Development Server
 npm run dev
 ```
+
 The frontend runs on `http://localhost:3000`.
 
 ## Scripts
 
 **Backend**
+
 - `npm run start:dev`: Run in development mode with watch.
 - `npm run build`: Build for production.
 - `npm run lint`: Lint code.
 - `npm test`: Run tests.
 
 **Frontend**
+
 - `npm run dev`: Run in development mode.
 - `npm run build`: Build for production.
 - `npm run start`: Start production server.

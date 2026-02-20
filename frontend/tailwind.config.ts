@@ -17,8 +17,8 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         // Stitch Custom Colors
         "primary-gold": "#D4AF37",
-        "midnight": "#020617",
-        "charcoal": "#0f172a",
+        midnight: "#020617",
+        charcoal: "#0f172a",
         "background-light": "#f8f8f5",
         "background-dark": "#020617",
         // End Stitch Colors
@@ -72,7 +72,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        "display": ["Space Grotesk", "sans-serif"],
+        display: ["Space Grotesk", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

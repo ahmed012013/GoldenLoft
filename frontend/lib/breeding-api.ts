@@ -64,7 +64,8 @@ export const eggsApi = {
   update: (id: string, data: UpdateEggPayload) =>
     apiClient.patch(`/eggs/${id}`, data).then((r) => r.data),
 
-  hatch: (id: string) => apiClient.post(`/eggs/${id}/hatch`).then((r) => r.data),
+  hatch: (id: string) =>
+    apiClient.post(`/eggs/${id}/hatch`).then((r) => r.data),
 
   delete: (id: string) => apiClient.delete(`/eggs/${id}`).then((r) => r.data),
 };

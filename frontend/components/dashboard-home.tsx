@@ -63,10 +63,6 @@ const pigeonStatusData = [
   { nameAr: "مريض", nameEn: "Sick", value: 3, color: "#ef4444" },
 ];
 
-
-
-
-
 export function DashboardHome({ userName }: { userName?: string }) {
   const { t, language } = useLanguage();
   const [selectedMetric, setSelectedMetric] = useState<
@@ -116,10 +112,13 @@ export function DashboardHome({ userName }: { userName?: string }) {
         // 3. Fetch Tasks
         const tasksRes = await apiClient.get("/tasks");
         const allTasks = tasksRes.data || [];
-        const today = new Date().toISOString().split('T')[0];
-        const todayTasks = allTasks.filter((t: any) => t.dueDate?.startsWith(today) || t.status === 'pending').slice(0, 5);
+        const today = new Date().toISOString().split("T")[0];
+        const todayTasks = allTasks
+          .filter(
+            (t: any) => t.dueDate?.startsWith(today) || t.status === "pending",
+          )
+          .slice(0, 5);
         setTodaysTasks(todayTasks);
-
       } catch (error) {
         console.error("Failed to fetch dashboard data", error);
       } finally {
@@ -132,16 +131,37 @@ export function DashboardHome({ userName }: { userName?: string }) {
   // Prepare Chart Data
   const pigeonStatusData = stats.statusBreakdown
     ? stats.statusBreakdown.map((item) => {
-      let nameAr = item.status, nameEn = item.status, color = "#6b7280";
-      if (item.status === 'HEALTHY') { nameAr = "صحي"; nameEn = "Healthy"; color = "#10b981"; }
-      else if (item.status === 'SICK') { nameAr = "مريض"; nameEn = "Sick"; color = "#ef4444"; }
-      else if (item.status === 'UNDER_OBSERVATION') { nameAr = "تحت الملاحظة"; nameEn = "Observation"; color = "#f59e0b"; }
-      else if (item.status === 'SOLD') { nameAr = "مباع"; nameEn = "Sold"; color = "#6366f1"; }
-      else if (item.status === 'DECEASED') { nameAr = "متوفى"; nameEn = "Deceased"; color = "#1f2937"; }
-      else if (item.status === 'SQUAB') { nameAr = "زغلول"; nameEn = "Squab"; color = "#ec4899"; }
+        let nameAr = item.status,
+          nameEn = item.status,
+          color = "#6b7280";
+        if (item.status === "HEALTHY") {
+          nameAr = "صحي";
+          nameEn = "Healthy";
+          color = "#10b981";
+        } else if (item.status === "SICK") {
+          nameAr = "مريض";
+          nameEn = "Sick";
+          color = "#ef4444";
+        } else if (item.status === "UNDER_OBSERVATION") {
+          nameAr = "تحت الملاحظة";
+          nameEn = "Observation";
+          color = "#f59e0b";
+        } else if (item.status === "SOLD") {
+          nameAr = "مباع";
+          nameEn = "Sold";
+          color = "#6366f1";
+        } else if (item.status === "DECEASED") {
+          nameAr = "متوفى";
+          nameEn = "Deceased";
+          color = "#1f2937";
+        } else if (item.status === "SQUAB") {
+          nameAr = "زغلول";
+          nameEn = "Squab";
+          color = "#ec4899";
+        }
 
-      return { nameAr, nameEn, value: item.count, color };
-    })
+        return { nameAr, nameEn, value: item.count, color };
+      })
     : [];
 
   const activityIconMap: any = {
@@ -149,7 +169,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
     breeding: Users,
     health: Heart,
     task: Clock,
-    event: ClipboardList
+    event: ClipboardList,
   };
 
   const activityColorMap: any = {
@@ -157,7 +177,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
     breeding: "text-blue-600 bg-blue-100",
     health: "text-red-600 bg-red-100",
     task: "text-green-600 bg-green-100",
-    event: "text-purple-600 bg-purple-100"
+    event: "text-purple-600 bg-purple-100",
   };
 
   return (
@@ -216,7 +236,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                 label: language === "ar" ? "قيمة المخزون" : "Inventory Value",
                 count: dashboardData.financial.expenses, // Using Expenses as Inventory Value
                 color: "amber",
-                prefix: "$"
+                prefix: "$",
               },
             ]}
           />
@@ -233,7 +253,9 @@ export function DashboardHome({ userName }: { userName?: string }) {
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle className="text-base">
-                {language === "ar" ? "نظرة عامة مالية (تجريبي)" : "Financial Overview (Demo)"}
+                {language === "ar"
+                  ? "نظرة عامة مالية (تجريبي)"
+                  : "Financial Overview (Demo)"}
               </CardTitle>
               <CardDescription>
                 {language === "ar"
@@ -245,11 +267,23 @@ export function DashboardHome({ userName }: { userName?: string }) {
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={monthlyData}>
                   <defs>
-                    <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="colorIncome"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
-                    <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="colorExpenses"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                     </linearGradient>
@@ -259,8 +293,20 @@ export function DashboardHome({ userName }: { userName?: string }) {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Area type="monotone" dataKey="income" stroke="#10b981" fill="url(#colorIncome)" name={language === "ar" ? "الدخل" : "Income"} />
-                  <Area type="monotone" dataKey="expenses" stroke="#ef4444" fill="url(#colorExpenses)" name={language === "ar" ? "المصروفات" : "Expenses"} />
+                  <Area
+                    type="monotone"
+                    dataKey="income"
+                    stroke="#10b981"
+                    fill="url(#colorIncome)"
+                    name={language === "ar" ? "الدخل" : "Income"}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="expenses"
+                    stroke="#ef4444"
+                    fill="url(#colorExpenses)"
+                    name={language === "ar" ? "المصروفات" : "Expenses"}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -312,7 +358,9 @@ export function DashboardHome({ userName }: { userName?: string }) {
                 ))}
                 {pigeonStatusData.length === 0 && (
                   <div className="text-center text-muted-foreground text-sm py-4">
-                    {language === "ar" ? "لا توجد بيانات كافية" : "No sufficient data"}
+                    {language === "ar"
+                      ? "لا توجد بيانات كافية"
+                      : "No sufficient data"}
                   </div>
                 )}
               </div>
@@ -337,7 +385,9 @@ export function DashboardHome({ userName }: { userName?: string }) {
               {dashboardData.recentActivity.length > 0 ? (
                 dashboardData.recentActivity.map((activity, index) => {
                   const Icon = activityIconMap[activity.type] || ClipboardList;
-                  const colorClass = activityColorMap[activity.type] || "text-gray-600 bg-gray-100";
+                  const colorClass =
+                    activityColorMap[activity.type] ||
+                    "text-gray-600 bg-gray-100";
 
                   return (
                     <div
@@ -345,26 +395,34 @@ export function DashboardHome({ userName }: { userName?: string }) {
                       className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <div
-                        className={cn(
-                          "mt-0.5 p-1.5 rounded-lg",
-                          colorClass
-                        )}
+                        className={cn("mt-0.5 p-1.5 rounded-lg", colorClass)}
                       >
                         <Icon className="h-3.5 w-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
-                          {activity.title} <span className="text-xs text-muted-foreground">({activity.entityName})</span>
+                          {activity.title}{" "}
+                          <span className="text-xs text-muted-foreground">
+                            ({activity.entityName})
+                          </span>
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
                           {activity.description}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">
-                          {new Date(activity.date).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          {new Date(activity.date).toLocaleDateString(
+                            language === "ar" ? "ar-EG" : "en-US",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
                         </p>
                       </div>
                     </div>
-                  )
+                  );
                 })
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
@@ -422,7 +480,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                             className={cn(
                               "font-medium",
                               item.completed &&
-                              "line-through text-muted-foreground",
+                                "line-through text-muted-foreground",
                             )}
                           >
                             {item.title}
@@ -461,7 +519,9 @@ export function DashboardHome({ userName }: { userName?: string }) {
                   variant="outline"
                   className="rounded-xl bg-red-500/10 text-red-500 border-red-500/30"
                 >
-                  {stats.sick + ((dashboardData as any).lowStockItems?.length || 0)} {t("alertHigh")}
+                  {stats.sick +
+                    ((dashboardData as any).lowStockItems?.length || 0)}{" "}
+                  {t("alertHigh")}
                 </Badge>
               </div>
             </CardHeader>
@@ -482,53 +542,68 @@ export function DashboardHome({ userName }: { userName?: string }) {
                         : `${stats.sick} pigeons need attention`}
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-white bg-red-500 rounded-xl px-2 py-1">{stats.sick}</span>
+                  <span className="text-xs font-bold text-white bg-red-500 rounded-xl px-2 py-1">
+                    {stats.sick}
+                  </span>
                 </div>
               )}
 
               {/* Low Stock Items */}
-              {(dashboardData as any).lowStockItems && (dashboardData as any).lowStockItems.length > 0 && (
-                <>
-                  <div className="flex items-center gap-2 px-1">
-                    <div className="h-px flex-1 bg-amber-200/60" />
-                    <span className="text-xs font-semibold text-amber-600 whitespace-nowrap">
-                      {language === "ar" ? "مخزون منخفض" : "Low Stock"}
-                    </span>
-                    <div className="h-px flex-1 bg-amber-200/60" />
-                  </div>
-                  {(dashboardData as any).lowStockItems.map((item: any) => (
-                    <div key={item.id} className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-100">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100">
-                        <Package className="h-5 w-5 text-amber-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-amber-800 truncate">{item.name}</p>
-                        <p className="text-xs text-amber-500 mt-0.5">
-                          {language === "ar"
-                            ? `المتوفر: ${item.quantity} ${item.unit} • الحد الأدنى: ${item.minStock}`
-                            : `Stock: ${item.quantity} ${item.unit} • Min: ${item.minStock}`}
-                        </p>
-                      </div>
-                      <span className="text-xs font-bold text-white bg-amber-500 rounded-xl px-2 py-1">{item.quantity}{item.unit}</span>
+              {(dashboardData as any).lowStockItems &&
+                (dashboardData as any).lowStockItems.length > 0 && (
+                  <>
+                    <div className="flex items-center gap-2 px-1">
+                      <div className="h-px flex-1 bg-amber-200/60" />
+                      <span className="text-xs font-semibold text-amber-600 whitespace-nowrap">
+                        {language === "ar" ? "مخزون منخفض" : "Low Stock"}
+                      </span>
+                      <div className="h-px flex-1 bg-amber-200/60" />
                     </div>
-                  ))}
-                </>
-              )}
+                    {(dashboardData as any).lowStockItems.map((item: any) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-100"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100">
+                          <Package className="h-5 w-5 text-amber-500" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-amber-800 truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-amber-500 mt-0.5">
+                            {language === "ar"
+                              ? `المتوفر: ${item.quantity} ${item.unit} • الحد الأدنى: ${item.minStock}`
+                              : `Stock: ${item.quantity} ${item.unit} • Min: ${item.minStock}`}
+                          </p>
+                        </div>
+                        <span className="text-xs font-bold text-white bg-amber-500 rounded-xl px-2 py-1">
+                          {item.quantity}
+                          {item.unit}
+                        </span>
+                      </div>
+                    ))}
+                  </>
+                )}
 
               {/* Empty State */}
-              {stats.sick === 0 && (!(dashboardData as any).lowStockItems || (dashboardData as any).lowStockItems.length === 0) && (
-                <div className="flex flex-col items-center justify-center py-8 gap-2">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                    <Bell className="h-6 w-6 text-green-500" />
+              {stats.sick === 0 &&
+                (!(dashboardData as any).lowStockItems ||
+                  (dashboardData as any).lowStockItems.length === 0) && (
+                  <div className="flex flex-col items-center justify-center py-8 gap-2">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                      <Bell className="h-6 w-6 text-green-500" />
+                    </div>
+                    <p className="text-sm font-medium text-green-700">
+                      {language === "ar" ? "لا توجد تنبيهات" : "No alerts"}
+                    </p>
+                    <p className="text-xs text-muted-foreground text-center">
+                      {language === "ar"
+                        ? "كل شيء على ما يرام 🎉"
+                        : "Everything looks great 🎉"}
+                    </p>
                   </div>
-                  <p className="text-sm font-medium text-green-700">
-                    {language === "ar" ? "لا توجد تنبيهات" : "No alerts"}
-                  </p>
-                  <p className="text-xs text-muted-foreground text-center">
-                    {language === "ar" ? "كل شيء على ما يرام 🎉" : "Everything looks great 🎉"}
-                  </p>
-                </div>
-              )}
+                )}
             </CardContent>
           </Card>
         </section>

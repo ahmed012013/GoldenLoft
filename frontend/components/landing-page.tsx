@@ -10,15 +10,15 @@ import CtaSection from "./landing/CtaSection";
 import Footer from "./landing/Footer";
 
 export default function LandingPage() {
-    return (
-        <div className="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display selection:bg-primary-gold selection:text-background-dark min-h-screen">
-            <Navbar />
-            <Hero />
-            <AppStoreSection />
-            <FeaturesGrid />
-            <StatsSection />
-            <CtaSection />
-            <Footer />
-        </div>
-    );
+  return (
+    <div className="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display selection:bg-primary-gold selection:text-background-dark min-h-screen">
+      <Navbar />
+      <Hero />
+      <AppStoreSection />
+      <FeaturesGrid />
+      <StatsSection />
+      <CtaSection />
+      <Footer />
+    </div>
+  );
 }

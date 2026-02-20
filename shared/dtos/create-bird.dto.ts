@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsString,
   IsNotEmpty,
@@ -8,8 +8,8 @@ import {
   IsUUID,
   IsInt,
   Min,
-} from 'class-validator';
-import { BirdGender, BirdStatus, BirdType } from '../enums/bird.enums';
+} from "class-validator";
+import { BirdGender, BirdStatus, BirdType } from "../enums/bird.enums";
 
 export class CreateBirdDto {
   @IsString()
@@ -36,7 +36,7 @@ export class CreateBirdDto {
   @IsOptional()
   birthDate?: string;
 
-  @IsUUID('4', { message: 'Invalid Loft ID' })
+  @IsUUID("4", { message: "Invalid Loft ID" })
   @IsNotEmpty()
   loftId: string;
 

@@ -144,19 +144,17 @@ export function PigeonPages({
 
       {/* Pigeons Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {isLoading ? (
-          [...Array(6)].map((_, i) => <PigeonCardSkeleton key={i} />)
-        ) : (
-          filteredPigeons.map((pigeon) => (
-            <BirdCard
-              key={pigeon.id}
-              pigeon={pigeon}
-              onView={handleView}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          ))
-        )}
+        {isLoading
+          ? [...Array(6)].map((_, i) => <PigeonCardSkeleton key={i} />)
+          : filteredPigeons.map((pigeon) => (
+              <BirdCard
+                key={pigeon.id}
+                pigeon={pigeon}
+                onView={handleView}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
       </div>
 
       {/* Pedigree Modal (Accessed via View Button in BirdCard) */}

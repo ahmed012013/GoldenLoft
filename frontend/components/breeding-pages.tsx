@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useLanguage } from "@/lib/language-context";
@@ -31,7 +30,7 @@ export function BreedingPages({
             <h1
               className={cn(
                 "text-2xl font-bold",
-                dir === "rtl" && "text-right"
+                dir === "rtl" && "text-right",
               )}
             >
               {currentPage === "pairings" && t("pairingsTitle")}

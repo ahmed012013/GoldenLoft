@@ -40,7 +40,7 @@ apiClient.interceptors.request.use(
     // Get language preference from localStorage or default to 'ar'
     const language =
       typeof window !== "undefined"
-        ? (localStorage.getItem("language") || "ar")
+        ? localStorage.getItem("language") || "ar"
         : "ar";
 
     if (token) {

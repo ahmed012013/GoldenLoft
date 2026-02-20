@@ -479,7 +479,11 @@ export function AddHealthRecordDialog({
               >
                 {language === "ar" ? "إلغاء" : "Cancel"}
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="rounded-2xl">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="rounded-2xl"
+              >
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}

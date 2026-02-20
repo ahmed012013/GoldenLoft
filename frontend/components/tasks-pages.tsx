@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -165,18 +164,27 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             className="rounded-2xl"
             onClick={onBack}
           >
-            <ArrowLeft className={cn("h-5 w-5", dir === "rtl" && "rotate-180")} />
+            <ArrowLeft
+              className={cn("h-5 w-5", dir === "rtl" && "rotate-180")}
+            />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">{t("todayTasksTitle" as any)}</h1>
-            <p className="text-muted-foreground">{t("dailyTasksManagement" as any)}</p>
+            <h1 className="text-3xl font-bold">
+              {t("todayTasksTitle" as any)}
+            </h1>
+            <p className="text-muted-foreground">
+              {t("dailyTasksManagement" as any)}
+            </p>
           </div>
         </div>
 
-        <Button className="rounded-2xl" onClick={() => {
-          setTaskToEdit(null);
-          setIsAddDialogOpen(true);
-        }}>
+        <Button
+          className="rounded-2xl"
+          onClick={() => {
+            setTaskToEdit(null);
+            setIsAddDialogOpen(true);
+          }}
+        >
           <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
           {t("addNewTask" as any)}
         </Button>
@@ -197,8 +205,11 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
         <CardContent>
           <div className="space-y-3">
             {tasks
-              .filter(t => t.status !== 'completed') // Hide completed tasks from Today view
-              .filter(t => filterCategory === 'all' || t.category === filterCategory)
+              .filter((t) => t.status !== "completed") // Hide completed tasks from Today view
+              .filter(
+                (t) =>
+                  filterCategory === "all" || t.category === filterCategory,
+              )
               .map((task) => (
                 <TaskCard
                   key={`${task.id}-${task.instanceDate}`}
@@ -215,8 +226,10 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                   }}
                 />
               ))}
-            {tasks.filter(t => t.status !== 'completed').length === 0 && (
-              <p className="text-center text-muted-foreground py-8">{t("noPendingTasks" as any) || "No pending tasks"}</p>
+            {tasks.filter((t) => t.status !== "completed").length === 0 && (
+              <p className="text-center text-muted-foreground py-8">
+                {t("noPendingTasks" as any) || "No pending tasks"}
+              </p>
             )}
           </div>
         </CardContent>
@@ -242,11 +255,17 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             className="rounded-2xl"
             onClick={onBack}
           >
-            <ArrowLeft className={cn("h-5 w-5", dir === "rtl" && "rotate-180")} />
+            <ArrowLeft
+              className={cn("h-5 w-5", dir === "rtl" && "rotate-180")}
+            />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">{t("completedTasksTitle" as any) || "Completed Tasks"}</h1>
-            <p className="text-muted-foreground">{t("historyReview" as any) || "Review your task history"}</p>
+            <h1 className="text-3xl font-bold">
+              {t("completedTasksTitle" as any) || "Completed Tasks"}
+            </h1>
+            <p className="text-muted-foreground">
+              {t("historyReview" as any) || "Review your task history"}
+            </p>
           </div>
         </div>
       </div>
@@ -254,19 +273,20 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
       <Card className="rounded-3xl">
         <CardContent>
           <div className="space-y-3 pt-6">
-            {tasks
-              .map((task) => (
-                <TaskCard
-                  key={`${task.id}-${task.instanceDate}`}
-                  task={task as any}
-                  onToggleComplete={handleToggleComplete}
-                  onEdit={handleEdit}
-                  onDelete={handleDeleteTask}
-                  onCompleteWithNotes={() => { }} // Already completed
-                />
-              ))}
+            {tasks.map((task) => (
+              <TaskCard
+                key={`${task.id}-${task.instanceDate}`}
+                task={task as any}
+                onToggleComplete={handleToggleComplete}
+                onEdit={handleEdit}
+                onDelete={handleDeleteTask}
+                onCompleteWithNotes={() => {}} // Already completed
+              />
+            ))}
             {tasks.length === 0 && (
-              <p className="text-center text-muted-foreground py-8">{t("noCompletedTasks" as any) || "No completed tasks found"}</p>
+              <p className="text-center text-muted-foreground py-8">
+                {t("noCompletedTasks" as any) || "No completed tasks found"}
+              </p>
             )}
           </div>
         </CardContent>
@@ -299,17 +319,26 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
               className="rounded-2xl"
               onClick={onBack}
             >
-              <ArrowLeft className={cn("h-5 w-5", dir === "rtl" && "rotate-180")} />
+              <ArrowLeft
+                className={cn("h-5 w-5", dir === "rtl" && "rotate-180")}
+              />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">{t("taskScheduleTitle" as any)}</h1>
-              <p className="text-muted-foreground">{t("dailyTasksManagement" as any)}</p>
+              <h1 className="text-3xl font-bold">
+                {t("taskScheduleTitle" as any)}
+              </h1>
+              <p className="text-muted-foreground">
+                {t("dailyTasksManagement" as any)}
+              </p>
             </div>
           </div>
-          <Button className="rounded-2xl" onClick={() => {
-            setTaskToEdit(null);
-            setIsAddDialogOpen(true);
-          }}>
+          <Button
+            className="rounded-2xl"
+            onClick={() => {
+              setTaskToEdit(null);
+              setIsAddDialogOpen(true);
+            }}
+          >
             <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
             {t("addNewTask" as any)}
           </Button>
@@ -328,7 +357,9 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                   setCurrentWeekStart(newDate);
                 }}
               >
-                <ChevronLeft className={cn("h-5 w-5", dir === "rtl" && "rotate-180")} />
+                <ChevronLeft
+                  className={cn("h-5 w-5", dir === "rtl" && "rotate-180")}
+                />
               </Button>
               <h2 className="text-lg font-semibold">
                 {weekDates[0].toLocaleDateString(language, {
@@ -351,7 +382,9 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                   setCurrentWeekStart(newDate);
                 }}
               >
-                <ChevronRight className={cn("h-5 w-5", dir === "rtl" && "rotate-180")} />
+                <ChevronRight
+                  className={cn("h-5 w-5", dir === "rtl" && "rotate-180")}
+                />
               </Button>
             </div>
 
