@@ -1,4 +1,4 @@
-import { BirdGender, BirdStatus, BirdType } from '../enums/bird.enums';
+import { BirdGender, BirdStatus, BirdType } from "../enums/bird.enums";
 
 export interface Bird {
   id: string;

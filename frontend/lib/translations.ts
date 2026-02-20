@@ -718,7 +718,8 @@ export const translations = {
     launchDashboard: "Launch Dashboard",
     poweredByAi: "Now Powered by AI Analysis",
     heroTitle: "Master the Art of Pigeon Racing",
-    heroDescription: "Comprehensive management for breeding, health, and performance analysis. Precision data for elite fanciers.",
+    heroDescription:
+      "Comprehensive management for breeding, health, and performance analysis. Precision data for elite fanciers.",
     getStartedFree: "Get Started Free",
     viewDemo: "View Demo",
     enterDashboard: "Enter Dashboard",
@@ -726,16 +727,20 @@ export const translations = {
     appStore: "App Store",
     googlePlay: "Google Play",
     masterOperations: "Master Your Loft Operations",
-    masterOperationsDesc: "Everything you need to transform your passion into a professional, data-backed operation.",
+    masterOperationsDesc:
+      "Everything you need to transform your passion into a professional, data-backed operation.",
     birdTracking: "Bird Tracking",
-    birdTrackingDesc: "Complete digital identity for every bird. Track physical traits, vaccinations, and comprehensive performance logs from one central hub.",
+    birdTrackingDesc:
+      "Complete digital identity for every bird. Track physical traits, vaccinations, and comprehensive performance logs from one central hub.",
     genealogyMapping: "Genealogy Mapping",
     qrCodeTagging: "QR Code Tagging",
-    breedingManagementDesc: "Smart pairing suggestions based on historical performance. Automated egg hatching alerts and genetic diversity analysis.",
+    breedingManagementDesc:
+      "Smart pairing suggestions based on historical performance. Automated egg hatching alerts and genetic diversity analysis.",
     pairingIntelligence: "Pairing Intelligence",
     incubationTracking: "Incubation Tracking",
     raceAnalytics: "Race Analytics",
-    raceAnalyticsDesc: "Real-time velocity calculations, weather impact analysis, and predictive rankings for upcoming competitive seasons.",
+    raceAnalyticsDesc:
+      "Real-time velocity calculations, weather impact analysis, and predictive rankings for upcoming competitive seasons.",
     velocityCharts: "Velocity Charts",
     competitiveRanking: "Competitive Ranking",
     activeLofts: "Trusted by 5,000+",
@@ -743,7 +748,8 @@ export const translations = {
     uptimeAccuracy: "Uptime Accuracy",
     supportExpert: "Support Expert",
     readyToElevate: "Ready to elevate your loft to professional standards?",
-    joinThousands: "Join thousands of successful fanciers worldwide. Start your 14-day free trial today.",
+    joinThousands:
+      "Join thousands of successful fanciers worldwide. Start your 14-day free trial today.",
     startTrial: "Start Your Trial",
     contactSales: "Contact Sales",
     privacyPolicy: "Privacy Policy",
@@ -873,7 +879,6 @@ export const translations = {
     noSquabs: "لا يوجد زغاليل",
     addFirstSquab: "أضف أول زغلول",
 
-
     // Breeding Stats
     totalPairings: "إجمالي التزاوجات",
     activePairings: "تزاوجات نشطة",
@@ -888,7 +893,8 @@ export const translations = {
     launchDashboard: "اذهب للوحة التحكم",
     poweredByAi: "مدعوم الآن بتحليل الذكاء الاصطناعي",
     heroTitle: "أتقن فن سباق الحمام",
-    heroDescription: "إدارة شاملة للتربية والصحة وتحليل الأداء. بيانات دقيقة للنخبة.",
+    heroDescription:
+      "إدارة شاملة للتربية والصحة وتحليل الأداء. بيانات دقيقة للنخبة.",
     getStartedFree: "ابدأ مجاناً",
     viewDemo: "شاهد العرض",
     enterDashboard: "دخول لوحة التحكم",
@@ -896,16 +902,20 @@ export const translations = {
     appStore: "آب ستور",
     googlePlay: "جوجل بلاي",
     masterOperations: "أتقن عمليات اللوفت",
-    masterOperationsDesc: "كل ما تحتاجه لتحويل شغفك إلى عملية احترافية مدعومة بالبيانات.",
+    masterOperationsDesc:
+      "كل ما تحتاجه لتحويل شغفك إلى عملية احترافية مدعومة بالبيانات.",
     birdTracking: "تتبع الطيور",
-    birdTrackingDesc: "هوية رقمية كاملة لكل طائر. تتبع السمات الجسدية والتطعيمات وسجلات الأداء الشاملة من مركز واحد.",
+    birdTrackingDesc:
+      "هوية رقمية كاملة لكل طائر. تتبع السمات الجسدية والتطعيمات وسجلات الأداء الشاملة من مركز واحد.",
     genealogyMapping: "رسم شجرة النسب",
     qrCodeTagging: "تتبع برمز QR",
-    breedingManagementDesc: "اقتراحات تزاوج ذكية بناءً على الأداء التاريخي. تنبيهات فقس البيض الآلية وتحليل التنوع الجيني.",
+    breedingManagementDesc:
+      "اقتراحات تزاوج ذكية بناءً على الأداء التاريخي. تنبيهات فقس البيض الآلية وتحليل التنوع الجيني.",
     pairingIntelligence: "ذكاء التزاوج",
     incubationTracking: "تتبع الحضن",
     raceAnalytics: "تحليلات السباق",
-    raceAnalyticsDesc: "حسابات السرعة في الوقت الفعلي، تحليل تأثير الطقس، وتصنيفات تنبؤية للمواسم التنافسية القادمة.",
+    raceAnalyticsDesc:
+      "حسابات السرعة في الوقت الفعلي، تحليل تأثير الطقس، وتصنيفات تنبؤية للمواسم التنافسية القادمة.",
     velocityCharts: "مخططات السرعة",
     competitiveRanking: "التصنيف التنافسي",
     activeLofts: "لوفتات نشطة",
@@ -913,7 +923,8 @@ export const translations = {
     uptimeAccuracy: "دقة التشغيل",
     supportExpert: "دعم الخبراء",
     readyToElevate: "جاهز لرفع مستوى لوفتك إلى المعايير الاحترافية؟",
-    joinThousands: "انضم إلى الآلاف من الهواة الناجحين حول العالم. ابدأ تجربتك المجانية لمدة 14 يومًا اليوم.",
+    joinThousands:
+      "انضم إلى الآلاف من الهواة الناجحين حول العالم. ابدأ تجربتك المجانية لمدة 14 يومًا اليوم.",
     startTrial: "ابدأ تجربتك",
     contactSales: "اتصل بالمبيعات",
     privacyPolicy: "سياسة الخصوصية",
@@ -1341,8 +1352,6 @@ export const translations = {
     waterChangesToday: "تغييرات المياه اليوم",
     dailyFeedConsumption: "استهلاك العلف اليومي",
     weeklyFeedConsumption: "استهلاك العلف الأسبوعي",
-
-
 
     // Sidebar sub-items - Training
     trainingSchedule: "جدول التدريب",

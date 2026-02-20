@@ -144,7 +144,11 @@ export function HealthRecordsList({
               {language === "ar" ? "السجلات الصحية" : "Health Records"}
             </CardTitle>
             {onAddClick && (
-              <Button size="sm" onClick={onAddClick} className="gap-2 rounded-2xl">
+              <Button
+                size="sm"
+                onClick={onAddClick}
+                className="gap-2 rounded-2xl"
+              >
                 <Plus className="h-4 w-4" />
                 {language === "ar" ? "إضافة سجل" : "Add Record"}
               </Button>
@@ -214,7 +218,9 @@ export function HealthRecordsList({
                           <div className="p-1 rounded-md bg-muted">
                             {getRecordIcon(record.type)}
                           </div>
-                          <span className="capitalize">{t(record.type.toLowerCase() as any) || record.type}</span>
+                          <span className="capitalize">
+                            {t(record.type.toLowerCase() as any) || record.type}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell
@@ -236,7 +242,11 @@ export function HealthRecordsList({
                           variant="secondary"
                           className={`${getStatusColor(record.status)} rounded-2xl`}
                         >
-                          {t(record.status.toLowerCase().replace(/_/g, " ") as any) || record.status.replace("_", " ")}
+                          {t(
+                            record.status
+                              .toLowerCase()
+                              .replace(/_/g, " ") as any,
+                          ) || record.status.replace("_", " ")}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -279,18 +289,18 @@ export function HealthRecordsList({
               </Table>
             </div>
           )}
-        </CardContent >
-      </Card >
+        </CardContent>
+      </Card>
 
       {/* Edit Modal */}
-      < AddHealthRecordDialog
+      <AddHealthRecordDialog
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         recordToEdit={recordToEdit}
       />
 
       {/* View Modal */}
-      < ViewHealthRecordDialog
+      <ViewHealthRecordDialog
         open={isViewModalOpen}
         onOpenChange={setIsViewModalOpen}
         record={recordToView}

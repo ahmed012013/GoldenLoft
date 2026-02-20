@@ -57,7 +57,7 @@ export function ReportsPages({ currentPage, onBack }: ReportsPagesProps) {
       default:
         return "";
     }
-  }
+  };
 
   return (
     <OnboardingGuard>
@@ -74,7 +74,9 @@ export function ReportsPages({ currentPage, onBack }: ReportsPagesProps) {
             </Button>
             <div>
               <h1 className="text-3xl font-bold">{getTitle()}</h1>
-              <p className="text-muted-foreground">{getDescription() || getTitle()}</p>
+              <p className="text-muted-foreground">
+                {getDescription() || getTitle()}
+              </p>
             </div>
           </div>
         </div>

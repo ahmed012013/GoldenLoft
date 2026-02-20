@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -32,7 +31,7 @@ interface LanguageProviderProps {
 export function LanguageProvider({
   children,
   defaultLanguage = "ar",
-  forcedLanguage
+  forcedLanguage,
 }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<Language>(defaultLanguage);
 
@@ -61,23 +60,31 @@ export function LanguageProvider({
     document.documentElement.lang = activeLang;
   }, [language, forcedLanguage]);
 
-  const setLanguage = useCallback((lang: Language) => {
-    if (forcedLanguage) return; // Cannot change if forced
-    setLanguageState(lang);
-  }, [forcedLanguage]);
+  const setLanguage = useCallback(
+    (lang: Language) => {
+      if (forcedLanguage) return; // Cannot change if forced
+      setLanguageState(lang);
+    },
+    [forcedLanguage],
+  );
 
-  const t = useCallback((key: TranslationKey): string => {
-    const activeLang = forcedLanguage || language;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
-    return (translations[activeLang] as any)[key] || key;
-  }, [language, forcedLanguage]);
+  const t = useCallback(
+    (key: TranslationKey): string => {
+      const activeLang = forcedLanguage || language;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+      return (translations[activeLang] as any)[key] || key;
+    },
+    [language, forcedLanguage],
+  );
 
   const activeLang = forcedLanguage || language;
   const dir = activeLang === "ar" ? "rtl" : "ltr";
   const isRtl = activeLang === "ar";
 
   return (
-    <LanguageContext.Provider value={{ language: activeLang, setLanguage, t, dir, isRtl }}>
+    <LanguageContext.Provider
+      value={{ language: activeLang, setLanguage, t, dir, isRtl }}
+    >
       {children}
     </LanguageContext.Provider>
   );

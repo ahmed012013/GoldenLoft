@@ -1,6 +1,6 @@
-import { IsOptional, IsEnum, IsString, IsInt, Min } from 'class-validator';
-import { BirdGender, BirdStatus } from '../enums/bird.enums';
-import { Type } from 'class-transformer';
+import { IsOptional, IsEnum, IsString, IsInt, Min } from "class-validator";
+import { BirdGender, BirdStatus } from "../enums/bird.enums";
+import { Type } from "class-transformer";
 
 export class GetBirdsDto {
   @IsEnum(BirdGender)

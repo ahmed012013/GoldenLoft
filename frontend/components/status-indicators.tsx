@@ -44,37 +44,40 @@ export function StatusIndicators({ items, title }: StatusIndicatorsProps) {
         </h3>
       )}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {items.filter(item => !item.hidden).map((item, index) => {
-          const Icon = item.icon;
-          const colorClass = colorMap[item.color];
+        {items
+          .filter((item) => !item.hidden)
+          .map((item, index) => {
+            const Icon = item.icon;
+            const colorClass = colorMap[item.color];
 
-          return (
-            <button
-              key={index}
-              onClick={item.onClick}
-              disabled={!item.onClick}
-              className={cn(
-                "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
-                item.onClick
-                  ? "cursor-pointer hover:shadow-md hover:scale-105"
-                  : "cursor-default",
-                item.isActive
-                  ? "bg-primary/10 border-primary shadow-sm"
-                  : colorClass,
-              )}
-            >
-              <Icon className="h-5 w-5" />
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold text-center line-clamp-2">
-                  {item.label}
-                </span>
-                <Badge variant="secondary" className="text-xs font-bold px-2">
-                  {item.prefix}{item.count}
-                </Badge>
-              </div>
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={index}
+                onClick={item.onClick}
+                disabled={!item.onClick}
+                className={cn(
+                  "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
+                  item.onClick
+                    ? "cursor-pointer hover:shadow-md hover:scale-105"
+                    : "cursor-default",
+                  item.isActive
+                    ? "bg-primary/10 border-primary shadow-sm"
+                    : colorClass,
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-xs font-semibold text-center line-clamp-2">
+                    {item.label}
+                  </span>
+                  <Badge variant="secondary" className="text-xs font-bold px-2">
+                    {item.prefix}
+                    {item.count}
+                  </Badge>
+                </div>
+              </button>
+            );
+          })}
       </div>
     </div>
   );

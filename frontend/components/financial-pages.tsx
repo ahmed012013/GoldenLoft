@@ -57,10 +57,7 @@ export function FinancialPages({ currentPage, onBack }: FinancialPagesProps) {
   );
 
   const renderFinancialReports = () => (
-    <FinancialReports
-      totalIncome={totalIncome}
-      totalExpenses={totalExpenses}
-    />
+    <FinancialReports totalIncome={totalIncome} totalExpenses={totalExpenses} />
   );
 
   return (
