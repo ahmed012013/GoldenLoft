@@ -1,0 +1,229 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  name      String
+  lofts     Loft[]
+  pairings  Pairing[]
+  tasks     Task[]
+  taskCompletions TaskCompletion[]
+  inventory InventoryItem[]
+  notifications Notification[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  titleAr   String?
+  message   String
+  messageAr String?
+  type      String   @default("INFO") // ALERT, INFO, SUCCESS
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Loft {
+  id          String   @id @default(uuid())
+  name        String
+  location    String?
+  description String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  userId      String
+  birds       Bird[]
+  user        User     @relation(fields: [userId], references: [id])
+  tasks       Task[]
+  capacity    Int      @default(50)
+}
+
+model Bird {
+  id               String         @id @default(uuid())
+  ringNumber       String         @unique
+  name             String
+  type             String
+  gender           String
+  color            String
+  status           String
+  birthDate        DateTime?
+  totalRaces       Int            @default(0)
+  wins             Int            @default(0)
+  weight           String?
+  notes            String?
+  image            String?
+  loftId           String
+  fatherId         String?
+  motherId         String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  father           Bird?          @relation("FatherRelation", fields: [fatherId], references: [id])
+  fatherChildren   Bird[]         @relation("FatherRelation")
+  loft             Loft           @relation(fields: [loftId], references: [id])
+  mother           Bird?          @relation("MotherRelation", fields: [motherId], references: [id])
+  motherChildren   Bird[]         @relation("MotherRelation")
+  healthRecords    HealthRecord[]
+  lifeEvents       LifeEvent[]
+  pairingsAsFemale Pairing[]      @relation("FemalePairing")
+  pairingsAsMale   Pairing[]      @relation("MalePairing")
+}
+
+model HealthRecord {
+  id          String   @id @default(uuid())
+  date        DateTime
+  description String
+  vetName     String?
+  type        String
+  status      String
+  notes       String?  // New field
+  birdId      String
+  createdAt   DateTime @default(now())
+  bird        Bird     @relation(fields: [birdId], references: [id])
+}
+
+model Pairing {
+  id        String        @id @default(uuid())
+  maleId    String
+  femaleId  String
+  startDate DateTime
+  endDate   DateTime?
+  status    PairingStatus @default(ACTIVE)
+  nestBox   String?
+  notes     String?
+  userId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  eggs      Egg[]
+  female    Bird          @relation("FemalePairing", fields: [femaleId], references: [id])
+  male      Bird          @relation("MalePairing", fields: [maleId], references: [id])
+  user      User          @relation(fields: [userId], references: [id])
+}
+
+model Egg {
+  id                String    @id @default(uuid())
+  pairingId         String
+  layDate           DateTime
+  hatchDateExpected DateTime?
+  hatchDateActual   DateTime?
+  status            EggStatus @default(LAID)
+  candlingDate      DateTime?
+  candlingResult    String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  pairing           Pairing   @relation(fields: [pairingId], references: [id], onDelete: Cascade)
+}
+
+model LifeEvent {
+  id          String        @id @default(uuid())
+  birdId      String
+  date        DateTime
+  description String
+  type        LifeEventType
+  createdAt   DateTime      @default(now())
+  bird        Bird          @relation(fields: [birdId], references: [id])
+}
+
+enum PairingStatus {
+  ACTIVE
+  FINISHED
+}
+
+enum EggStatus {
+  LAID
+  HATCHED
+  INFERTILE
+  BROKEN
+  DEAD_IN_SHELL
+}
+
+enum LifeEventType {
+  WEANING
+  VACCINATION
+  TRANSFER
+  RACE
+  OTHER
+}
+
+enum TaskFrequency {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model Task {
+  id          String        @id @default(uuid())
+  title       String
+  titleEn     String?
+  description String?
+  descriptionEn String?
+  time        String?       // Stored as "HH:mm" for repeating tasks to avoid timezone shifting
+  startDate   DateTime      @default(now())
+  endDate     DateTime?
+  category    String
+  priority    String
+  frequency   TaskFrequency @default(NONE)
+  isActive    Boolean       @default(true)
+  loftId      String?
+  userId      String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  loft        Loft?         @relation(fields: [loftId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
+  completions TaskCompletion[]
+
+  @@index([userId, startDate])
+}
+
+model TaskCompletion {
+  id          String   @id @default(uuid())
+  taskId      String
+  userId      String
+  completedAt DateTime // Represents the target date of the task instance (UTC)
+  status      String   @default("COMPLETED")
+  notes       String?
+  createdAt   DateTime @default(now()) // Actual timestamp of completion action
+
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([taskId, completedAt]) // Prevent duplicate completions for the same instance
+  @@index([userId, completedAt])
+}
+
+model InventoryItem {
+  id           String   @id @default(uuid())
+  name         String
+  type         String   // seed, grain, pellet, mix, grit, supplement, vaccine, antibiotic, vitamin, etc.
+  quantity     Float
+  unit         String   // kg, g, bag, dl, ml, l, pcs, sets, etc.
+  minStock     Float    @default(0)
+  cost         Float    @default(0)
+  supplier     String?
+  expiryDate   DateTime?
+  purchaseDate DateTime?
+  location     String?
+  condition    String?  // good, fair, worn (for equipment)
+  notes        String?
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id])
+}

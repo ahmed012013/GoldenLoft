@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# Environment Secrets (الخزنة)
+.env
+.env.*
+!.env.example
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+/generated/prisma
+
+# Logs & Debugging
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+backend/debug_boot.js
+
+# Testing
+playwright-report/
+test-results/
+testsprite_tests/
+coverage/
+
+# Project specific
+backend/uploads/
+backend/logs/
+backend/debug_*.js
+backend/verify*.js
+backend/db-proxy.js
+backend/reproduce_issue.js
+backend/simulate_tasks.js
+backend/test-capacity.js
+data/
+files/
+roos/
+*.tar.gz
+*.ps1
+*.sh
+readme1.md
+
+# System & IDEs
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Temporary / Scripts
+.eslintcache
+.turbo
+.agent/
