@@ -6,6 +6,7 @@ import {
   UpdatePairingPayload,
   EggPayload,
   UpdateEggPayload,
+  HatchEggPayload,
 } from "@/lib/breeding-api";
 
 // ============ Query Keys ============
@@ -20,7 +21,7 @@ export const breedingKeys = {
 export function usePairings() {
   return useQuery({
     queryKey: breedingKeys.pairings,
-    queryFn: pairingsApi.getAll,
+    queryFn: () => pairingsApi.getAll(),
     staleTime: 30 * 1000,
   });
 }
@@ -66,7 +67,7 @@ export function usePairingMutations() {
 export function useEggs() {
   return useQuery({
     queryKey: breedingKeys.eggs,
-    queryFn: eggsApi.getAll,
+    queryFn: () => eggsApi.getAll(),
     staleTime: 30 * 1000,
   });
 }
@@ -92,7 +93,8 @@ export function useEggMutations() {
   });
 
   const hatchEgg = useMutation({
-    mutationFn: (id: string) => eggsApi.hatch(id),
+    mutationFn: ({ id, data }: { id: string; data?: HatchEggPayload }) =>
+      eggsApi.hatch(id, data),
     onSuccess: invalidate,
   });
 

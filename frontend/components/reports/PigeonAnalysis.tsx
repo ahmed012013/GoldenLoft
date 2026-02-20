@@ -24,23 +24,34 @@ import {
   Cell,
 } from "recharts";
 
-// Sample Data (moved from reports-pages.tsx or props)
-const pigeonStatusData = [
+// Default Data for fallback/storybook
+const DEFAULT_STATUS_DATA = [
   { name: "Healthy", value: 30, color: "#22c55e" },
   { name: "Sick", value: 5, color: "#ef4444" },
   { name: "Observation", value: 8, color: "#f59e0b" },
   { name: "Deceased", value: 2, color: "#64748b" },
 ];
 
-const pigeonAgeData = [
+const DEFAULT_AGE_DATA = [
   { name: "< 1 Year", count: 12 },
   { name: "1-2 Years", count: 18 },
   { name: "2-4 Years", count: 10 },
   { name: "> 4 Years", count: 5 },
 ];
 
-export function PigeonAnalysis() {
+interface PigeonAnalysisProps {
+  statusData?: { name: string; value: number; color: string }[];
+  ageData?: { name: string; count: number }[];
+}
+
+export function PigeonAnalysis({
+  statusData,
+  ageData,
+}: PigeonAnalysisProps) {
   const { t, language } = useLanguage();
+
+  const currentStatusData = statusData ?? DEFAULT_STATUS_DATA;
+  const currentAgeData = ageData ?? DEFAULT_AGE_DATA;
 
   return (
     <div className="space-y-6">
@@ -49,7 +60,7 @@ export function PigeonAnalysis() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">
-              {t("totalPigeons" as any)}
+              {t("totalPigeons")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -66,7 +77,7 @@ export function PigeonAnalysis() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">
-              {t("healthyPigeons" as any)}
+              {t("healthyPigeons")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -80,7 +91,7 @@ export function PigeonAnalysis() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">
-              {t("sickPigeons" as any)}
+              {t("sickPigeons")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -94,7 +105,7 @@ export function PigeonAnalysis() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">
-              {t("topFinishes" as any)}
+              {t("topFinishes")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -120,7 +131,7 @@ export function PigeonAnalysis() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={pigeonStatusData}
+                    data={currentStatusData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -128,7 +139,7 @@ export function PigeonAnalysis() {
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {pigeonStatusData.map((entry, index) => (
+                    {currentStatusData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
@@ -149,7 +160,7 @@ export function PigeonAnalysis() {
           <CardContent>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={pigeonAgeData}>
+                <BarChart data={currentAgeData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -166,14 +177,14 @@ export function PigeonAnalysis() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>{t("generateReport" as any)}</CardTitle>
+              <CardTitle>{t("generateReport")}</CardTitle>
               <CardDescription>
-                {t("exportFinancialData" as any)}
+                {t("exportFinancialData")}
               </CardDescription>
             </div>
             <Button size="sm" className="gap-2">
               <Download className="h-4 w-4" />
-              {t("exportPDF" as any)}
+              {t("exportPDF")}
             </Button>
           </div>
         </CardHeader>

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { EggIcon, Edit2, Trash2, Loader2 } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { BackendEgg } from "./types";
+import { EggStatus } from "@/lib/breeding-api";
+import { getSquabStatusColor } from "./utils";
 
 interface EggListProps {
   eggs: BackendEgg[];
@@ -22,34 +24,19 @@ export function EggList({
 }: EggListProps) {
   const { t, language } = useLanguage();
 
-  const getStatusColor = (status: BackendEgg["status"]) => {
-    switch (status) {
-      case "LAID":
-        return "bg-yellow-100 text-yellow-800";
-      case "HATCHED":
-        return "bg-green-100 text-green-800";
-      case "INFERTILE":
-        return "bg-red-100 text-red-800";
-      case "BROKEN":
-        return "bg-orange-100 text-orange-800";
-      case "DEAD_IN_SHELL":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+
 
   const getStatusLabel = (status: BackendEgg["status"]) => {
     switch (status) {
-      case "LAID":
+      case EggStatus.LAID:
         return t("eggLaid");
-      case "HATCHED":
+      case EggStatus.HATCHED:
         return t("eggHatched");
-      case "INFERTILE":
+      case EggStatus.INFERTILE:
         return t("infertile");
-      case "BROKEN":
+      case EggStatus.BROKEN:
         return t("eggBroken");
-      case "DEAD_IN_SHELL":
+      case EggStatus.DEAD_IN_SHELL:
         return t("eggDeadInShell");
       default:
         return status;
@@ -95,11 +82,11 @@ export function EggList({
               <div className="space-y-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge
-                    className={`${getStatusColor(egg.status)} rounded-2xl`}
+                    className={`${getSquabStatusColor(egg.status)} rounded-2xl`}
                   >
                     {getStatusLabel(egg.status)}
                   </Badge>
-                  {egg.status === "LAID" && (
+                  {egg.status === EggStatus.LAID && (
                     <span className="text-sm font-medium">
                       {t("daysToHatch")}: {calculateDaysToHatch(egg.layDate)}{" "}
                       {t("days")}
@@ -190,13 +177,13 @@ export function EggList({
                   </Button>
                 </div>
                 {/* Quick status buttons */}
-                {egg.status === "LAID" && (
+                {egg.status === EggStatus.LAID && (
                   <div className="flex flex-col gap-1">
                     <Button
                       variant="outline"
                       size="sm"
                       className="text-xs rounded-2xl"
-                      onClick={() => onStatusChange(egg.id, "HATCHED")}
+                      onClick={() => onStatusChange(egg.id, EggStatus.HATCHED)}
                     >
                       🐣 {t("hatched")}
                     </Button>
@@ -204,7 +191,7 @@ export function EggList({
                       variant="outline"
                       size="sm"
                       className="text-xs rounded-2xl"
-                      onClick={() => onStatusChange(egg.id, "INFERTILE")}
+                      onClick={() => onStatusChange(egg.id, EggStatus.INFERTILE)}
                     >
                       ✕ {t("infertile")}
                     </Button>

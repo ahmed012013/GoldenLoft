@@ -453,6 +453,8 @@ export function DesignaliCreative() {
                 ) : currentPigeonPage !== null ? (
                   <PigeonPages
                     currentPage={currentPigeonPage}
+                    pigeonEditingId={navigation.pigeonEditingId}
+                    setPigeonEditingId={navigation.setPigeonEditingId}
                     onBack={handleBack}
                     onNavigate={(page) => {
                       setCurrentPigeonPage(page);

@@ -9,12 +9,8 @@ export default function DashboardPage() {
   const [authorized, setAuthorized] = React.useState(false);
 
   React.useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      setAuthorized(true);
-    }
+    // If we land here, we assume authorized until an API call fails with 401
+    setAuthorized(true);
   }, [router]);
 
   if (!authorized) {

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/lib/language-context";
 import { BackendEgg } from "./types";
+import { EggStatus } from "@/lib/breeding-api";
 
 interface EggStatsProps {
   eggs: BackendEgg[];
@@ -9,9 +10,10 @@ interface EggStatsProps {
 export function EggStats({ eggs }: EggStatsProps) {
   const { t } = useLanguage();
 
-  const fertileCount = eggs.filter((e) => e.status === "LAID").length;
-  const hatchedCount = eggs.filter((e) => e.status === "HATCHED").length;
-  const infertileCount = eggs.filter((e) => e.status === "INFERTILE").length;
+  const fertileCount = eggs.filter((e) => e.status === EggStatus.LAID).length;
+  const hatchedCount = eggs.filter((e) => e.status === EggStatus.HATCHED).length;
+  const infertileCount = eggs.filter((e) => e.status === EggStatus.INFERTILE)
+    .length;
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">

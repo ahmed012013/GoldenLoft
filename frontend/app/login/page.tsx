@@ -56,12 +56,9 @@ export default function LoginPage() {
 
   // Check for registration success params
   React.useEffect(() => {
-    // Check if already logged in
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      router.push("/dashboard");
-      return;
-    }
+    // We no longer check access_token here as it's an HttpOnly cookie.
+    // The Dashboard will handle unauthorized states via API calls.
+
 
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
@@ -87,7 +84,7 @@ export default function LoginPage() {
         });
 
       const data = res.data;
-      localStorage.setItem("access_token", data.access_token);
+      // localStorage.setItem("access_token", data.access_token); // REMOVED
 
       // Clear persistence state to ensure we start at Dashboard
       const keysToRemove = [
@@ -105,8 +102,7 @@ export default function LoginPage() {
       ];
       keysToRemove.forEach((key) => localStorage.removeItem(key));
 
-      // Set cookie for middleware access
-      document.cookie = `access_token=${data.access_token}; path=/; max-age=86400; SameSite=Strict; Secure`;
+      // document.cookie = ... // REMOVED (Handled by server)
       toast.success("Login successful! Welcome back.");
       window.location.href = "/dashboard";
     } catch (err: any) {
@@ -316,11 +312,10 @@ export default function LoginPage() {
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                current === index
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${current === index
                   ? "bg-white w-8"
                   : "bg-white/40 hover:bg-white/60"
-              }`}
+                }`}
               aria-label={`الانتقال للشريحة ${index + 1}`}
             />
           ))}

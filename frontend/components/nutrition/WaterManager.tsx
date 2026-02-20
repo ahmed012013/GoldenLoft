@@ -27,8 +27,8 @@ import {
 interface WaterManagerProps {
   schedule: WaterSchedule[];
   getQualityLabel: (quality: string) => string;
-  onRefresh: (id: number) => void;
-  onEdit: (id: number) => void;
+  onRefresh: (id: string) => void;
+  onEdit: (id: string) => void;
   onAdd: () => void;
 }
 
@@ -54,7 +54,7 @@ export function WaterManager({
               <div>
                 <p className="text-2xl font-bold">{schedule.length}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("loftManagement" as any)}
+                  {t("loftManagement")}
                 </p>
               </div>
             </div>
@@ -71,7 +71,7 @@ export function WaterManager({
                   {schedule.filter((w) => w.quality === "good").length}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t("goodQuality" as any)}
+                  {t("goodQuality")}
                 </p>
               </div>
             </div>
@@ -88,7 +88,7 @@ export function WaterManager({
                   {schedule.filter((w) => w.quality !== "good").length}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t("fairQuality" as any)}
+                  {t("fairQuality")}
                 </p>
               </div>
             </div>
@@ -103,7 +103,7 @@ export function WaterManager({
               <div>
                 <p className="text-2xl font-bold">6</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("waterChangesToday" as any)}
+                  {t("waterChangesToday")}
                 </p>
               </div>
             </div>
@@ -115,12 +115,12 @@ export function WaterManager({
       <Card className="rounded-2xl">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>{t("waterManagementTitle" as any)}</CardTitle>
+            <CardTitle>{t("waterManagementTitle")}</CardTitle>
             <Button onClick={onAdd} className="rounded-xl">
               <Plus
                 className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")}
               />
-              {t("scheduleWaterChange" as any)}
+              {t("scheduleWaterChange")}
             </Button>
           </div>
         </CardHeader>
@@ -160,7 +160,7 @@ export function WaterManager({
                         : scheduleItem.loft}
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      {t("waterAdditive" as any)}:{" "}
+                      {t("waterAdditive")}:{" "}
                       {language === "ar"
                         ? scheduleItem.additiveAr
                         : scheduleItem.additive}
@@ -170,13 +170,13 @@ export function WaterManager({
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
                   <div className="text-sm">
                     <p className="text-muted-foreground">
-                      {t("lastWaterChange" as any)}
+                      {t("lastWaterChange")}
                     </p>
                     <p className="font-medium">{scheduleItem.lastChange}</p>
                   </div>
                   <div className="text-sm">
                     <p className="text-muted-foreground">
-                      {t("nextWaterChange" as any)}
+                      {t("nextWaterChange")}
                     </p>
                     <p className="font-medium">{scheduleItem.nextChange}</p>
                   </div>
@@ -200,7 +200,7 @@ export function WaterManager({
                     <Droplets
                       className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")}
                     />
-                    {t("changeWater" as any)}
+                    {t("changeWater")}
                   </Button>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export function WaterManager({
       {/* Water Change History */}
       <Card className="rounded-2xl">
         <CardHeader>
-          <CardTitle>{t("waterChangeHistory" as any)}</CardTitle>
+          <CardTitle>{t("waterChangeHistory")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[300px]">
@@ -236,7 +236,7 @@ export function WaterManager({
                     </div>
                   </div>
                   <Badge variant="outline" className="rounded-full">
-                    {t("completed" as any)}
+                    {t("completed")}
                   </Badge>
                 </div>
               ))}

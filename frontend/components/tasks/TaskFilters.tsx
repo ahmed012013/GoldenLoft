@@ -23,7 +23,7 @@ export function TaskFilters({
   return (
     <CardHeader>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <CardTitle>{t("todayTasksTitle" as any)}</CardTitle>
+        <CardTitle>{t("todayTasksTitle")}</CardTitle>
         <div className="flex gap-2">
           <Select value={filterCategory} onValueChange={setFilterCategory}>
             <SelectTrigger className="w-[140px] rounded-xl">
@@ -31,18 +31,18 @@ export function TaskFilters({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("allCategories" as any)}</SelectItem>
+              <SelectItem value="all">{t("allCategories")}</SelectItem>
               <SelectItem value="feeding">
-                {t("categoryFeeding" as any)}
+                {t("categoryFeeding")}
               </SelectItem>
               <SelectItem value="cleaning">
-                {t("categoryCleaning" as any)}
+                {t("categoryCleaning")}
               </SelectItem>
               <SelectItem value="health">
-                {t("categoryHealth" as any)}
+                {t("categoryHealth")}
               </SelectItem>
               <SelectItem value="training">
-                {t("categoryTraining" as any)}
+                {t("categoryTraining")}
               </SelectItem>
             </SelectContent>
           </Select>

@@ -16,13 +16,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/lib/language-context";
+import { Task } from "@/hooks/use-tasks";
+import { Loft } from "@/hooks/useLofts";
+import { useState, useEffect } from "react";
 
 interface TaskDialogsProps {
   isAddDialogOpen: boolean;
   setIsAddDialogOpen: (open: boolean) => void;
-  taskToEdit: any;
+  taskToEdit: Task | null;
   handleCreateTask: (e: React.FormEvent) => Promise<void>;
-  lofts: any[] | undefined;
+  lofts: Loft[] | undefined;
 }
 
 export function TaskDialogs({
@@ -33,38 +36,55 @@ export function TaskDialogs({
   lofts,
 }: TaskDialogsProps) {
   const { t } = useLanguage();
+  const [category, setCategory] = useState(taskToEdit?.category || "feeding");
+  const [priority, setPriority] = useState(taskToEdit?.priority || "medium");
+  const [loftId, setLoftId] = useState(taskToEdit?.loft?.id || "all");
+  const [frequency, setFrequency] = useState(taskToEdit?.frequency || "NONE");
+
+  useEffect(() => {
+    setCategory(taskToEdit?.category || "feeding");
+    setPriority(taskToEdit?.priority || "medium");
+    setLoftId(taskToEdit?.loft?.id || "all");
+    setFrequency(taskToEdit?.frequency || "NONE");
+  }, [taskToEdit]);
 
   return (
     <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
       <DialogContent className="max-w-lg rounded-3xl">
         <DialogHeader>
           <DialogTitle>
-            {taskToEdit ? t("editTask" as any) : t("addNewTask" as any)}
+            {taskToEdit ? t("editTask") : t("addNewTask")}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleCreateTask} className="space-y-4 mt-4">
+          {/* Hidden inputs for Select components */}
+          <input type="hidden" name="category" value={category} />
+          <input type="hidden" name="priority" value={priority} />
+          <input type="hidden" name="loft" value={loftId} />
+          <input type="hidden" name="repeat" value={frequency} />
+          
           <div className="space-y-2">
-            <Label>{t("taskName" as any)}</Label>
+            <Label>{t("taskName")}</Label>
             <Input
               name="name"
               required
               defaultValue={taskToEdit?.title}
-              placeholder={t("taskNamePlaceholder" as any)}
+              placeholder={t("taskNamePlaceholder")}
               className="rounded-xl"
             />
           </div>
           <div className="space-y-2">
-            <Label>{t("taskDescription" as any)}</Label>
+            <Label>{t("taskDescription")}</Label>
             <Textarea
               name="description"
               defaultValue={taskToEdit?.description}
-              placeholder={t("taskDescriptionPlaceholder" as any)}
+              placeholder={t("taskDescriptionPlaceholder")}
               className="rounded-xl"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>{t("taskTime" as any)}</Label>
+              <Label>{t("taskTime")}</Label>
               <Input
                 name="time"
                 type="time"
@@ -73,35 +93,35 @@ export function TaskDialogs({
               />
             </div>
             <div className="space-y-2">
-              <Label>{t("taskCategory" as any)}</Label>
+              <Label>{t("taskCategory")}</Label>
               <Select
-                name="category"
-                defaultValue={taskToEdit?.category || "feeding"}
+                value={category}
+                onValueChange={setCategory}
               >
                 <SelectTrigger className="rounded-xl">
-                  <SelectValue placeholder={t("selectCategory" as any)} />
+                  <SelectValue placeholder={t("selectCategory")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="feeding">
-                    {t("categoryFeeding" as any)}
+                    {t("categoryFeeding")}
                   </SelectItem>
                   <SelectItem value="cleaning">
-                    {t("categoryCleaning" as any)}
+                    {t("categoryCleaning")}
                   </SelectItem>
                   <SelectItem value="health">
-                    {t("categoryHealth" as any)}
+                    {t("categoryHealth")}
                   </SelectItem>
                   <SelectItem value="training">
-                    {t("categoryTraining" as any)}
+                    {t("categoryTraining")}
                   </SelectItem>
                   <SelectItem value="medication">
-                    {t("categoryMedication" as any)}
+                    {t("categoryMedication")}
                   </SelectItem>
                   <SelectItem value="water">
-                    {t("categoryWater" as any)}
+                    {t("categoryWater")}
                   </SelectItem>
                   <SelectItem value="maintenance">
-                    {t("categoryMaintenance" as any)}
+                    {t("categoryMaintenance")}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -109,36 +129,36 @@ export function TaskDialogs({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>{t("taskPriority" as any)}</Label>
+              <Label>{t("taskPriority")}</Label>
               <Select
-                name="priority"
-                defaultValue={taskToEdit?.priority || "medium"}
+                value={priority}
+                onValueChange={setPriority}
               >
                 <SelectTrigger className="rounded-xl">
-                  <SelectValue placeholder={t("selectPriority" as any)} />
+                  <SelectValue placeholder={t("selectPriority")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="high">
-                    {t("priorityHigh" as any)}
+                    {t("priorityHigh")}
                   </SelectItem>
                   <SelectItem value="medium">
-                    {t("priorityMedium" as any)}
+                    {t("priorityMedium")}
                   </SelectItem>
-                  <SelectItem value="low">{t("priorityLow" as any)}</SelectItem>
+                  <SelectItem value="low">{t("priorityLow")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>{t("assignedLoft" as any)}</Label>
-              <Select name="loft" defaultValue={taskToEdit?.loft?.id || "all"}>
+              <Label>{t("assignedLoft")}</Label>
+              <Select value={loftId} onValueChange={setLoftId}>
                 <SelectTrigger className="rounded-xl">
-                  <SelectValue placeholder={t("selectLoft" as any)} />
+                  <SelectValue placeholder={t("selectLoft")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">
-                    {t("allLoftsAssign" as any)}
+                    {t("allLoftsAssign")}
                   </SelectItem>
-                  {lofts?.map((loft: any) => (
+                  {lofts?.map((loft: Loft) => (
                     <SelectItem key={loft.id} value={loft.id}>
                       {loft.name}
                     </SelectItem>
@@ -148,22 +168,22 @@ export function TaskDialogs({
             </div>
           </div>
           <div className="space-y-2">
-            <Label>{t("repeatTask" as any)}</Label>
+            <Label>{t("repeatTask")}</Label>
             <Select
-              name="repeat"
-              defaultValue={taskToEdit?.frequency || "NONE"}
+              value={frequency}
+              onValueChange={setFrequency}
             >
               <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={t("repeatNone" as any)} />
+                <SelectValue placeholder={t("repeatNone")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="NONE">{t("repeatNone" as any)}</SelectItem>
-                <SelectItem value="DAILY">{t("repeatDaily" as any)}</SelectItem>
+                <SelectItem value="NONE">{t("repeatNone")}</SelectItem>
+                <SelectItem value="DAILY">{t("repeatDaily")}</SelectItem>
                 <SelectItem value="WEEKLY">
-                  {t("repeatWeekly" as any)}
+                  {t("repeatWeekly")}
                 </SelectItem>
                 <SelectItem value="MONTHLY">
-                  {t("repeatMonthly" as any)}
+                  {t("repeatMonthly")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -171,7 +191,7 @@ export function TaskDialogs({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>{t("startDate" as any)}</Label>
+              <Label>{t("startDate")}</Label>
               <Input
                 name="startDate"
                 type="date"
@@ -184,7 +204,7 @@ export function TaskDialogs({
               />
             </div>
             <div className="space-y-2">
-              <Label>{t("endDate" as any)}</Label>
+              <Label>{t("endDate")}</Label>
               <Input
                 name="endDate"
                 type="date"
@@ -200,7 +220,7 @@ export function TaskDialogs({
 
           <div className="flex gap-3 pt-4">
             <Button type="submit" className="flex-1 rounded-2xl">
-              {t("saveTask" as any)}
+              {t("saveTask")}
             </Button>
             <Button
               type="button"
@@ -208,7 +228,7 @@ export function TaskDialogs({
               className="rounded-2xl bg-transparent"
               onClick={() => setIsAddDialogOpen(false)}
             >
-              {t("cancel" as any)}
+              {t("cancel")}
             </Button>
           </div>
         </form>

@@ -1,10 +1,12 @@
+import { PairingStatus, EggStatus } from "@/lib/breeding-api";
+
 export interface BackendPairing {
   id: string;
   maleId: string;
   femaleId: string;
   startDate: string;
   endDate?: string | null;
-  status: "ACTIVE" | "FINISHED";
+  status: PairingStatus;
   nestBox?: string | null;
   notes?: string | null;
   male: { id: string; ringNumber: string; name: string };
@@ -18,7 +20,7 @@ export interface BackendEgg {
   layDate: string;
   hatchDateExpected?: string | null;
   hatchDateActual?: string | null;
-  status: "LAID" | "HATCHED" | "INFERTILE" | "BROKEN" | "DEAD_IN_SHELL";
+  status: EggStatus;
   candlingDate?: string | null;
   candlingResult?: string | null;
   pairing?: {

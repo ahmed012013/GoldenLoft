@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bird } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
+import { getSquabStatusColor } from "./utils";
+import { calculateAge } from "@/lib/utils";
 
 interface SquabListProps {
   squabs: any[];
@@ -10,16 +12,7 @@ interface SquabListProps {
 export function SquabList({ squabs }: SquabListProps) {
   const { t, language } = useLanguage();
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "healthy":
-        return "bg-green-100 text-green-800";
-      case "sick":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+
 
   if (squabs.length === 0) {
     return (
@@ -44,18 +37,13 @@ export function SquabList({ squabs }: SquabListProps) {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Badge
-                    className={`${getStatusColor(squab.status)} rounded-2xl`}
+                    className={`${getSquabStatusColor(squab.status)} rounded-2xl`}
                   >
                     {t(squab.status as any) || squab.status}
                   </Badge>
                   {squab.birthDate && (
                     <span className="text-sm font-medium">
-                      {Math.floor(
-                        (new Date().getTime() -
-                          new Date(squab.birthDate).getTime()) /
-                          (24 * 60 * 60 * 1000),
-                      )}{" "}
-                      {t("daysOld")}
+                      {calculateAge(squab.birthDate, t, language)}
                     </span>
                   )}
                 </div>

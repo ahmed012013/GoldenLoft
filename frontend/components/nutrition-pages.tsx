@@ -31,9 +31,15 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
     feedingPlans,
     supplements,
     waterSchedule,
+    loading,
     addFeedingPlan,
     deleteFeedingPlan,
     toggleFeedingPlanStatus,
+    addSupplement,
+    deleteSupplement,
+    addWaterSchedule,
+    deleteWaterSchedule,
+    refreshWater,
     getTargetGroupLabel,
     getSupplementTypeLabel,
     getQualityLabel,
@@ -46,13 +52,13 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
   const getPageTitle = () => {
     switch (currentPage) {
       case "feeding":
-        return t("feedingPlansTitle" as any);
+        return t("feedingPlansTitle");
       case "supplements":
-        return t("supplementsTitle" as any);
+        return t("supplementsTitle");
       case "water":
-        return t("waterManagementTitle" as any);
+        return t("waterManagementTitle");
       default:
-        return t("nutritionManagement" as any);
+        return t("nutritionManagement");
     }
   };
 
@@ -72,8 +78,8 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
             <FeedingPlanDialog
               open={showAddFeedingPlan}
               onOpenChange={setShowAddFeedingPlan}
-              onSave={() => {
-                // Placeholder save logic
+              onSave={async (data) => {
+                await addFeedingPlan(data);
                 setShowAddFeedingPlan(false);
               }}
             />
@@ -87,12 +93,15 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
               getSupplementTypeLabel={getSupplementTypeLabel}
               onAdd={() => setShowAddSupplement(true)}
               onEdit={(id) => console.log("Edit supplement", id)}
-              onDelete={(id) => console.log("Delete supplement", id)}
+              onDelete={deleteSupplement}
             />
             <SupplementDialog
               open={showAddSupplement}
               onOpenChange={setShowAddSupplement}
-              onSave={() => setShowAddSupplement(false)}
+              onSave={async (data) => {
+                await addSupplement(data);
+                setShowAddSupplement(false);
+              }}
             />
           </>
         );
@@ -101,7 +110,7 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
           <WaterManager
             schedule={waterSchedule}
             getQualityLabel={getQualityLabel}
-            onRefresh={(id) => console.log("Refresh water", id)}
+            onRefresh={refreshWater}
             onEdit={(id) => console.log("Edit water", id)}
             onAdd={() => console.log("Add water schedule")}
           />
@@ -133,7 +142,7 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
           <div>
             <h1 className="text-2xl font-bold">{getPageTitle()}</h1>
             <p className="text-sm text-muted-foreground">
-              {t("nutritionManagement" as any)}
+              {t("nutritionManagement")}
             </p>
           </div>
         </div>

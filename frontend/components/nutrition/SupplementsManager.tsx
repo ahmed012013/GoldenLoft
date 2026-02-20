@@ -38,8 +38,8 @@ interface SupplementsManagerProps {
   supplements: Supplement[];
   getSupplementTypeLabel: (type: string) => string;
   onAdd: () => void;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 export function SupplementsManager({
@@ -65,7 +65,7 @@ export function SupplementsManager({
               <div>
                 <p className="text-2xl font-bold">{supplements.length}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("totalSupplements" as any)}
+                  {t("totalSupplements")}
                 </p>
               </div>
             </div>
@@ -82,7 +82,7 @@ export function SupplementsManager({
                   {supplements.filter((s) => s.inStock).length}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t("inStock" as any)}
+                  {t("inStock")}
                 </p>
               </div>
             </div>
@@ -99,7 +99,7 @@ export function SupplementsManager({
                   {supplements.filter((s) => !s.inStock).length}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t("outOfStock" as any)}
+                  {t("outOfStock")}
                 </p>
               </div>
             </div>
@@ -114,7 +114,7 @@ export function SupplementsManager({
               <div>
                 <p className="text-2xl font-bold">3</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("daily" as any)}
+                  {t("daily")}
                 </p>
               </div>
             </div>
@@ -134,7 +134,7 @@ export function SupplementsManager({
             />
             <Input
               type="search"
-              placeholder={t("search" as any)}
+              placeholder={t("search")}
               className={cn("rounded-xl", dir === "rtl" ? "pr-9" : "pl-9")}
             />
           </div>
@@ -144,22 +144,22 @@ export function SupplementsManager({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("allStatuses" as any)}</SelectItem>
+              <SelectItem value="all">{t("allStatuses")}</SelectItem>
               <SelectItem value="vitamin">
-                {t("vitaminSupplement" as any)}
+                {t("vitaminSupplement")}
               </SelectItem>
               <SelectItem value="mineral">
-                {t("mineralSupplement" as any)}
+                {t("mineralSupplement")}
               </SelectItem>
               <SelectItem value="probiotic">
-                {t("probioticSupplement" as any)}
+                {t("probioticSupplement")}
               </SelectItem>
             </SelectContent>
           </Select>
         </div>
         <Button onClick={onAdd} className="rounded-xl">
           <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-          {t("addSupplement" as any)}
+          {t("addSupplement")}
         </Button>
       </div>
 
@@ -201,10 +201,10 @@ export function SupplementsManager({
                     </p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       <span>
-                        {t("supplementDosage" as any)}: {supplement.dosage}
+                        {t("supplementDosage")}: {supplement.dosage}
                       </span>
                       <span>
-                        {t("supplementFrequency" as any)}:{" "}
+                        {t("supplementFrequency")}:{" "}
                         {supplement.frequency}
                       </span>
                     </div>
@@ -224,7 +224,7 @@ export function SupplementsManager({
                           dir === "rtl" ? "ml-2" : "mr-2",
                         )}
                       />
-                      {t("editSupplement" as any)}
+                      {t("editSupplement")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDelete(supplement.id)}
@@ -236,7 +236,7 @@ export function SupplementsManager({
                           dir === "rtl" ? "ml-2" : "mr-2",
                         )}
                       />
-                      {t("deleteSupplement" as any)}
+                      {t("deleteSupplement")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

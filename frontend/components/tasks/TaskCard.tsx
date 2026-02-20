@@ -18,24 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
-
-interface Task {
-  id: string;
-  title: string;
-  titleEn?: string;
-  description?: string;
-  descriptionEn?: string;
-  time?: string;
-  category: string;
-  priority: string;
-  status: string;
-  frequency: string;
-  instanceDate: string;
-  loft?: {
-    id: string;
-    name: string;
-  };
-}
+import { Task } from "@/hooks/use-tasks";
 
 interface TaskCardProps {
   task: Task;

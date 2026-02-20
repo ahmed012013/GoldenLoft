@@ -9,6 +9,8 @@ import { PairingCardSkeleton } from "@/components/ui/pairing-card-skeleton";
 import { EggStats } from "./EggStats";
 import { EggForm } from "./EggForm";
 import { EggList } from "./EggList";
+import { HatchConfirmationDialog } from "./HatchConfirmationDialog";
+import { PairingStatus, EggStatus } from "@/lib/breeding-api";
 
 export function EggsTab() {
   const { t } = useLanguage();
@@ -18,9 +20,10 @@ export function EggsTab() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingEgg, setEditingEgg] = useState<BackendEgg | null>(null);
+  const [hatchingEgg, setHatchingEgg] = useState<BackendEgg | null>(null);
 
   const activePairings = (pairings as BackendPairing[]).filter(
-    (p) => p.status === "ACTIVE",
+    (p) => p.status === PairingStatus.ACTIVE,
   );
 
   const handleFormSubmit = async (data: any) => {
@@ -73,14 +76,30 @@ export function EggsTab() {
     }
   };
 
+  const handleHatchConfirm = async (hatchDate: string) => {
+    if (!hatchingEgg) return;
+    try {
+      await hatchEgg.mutateAsync({
+        id: hatchingEgg.id,
+        data: { hatchDate },
+      });
+      toast.success(t("eggHatchedStats"));
+      setHatchingEgg(null);
+    } catch {
+      // Error handled by api-client interceptor
+    }
+  };
+
   const handleStatusChange = async (
     eggId: string,
     newStatus: BackendEgg["status"],
   ) => {
     try {
-      if (newStatus === "HATCHED") {
-        await hatchEgg.mutateAsync(eggId);
-        toast.success(t("eggHatchedStats"));
+      if (newStatus === EggStatus.HATCHED) {
+        const egg = eggs.find((e: any) => e.id === eggId);
+        if (egg) {
+          setHatchingEgg(egg as BackendEgg);
+        }
       } else {
         await updateEgg.mutateAsync({
           id: eggId,
@@ -140,6 +159,14 @@ export function EggsTab() {
         onDelete={handleDelete}
         onStatusChange={handleStatusChange}
         isDeleting={deleteEgg.isPending}
+      />
+
+      <HatchConfirmationDialog
+        egg={hatchingEgg}
+        isOpen={!!hatchingEgg}
+        onClose={() => setHatchingEgg(null)}
+        onConfirm={handleHatchConfirm}
+        isSubmitting={hatchEgg.isPending}
       />
     </div>
   );

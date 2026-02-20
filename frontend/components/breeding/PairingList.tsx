@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Heart, Edit2, Trash2, Loader2 } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 import { BackendPairing } from "./types";
+import { PairingStatus } from "@/lib/breeding-api";
 
 interface PairingListProps {
   pairings: BackendPairing[];
   onEdit: (pairing: BackendPairing) => void;
   onDelete: (id: string) => void;
-  onStatusChange: (id: string, newStatus: "ACTIVE" | "FINISHED") => void;
+  onStatusChange: (id: string, newStatus: PairingStatus) => void;
   isDeleting: boolean;
 }
 
@@ -46,19 +47,21 @@ export function PairingList({
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Badge
-                      className={`rounded-2xl ${pair.status === "ACTIVE"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-blue-100 text-blue-800"
+                      className={`rounded-2xl ${pair.status === PairingStatus.ACTIVE
+                        ? "bg-green-100 text-green-800"
+                        : "bg-blue-100 text-blue-800"
                         }`}
                       onClick={() =>
                         onStatusChange(
                           pair.id,
-                          pair.status === "ACTIVE" ? "FINISHED" : "ACTIVE",
+                          pair.status === PairingStatus.ACTIVE
+                            ? PairingStatus.FINISHED
+                            : PairingStatus.ACTIVE,
                         )
                       }
                       style={{ cursor: "pointer" }}
                     >
-                      {pair.status === "ACTIVE"
+                      {pair.status === PairingStatus.ACTIVE
                         ? t("pairingActive")
                         : t("pairingCompleted")}
                     </Badge>
@@ -85,7 +88,7 @@ export function PairingList({
                         {t("pairingDate")}
                       </p>
                       <p className="font-medium">
-                        {new Date(pair.startDate).toLocaleDateString(language)}
+                        {new Date(pair.startDate).toLocaleDateString(language || "en-US")}
                       </p>
                     </div>
                     <div>

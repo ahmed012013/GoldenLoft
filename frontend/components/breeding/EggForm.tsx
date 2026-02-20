@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, X } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
+import { calculateAge } from "@/lib/utils";
 import { BackendEgg, BackendPairing } from "./types";
 
 interface EggFormProps {
@@ -29,12 +30,15 @@ export function EggForm({
   onCancel,
   isSubmitting,
 }: EggFormProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [formPairingId, setFormPairingId] = useState("");
   const [formLayDate, setFormLayDate] = useState("");
   const [formCandlingDate, setFormCandlingDate] = useState("");
   const [formCandlingResult, setFormCandlingResult] = useState("");
+  const [formStatus, setFormStatus] = useState("LAID");
+  const [formHatchDate, setFormHatchDate] = useState("");
+  const [expectedHatchDate, setExpectedHatchDate] = useState("");
 
   useEffect(() => {
     if (editingEgg) {
@@ -44,15 +48,38 @@ export function EggForm({
         editingEgg.candlingDate ? editingEgg.candlingDate.split("T")[0] : "",
       );
       setFormCandlingResult(editingEgg.candlingResult || "");
+      setFormStatus(editingEgg.status);
+      setFormHatchDate(
+        editingEgg.hatchDateActual ? editingEgg.hatchDateActual.split("T")[0] : "",
+      );
+    } else {
+      setFormStatus("LAID");
+      setFormHatchDate("");
+      setFormLayDate(new Date().toISOString().split("T")[0]);
     }
   }, [editingEgg]);
+
+  useEffect(() => {
+    if (formLayDate) {
+      const layDate = new Date(formLayDate);
+      const expected = new Date(layDate);
+      expected.setDate(layDate.getDate() + 18);
+      const formatted = expected.toISOString().split("T")[0];
+      setExpectedHatchDate(formatted);
+      if (!editingEgg && formStatus === "HATCHED" && !formHatchDate) {
+        setFormHatchDate(formatted);
+      }
+    }
+  }, [formLayDate, formStatus, editingEgg, formHatchDate]);
 
   const handleSubmit = async () => {
     await onSubmit({
       pairingId: formPairingId,
       layDate: formLayDate,
-      candlingDate: formCandlingDate,
-      candlingResult: formCandlingResult,
+      candlingDate: formCandlingDate || undefined,
+      candlingResult: formCandlingResult || undefined,
+      status: formStatus,
+      hatchDate: formStatus === "HATCHED" ? formHatchDate : undefined,
     });
   };
 
@@ -131,6 +158,44 @@ export function EggForm({
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label>{t("eggStatus")}</Label>
+            <Select value={formStatus} onValueChange={setFormStatus}>
+              <SelectTrigger className="rounded-2xl">
+                <SelectValue placeholder={t("eggStatus")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="LAID">{t("eggLaid")}</SelectItem>
+                <SelectItem value="HATCHED">{t("hatched")}</SelectItem>
+                <SelectItem value="INFERTILE">{t("infertile")}</SelectItem>
+                <SelectItem value="BROKEN">{t("broken")}</SelectItem>
+                <SelectItem value="DEAD_IN_SHELL">{t("eggDeadInShell")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {formStatus === "HATCHED" && (
+            <div className="space-y-2">
+              <Label>{t("hatchDateLabel")}</Label>
+              <Input
+                type="date"
+                value={formHatchDate}
+                onChange={(e) => setFormHatchDate(e.target.value)}
+                className="rounded-2xl"
+              />
+              {expectedHatchDate && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("hatchDefaultNote")}: {expectedHatchDate}
+                </p>
+              )}
+              {formHatchDate && (
+                <p className="mt-1 text-sm text-primary/80 font-medium">
+                  {language === "ar" ? "العمر: " : "Age: "}
+                  {calculateAge(formHatchDate, t, language)}
+                </p>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex justify-end gap-2 mt-4">
           <Button variant="outline" onClick={onCancel} className="rounded-2xl">

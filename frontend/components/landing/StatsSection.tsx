@@ -56,6 +56,7 @@ function StatCard({ stat, started }: { stat: Stat; started: boolean }) {
 }
 
 export default function StatsSection() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const [started, setStarted] = useState(false);
 
@@ -85,11 +86,10 @@ export default function StatsSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-3">
-            Trusted by the community
+            {t("statsTrustedByComm")}
           </h2>
           <p className="text-slate-500 max-w-md mx-auto">
-            Real numbers from real fanciers managing their lofts with
-            GoldenLoft.
+            {t("statsRealNumbers")}
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">

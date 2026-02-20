@@ -20,6 +20,8 @@ export interface Task {
   priority: string;
   frequency: string;
   notes?: string;
+  startDate?: string;
+  endDate?: string;
   loft?: { id: string; name: string };
 }
 

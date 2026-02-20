@@ -46,7 +46,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
+import { cn, calculateAge } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
 import { Separator } from "@/components/ui/separator";
 
@@ -87,7 +87,7 @@ export function BirdModal({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ringNumber: "",
+      ringNumber: "-EGY-2026",
       name: "",
       gender: BirdGender.MALE,
       color: "",
@@ -294,9 +294,17 @@ export function BirdModal({
                           <FormLabel>{t("ringNumber")} *</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="EGY-2024-XXX"
+                              placeholder="-EGY-2026-XXX"
                               className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all"
                               {...field}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value.startsWith("-EGY-2026")) {
+                                  field.onChange(value);
+                                } else if (value.length < "-EGY-2026".length) {
+                                  field.onChange("-EGY-2026");
+                                }
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -478,6 +486,12 @@ export function BirdModal({
                               />
                             </PopoverContent>
                           </Popover>
+                          {field.value && (
+                            <p className="mt-1 text-sm text-primary/80 font-medium">
+                              {language === "ar" ? "العمر: " : "Age: "}
+                              {calculateAge(field.value, t, language)}
+                            </p>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}

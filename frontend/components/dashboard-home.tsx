@@ -63,6 +63,20 @@ const pigeonStatusData = [
   { nameAr: "مريض", nameEn: "Sick", value: 3, color: "#ef4444" },
 ];
 
+interface LowStockItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  minStock: number;
+}
+
+interface DashboardData {
+  financial: { income: number; expenses: number };
+  recentActivity: any[];
+  lowStockItems?: LowStockItem[];
+}
+
 export function DashboardHome({ userName }: { userName?: string }) {
   const { t, language } = useLanguage();
   const [selectedMetric, setSelectedMetric] = useState<
@@ -83,12 +97,10 @@ export function DashboardHome({ userName }: { userName?: string }) {
     females: 0,
   });
 
-  const [dashboardData, setDashboardData] = useState<{
-    financial: { income: number; expenses: number };
-    recentActivity: any[];
-  }>({
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
     financial: { income: 0, expenses: 0 },
     recentActivity: [],
+    lowStockItems: [],
   });
 
   // Fetch Stats from Backend
@@ -106,7 +118,6 @@ export function DashboardHome({ userName }: { userName?: string }) {
 
         // 2. Fetch Dashboard Data (Financials & Activity)
         const dashboardRes = await apiClient.get("/dashboard");
-        console.log("Dashboard Data Reference:", dashboardRes.data);
         setDashboardData(dashboardRes.data);
 
         // 3. Fetch Tasks
@@ -129,39 +140,39 @@ export function DashboardHome({ userName }: { userName?: string }) {
   }, []);
 
   // Prepare Chart Data
-  const pigeonStatusData = stats.statusBreakdown
+  const computedPigeonStatusData = stats.statusBreakdown
     ? stats.statusBreakdown.map((item) => {
-        let nameAr = item.status,
-          nameEn = item.status,
-          color = "#6b7280";
-        if (item.status === "HEALTHY") {
-          nameAr = "صحي";
-          nameEn = "Healthy";
-          color = "#10b981";
-        } else if (item.status === "SICK") {
-          nameAr = "مريض";
-          nameEn = "Sick";
-          color = "#ef4444";
-        } else if (item.status === "UNDER_OBSERVATION") {
-          nameAr = "تحت الملاحظة";
-          nameEn = "Observation";
-          color = "#f59e0b";
-        } else if (item.status === "SOLD") {
-          nameAr = "مباع";
-          nameEn = "Sold";
-          color = "#6366f1";
-        } else if (item.status === "DECEASED") {
-          nameAr = "متوفى";
-          nameEn = "Deceased";
-          color = "#1f2937";
-        } else if (item.status === "SQUAB") {
-          nameAr = "زغلول";
-          nameEn = "Squab";
-          color = "#ec4899";
-        }
+      let nameAr = item.status,
+        nameEn = item.status,
+        color = "#6b7280";
+      if (item.status === "HEALTHY") {
+        nameAr = "صحي";
+        nameEn = "Healthy";
+        color = "#10b981";
+      } else if (item.status === "SICK") {
+        nameAr = "مريض";
+        nameEn = "Sick";
+        color = "#ef4444";
+      } else if (item.status === "UNDER_OBSERVATION") {
+        nameAr = "تحت الملاحظة";
+        nameEn = "Observation";
+        color = "#f59e0b";
+      } else if (item.status === "SOLD") {
+        nameAr = "مباع";
+        nameEn = "Sold";
+        color = "#6366f1";
+      } else if (item.status === "DECEASED") {
+        nameAr = "متوفى";
+        nameEn = "Deceased";
+        color = "#1f2937";
+      } else if (item.status === "SQUAB") {
+        nameAr = "زغلول";
+        nameEn = "Squab";
+        color = "#ec4899";
+      }
 
-        return { nameAr, nameEn, value: item.count, color };
-      })
+      return { nameAr, nameEn, value: item.count, color };
+    })
     : [];
 
   const activityIconMap: any = {
@@ -323,7 +334,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
-                    data={pigeonStatusData}
+                    data={computedPigeonStatusData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -331,7 +342,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                     paddingAngle={2}
                     dataKey="value"
                   >
-                    {pigeonStatusData.map((entry, index) => (
+                    {computedPigeonStatusData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
@@ -339,7 +350,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                 </PieChart>
               </ResponsiveContainer>
               <div className="mt-4 space-y-2">
-                {pigeonStatusData.map((item) => (
+                {computedPigeonStatusData.map((item) => (
                   <div
                     key={item.nameEn}
                     className="flex items-center justify-between text-sm"
@@ -356,7 +367,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                     <span className="font-semibold">{item.value}</span>
                   </div>
                 ))}
-                {pigeonStatusData.length === 0 && (
+                {computedPigeonStatusData.length === 0 && (
                   <div className="text-center text-muted-foreground text-sm py-4">
                     {language === "ar"
                       ? "لا توجد بيانات كافية"
@@ -480,7 +491,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                             className={cn(
                               "font-medium",
                               item.completed &&
-                                "line-through text-muted-foreground",
+                              "line-through text-muted-foreground",
                             )}
                           >
                             {item.title}
@@ -520,7 +531,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                   className="rounded-xl bg-red-500/10 text-red-500 border-red-500/30"
                 >
                   {stats.sick +
-                    ((dashboardData as any).lowStockItems?.length || 0)}{" "}
+                    (dashboardData.lowStockItems?.length || 0)}{" "}
                   {t("alertHigh")}
                 </Badge>
               </div>
@@ -549,8 +560,8 @@ export function DashboardHome({ userName }: { userName?: string }) {
               )}
 
               {/* Low Stock Items */}
-              {(dashboardData as any).lowStockItems &&
-                (dashboardData as any).lowStockItems.length > 0 && (
+              {dashboardData.lowStockItems &&
+                dashboardData.lowStockItems.length > 0 && (
                   <>
                     <div className="flex items-center gap-2 px-1">
                       <div className="h-px flex-1 bg-amber-200/60" />
@@ -559,7 +570,7 @@ export function DashboardHome({ userName }: { userName?: string }) {
                       </span>
                       <div className="h-px flex-1 bg-amber-200/60" />
                     </div>
-                    {(dashboardData as any).lowStockItems.map((item: any) => (
+                    {dashboardData.lowStockItems.map((item: LowStockItem) => (
                       <div
                         key={item.id}
                         className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-100"
@@ -588,8 +599,8 @@ export function DashboardHome({ userName }: { userName?: string }) {
 
               {/* Empty State */}
               {stats.sick === 0 &&
-                (!(dashboardData as any).lowStockItems ||
-                  (dashboardData as any).lowStockItems.length === 0) && (
+                (!dashboardData.lowStockItems ||
+                  dashboardData.lowStockItems.length === 0) && (
                   <div className="flex flex-col items-center justify-center py-8 gap-2">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                       <Bell className="h-6 w-6 text-green-500" />

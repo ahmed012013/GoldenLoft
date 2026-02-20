@@ -19,6 +19,7 @@ import { HealthModule } from './health/health.module';
 import { EggsModule } from './eggs/eggs.module';
 import { LifeEventsModule } from './life-events/life-events.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { NutritionModule } from './nutrition/nutrition.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './common/logger/winston.config';
@@ -30,7 +31,7 @@ import { winstonConfig } from './common/logger/winston.config';
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
-        limit: 10,
+        limit: 10000,
       },
     ]),
     WinstonModule.forRoot(winstonConfig),
@@ -47,6 +48,7 @@ import { winstonConfig } from './common/logger/winston.config';
     EggsModule,
     LifeEventsModule,
     NotificationsModule,
+    NutritionModule,
   ],
   controllers: [AppController],
   providers: [
@@ -57,4 +59,4 @@ import { winstonConfig } from './common/logger/winston.config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

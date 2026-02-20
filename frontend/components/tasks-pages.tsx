@@ -25,6 +25,24 @@ interface TasksPagesProps {
   onBack: () => void;
 }
 
+export interface Task {
+  id: string;
+  title: string;
+  titleEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  time?: string;
+  instanceDate: string;
+  status: string;
+  category: string;
+  priority: string;
+  frequency: string;
+  isCompleted: boolean;
+  startDate?: string;
+  endDate?: string;
+  loft?: { id: string; name: string };
+}
+
 export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
   const { language, t, dir } = useLanguage();
   const [filterCategory, setFilterCategory] = useState("all");
@@ -38,7 +56,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
   } | null>(null);
 
   // Edit State
-  const [taskToEdit, setTaskToEdit] = useState<any>(null);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
     const d = new Date();
@@ -127,7 +145,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
     }
   };
 
-  const handleEdit = (task: any) => {
+  const handleEdit = (task: Task) => {
     setTaskToEdit(task);
     setIsAddDialogOpen(true);
   };
@@ -143,13 +161,13 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
   };
 
   const handleDeleteTask = async (taskId: string) => {
-    if (confirm(t("confirmDelete" as any))) {
+    if (confirm(t("confirmDelete"))) {
       await deleteTask(taskId);
     }
   };
 
-  const pendingCount = tasks.filter((t) => t.status === "pending").length;
-  const completedCount = tasks.filter((t) => t.status === "completed").length;
+  const pendingCount = tasks.filter((task) => task.status === "pending").length;
+  const completedCount = tasks.filter((task) => task.status === "completed").length;
   const totalCount = tasks.length;
   const progressPercent =
     totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -170,10 +188,10 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold">
-              {t("todayTasksTitle" as any)}
+              {t("todayTasksTitle")}
             </h1>
             <p className="text-muted-foreground">
-              {t("dailyTasksManagement" as any)}
+              {t("dailyTasksManagement")}
             </p>
           </div>
         </div>
@@ -186,7 +204,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
           }}
         >
           <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-          {t("addNewTask" as any)}
+          {t("addNewTask")}
         </Button>
       </div>
 
@@ -205,15 +223,15 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
         <CardContent>
           <div className="space-y-3">
             {tasks
-              .filter((t) => t.status !== "completed") // Hide completed tasks from Today view
+              .filter((task) => task.status !== "completed") // Hide completed tasks from Today view
               .filter(
-                (t) =>
-                  filterCategory === "all" || t.category === filterCategory,
+                (task) =>
+                  filterCategory === "all" || task.category === filterCategory,
               )
               .map((task) => (
                 <TaskCard
                   key={`${task.id}-${task.instanceDate}`}
-                  task={task as any}
+                  task={task as Task}
                   onToggleComplete={handleToggleComplete}
                   onEdit={handleEdit}
                   onDelete={handleDeleteTask}
@@ -226,9 +244,9 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                   }}
                 />
               ))}
-            {tasks.filter((t) => t.status !== "completed").length === 0 && (
+            {tasks.filter((task) => task.status !== "completed").length === 0 && (
               <p className="text-center text-muted-foreground py-8">
-                {t("noPendingTasks" as any) || "No pending tasks"}
+                {t("noPendingTasks") || "No pending tasks"}
               </p>
             )}
           </div>
@@ -261,10 +279,10 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold">
-              {t("completedTasksTitle" as any) || "Completed Tasks"}
+              {t("completedTasksTitle") || "Completed Tasks"}
             </h1>
             <p className="text-muted-foreground">
-              {t("historyReview" as any) || "Review your task history"}
+              {t("historyReview") || "Review your task history"}
             </p>
           </div>
         </div>
@@ -276,16 +294,16 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             {tasks.map((task) => (
               <TaskCard
                 key={`${task.id}-${task.instanceDate}`}
-                task={task as any}
+                task={task as Task}
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleEdit}
                 onDelete={handleDeleteTask}
-                onCompleteWithNotes={() => {}} // Already completed
+                onCompleteWithNotes={() => { }} // Already completed
               />
             ))}
             {tasks.length === 0 && (
               <p className="text-center text-muted-foreground py-8">
-                {t("noCompletedTasks" as any) || "No completed tasks found"}
+                {t("noCompletedTasks") || "No completed tasks found"}
               </p>
             )}
           </div>
@@ -325,10 +343,10 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             </Button>
             <div>
               <h1 className="text-3xl font-bold">
-                {t("taskScheduleTitle" as any)}
+                {t("taskScheduleTitle")}
               </h1>
               <p className="text-muted-foreground">
-                {t("dailyTasksManagement" as any)}
+                {t("dailyTasksManagement")}
               </p>
             </div>
           </div>
@@ -340,7 +358,7 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
             }}
           >
             <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-            {t("addNewTask" as any)}
+            {t("addNewTask")}
           </Button>
         </div>
 
@@ -393,8 +411,8 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                 const isToday =
                   date.toDateString() === new Date().toDateString();
                 const dayTasks = tasks.filter(
-                  (t) =>
-                    new Date(t.instanceDate).toDateString() ===
+                  (task) =>
+                    new Date(task.instanceDate).toDateString() ===
                     date.toDateString(),
                 );
 
@@ -444,13 +462,13 @@ export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
                         ))}
                         {dayTasks.length > 3 && (
                           <div className="text-xs text-muted-foreground">
-                            +{dayTasks.length - 3} {t("more" as any)}
+                            +{dayTasks.length - 3} {t("more")}
                           </div>
                         )}
                       </div>
                     ) : (
                       <p className="text-xs text-muted-foreground mt-4">
-                        {t("noTasks" as any)}
+                        {t("noTasks")}
                       </p>
                     )}
                   </div>

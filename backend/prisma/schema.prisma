@@ -21,6 +21,9 @@ model User {
   taskCompletions TaskCompletion[]
   inventory InventoryItem[]
   notifications Notification[]
+  feedingPlans  FeedingPlan[]
+  supplements   Supplement[]
+  waterSchedules WaterSchedule[]
 }
 
 model Notification {
@@ -226,4 +229,60 @@ model InventoryItem {
   updatedAt    DateTime @updatedAt
 
   user         User     @relation(fields: [userId], references: [id])
+}
+
+model FeedingPlan {
+  id            String   @id @default(uuid())
+  name          String
+  nameAr        String?
+  targetGroup   String   // all, racing, breeding, young, sick, molting
+  feedType      String   // seed, grain, pellet, mix
+  morningAmount String
+  eveningAmount String
+  isActive      Boolean  @default(true)
+  pigeonCount   Int      @default(0)
+  userId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Supplement {
+  id        String   @id @default(uuid())
+  name      String
+  nameAr    String?
+  type      String   // vitamin, mineral, probiotic, electrolyte, amino, energy
+  dosage    String
+  frequency String   // daily, weekly, twice_weekly, monthly, after_race
+  purpose   String?
+  purposeAr String?
+  inStock   Boolean  @default(true)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model WaterSchedule {
+  id         String   @id @default(uuid())
+  loft       String
+  loftAr     String?
+  lastChange DateTime
+  nextChange DateTime
+  quality    String   // good, fair, poor
+  additive   String?
+  additiveAr String?
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }

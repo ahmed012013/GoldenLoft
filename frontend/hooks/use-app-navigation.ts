@@ -12,6 +12,7 @@ export interface NavigationState {
   currentRacingPage: "results" | "stats" | "calendar" | null;
   currentFinancialPage: "income" | "expenses" | "reports" | null;
   currentReportsPage: "pigeons" | "financial" | "breeding" | null;
+  pigeonEditingId: string | null;
 }
 
 export function useAppNavigation() {
@@ -46,6 +47,7 @@ export function useAppNavigation() {
   const [currentReportsPage, setCurrentReportsPage] = useState<
     "pigeons" | "financial" | "breeding" | null
   >(null);
+  const [pigeonEditingId, setPigeonEditingId] = useState<string | null>(null);
 
   // Helper function to reset all pages
   const resetAllPages = () => {
@@ -59,6 +61,7 @@ export function useAppNavigation() {
     setCurrentRacingPage(null);
     setCurrentFinancialPage(null);
     setCurrentReportsPage(null);
+    setPigeonEditingId(null);
   };
 
   // Helper function for going back
@@ -232,6 +235,8 @@ export function useAppNavigation() {
     setCurrentFinancialPage,
     currentReportsPage,
     setCurrentReportsPage,
+    pigeonEditingId,
+    setPigeonEditingId,
     resetAllPages,
     handleBack,
   };

@@ -28,4 +28,8 @@ export class CreateEggDto {
   @IsString()
   @IsOptional()
   candlingResult?: string;
+
+  @IsDateString()
+  @IsOptional()
+  hatchDate?: string;
 }

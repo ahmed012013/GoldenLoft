@@ -28,7 +28,7 @@ const features = [
   {
     icon: "medical_services",
     titleKey: "healthRecords" as const,
-    descKey: "birdTrackingDesc" as const,
+    descKey: "healthRecordsDesc" as const,
     bullets: ["categoryHealth", "nextVaccination"] as const,
     badge: null,
   },
@@ -73,11 +73,10 @@ export default function FeaturesGrid() {
           {features.map((f, i) => (
             <div
               key={i}
-              className={`landing-glass p-8 rounded-2xl transition-all duration-300 group hover:border-primary-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.08)] relative ${
-                f.badge
+              className={`landing-glass p-8 rounded-2xl transition-all duration-300 group hover:border-primary-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.08)] relative ${f.badge
                   ? "border-primary-gold/30 shadow-[0_0_25px_rgba(212,175,55,0.05)]"
                   : ""
-              }`}
+                }`}
             >
               {f.badge && (
                 <div

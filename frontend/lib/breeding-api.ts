@@ -1,6 +1,17 @@
 import apiClient from "./api-client";
 
-// ============ Types ============
+export enum PairingStatus {
+  ACTIVE = "ACTIVE",
+  FINISHED = "FINISHED",
+}
+
+export enum EggStatus {
+  LAID = "LAID",
+  HATCHED = "HATCHED",
+  INFERTILE = "INFERTILE",
+  BROKEN = "BROKEN",
+  DEAD_IN_SHELL = "DEAD_IN_SHELL",
+}
 
 export interface PairingPayload {
   maleId: string;
@@ -12,7 +23,7 @@ export interface PairingPayload {
 
 export interface UpdatePairingPayload {
   endDate?: string;
-  status?: "ACTIVE" | "FINISHED";
+  status?: PairingStatus;
   nestBox?: string;
   notes?: string;
 }
@@ -20,22 +31,35 @@ export interface UpdatePairingPayload {
 export interface EggPayload {
   pairingId: string;
   layDate: string;
-  status?: "LAID" | "HATCHED" | "INFERTILE" | "BROKEN" | "DEAD_IN_SHELL";
+  status?: EggStatus;
   candlingDate?: string;
   candlingResult?: string;
+  hatchDate?: string;
 }
 
 export interface UpdateEggPayload {
-  hatchDateActual?: string;
-  status?: "LAID" | "HATCHED" | "INFERTILE" | "BROKEN" | "DEAD_IN_SHELL";
+  status?: EggStatus;
   candlingDate?: string;
   candlingResult?: string;
+  hatchDate?: string;
+}
+
+export interface HatchEggPayload {
+  hatchDate?: string;
+}
+
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+  limit?: number;
+  offset?: number;
 }
 
 // ============ Pairings API ============
 
 export const pairingsApi = {
-  getAll: () => apiClient.get("/pairings").then((r) => r.data),
+  getAll: (params?: PaginationParams) =>
+    apiClient.get("/pairings", { params }).then((r) => r.data),
 
   getOne: (id: string) => apiClient.get(`/pairings/${id}`).then((r) => r.data),
 
@@ -54,7 +78,8 @@ export const pairingsApi = {
 // ============ Eggs API ============
 
 export const eggsApi = {
-  getAll: () => apiClient.get("/eggs").then((r) => r.data),
+  getAll: (params?: PaginationParams) =>
+    apiClient.get("/eggs", { params }).then((r) => r.data),
 
   getOne: (id: string) => apiClient.get(`/eggs/${id}`).then((r) => r.data),
 
@@ -64,8 +89,8 @@ export const eggsApi = {
   update: (id: string, data: UpdateEggPayload) =>
     apiClient.patch(`/eggs/${id}`, data).then((r) => r.data),
 
-  hatch: (id: string) =>
-    apiClient.post(`/eggs/${id}/hatch`).then((r) => r.data),
+  hatch: (id: string, data?: HatchEggPayload) =>
+    apiClient.post(`/eggs/${id}/hatch`, data).then((r) => r.data),
 
   delete: (id: string) => apiClient.delete(`/eggs/${id}`).then((r) => r.data),
 };
@@ -73,8 +98,8 @@ export const eggsApi = {
 // ============ Squabs API (uses Birds endpoint with filter) ============
 
 export const squabsApi = {
-  getAll: () =>
+  getAll: (params?: PaginationParams) =>
     apiClient
-      .get("/birds", { params: { status: "squab" } })
+      .get("/birds", { params: { status: "squab", ...params } })
       .then((r) => r.data),
 };

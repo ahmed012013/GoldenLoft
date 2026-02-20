@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { PairingsService } from './pairings.service';
 import { CreatePairingDto } from './dto/create-pairing.dto';
@@ -46,7 +47,10 @@ export class PairingsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific pairing' })
-  findOne(@Request() req: RequestWithUser, @Param('id') id: string) {
+  findOne(
+    @Request() req: RequestWithUser,
+    @Param('id', ParseUUIDPipe) id: string
+  ) {
     return this.pairingsService.findOne(req.user.id, id);
   }
 
@@ -54,7 +58,7 @@ export class PairingsController {
   @ApiOperation({ summary: 'Update a pairing' })
   update(
     @Request() req: RequestWithUser,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePairingDto: UpdatePairingDto
   ) {
     return this.pairingsService.update(req.user.id, id, updatePairingDto);
@@ -62,7 +66,10 @@ export class PairingsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a pairing' })
-  remove(@Request() req: RequestWithUser, @Param('id') id: string) {
+  remove(
+    @Request() req: RequestWithUser,
+    @Param('id', ParseUUIDPipe) id: string
+  ) {
     return this.pairingsService.remove(req.user.id, id);
   }
 }

@@ -22,15 +22,14 @@ export default function Footer() {
               {t("brandName")} 🕊️
             </button>
             <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
-              Professional pigeon loft management. Breeding, racing, health —
-              all in one place.
+              {t("footerBrandDescription")}
             </p>
           </div>
 
           {/* Links */}
           <div className="grid grid-cols-2 gap-x-16 gap-y-3 text-sm text-slate-400">
             <div className="space-y-3">
-              <p className="text-slate-200 font-semibold mb-2">Product</p>
+              <p className="text-slate-200 font-semibold mb-2">{t("footerProduct")}</p>
               <button
                 onClick={() =>
                   document
@@ -63,24 +62,24 @@ export default function Footer() {
               </button>
             </div>
             <div className="space-y-3">
-              <p className="text-slate-200 font-semibold mb-2">Legal</p>
-              <a
-                href="#"
-                className="block hover:text-primary-gold transition-colors"
+              <p className="text-slate-200 font-semibold mb-2">{t("footerLegal")}</p>
+              <span
+                className="block text-slate-500 cursor-default"
+                aria-disabled="true"
               >
                 {t("privacyPolicy")}
-              </a>
-              <a
-                href="#"
-                className="block hover:text-primary-gold transition-colors"
+              </span>
+              <span
+                className="block text-slate-500 cursor-default"
+                aria-disabled="true"
               >
                 {t("termsOfService")}
-              </a>
+              </span>
               <a
                 href="mailto:support@goldenloft.app"
                 className="block hover:text-primary-gold transition-colors"
               >
-                Contact Us
+                {t("footerContactUs")}
               </a>
             </div>
           </div>
@@ -100,7 +99,7 @@ export default function Footer() {
             <span className="material-symbols-outlined text-sm">
               arrow_upward
             </span>
-            Back to top
+            {t("footerBackToTop")}
           </button>
         </div>
       </div>

@@ -7,10 +7,12 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LocalizationInterceptor } from './common/interceptors/localization.interceptor';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.use(cookieParser());
 
   // Security: Helmet headers
   app.use(

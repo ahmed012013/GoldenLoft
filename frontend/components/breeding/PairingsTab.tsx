@@ -12,8 +12,10 @@ import { useBirds } from "@/hooks/useBirds";
 import { BackendPairing } from "./types";
 import { PairingCardSkeleton } from "@/components/ui/pairing-card-skeleton";
 import { PairingStats } from "./PairingStats";
+import { BreedingStatsSkeleton } from "./BreedingStatsSkeleton";
 import { PairingForm } from "./PairingForm";
 import { PairingList } from "./PairingList";
+import { PairingStatus } from "@/lib/breeding-api";
 
 export function PairingsTab() {
   const { t } = useLanguage();
@@ -79,16 +81,13 @@ export function PairingsTab() {
     }
   };
 
-  const handleStatusChange = async (
-    id: string,
-    newStatus: "ACTIVE" | "FINISHED",
-  ) => {
+  const handleStatusChange = async (id: string, newStatus: PairingStatus) => {
     try {
       await updatePairing.mutateAsync({
         id,
         data: {
           status: newStatus,
-          ...(newStatus === "FINISHED"
+          ...(newStatus === PairingStatus.FINISHED
             ? { endDate: new Date().toISOString() }
             : {}),
         },
@@ -102,6 +101,7 @@ export function PairingsTab() {
   if (isLoading) {
     return (
       <div className="space-y-6">
+        <BreedingStatsSkeleton />
         <div className="grid gap-4">
           {[...Array(3)].map((_, i) => (
             <PairingCardSkeleton key={i} />

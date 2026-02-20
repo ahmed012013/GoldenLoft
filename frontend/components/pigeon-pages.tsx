@@ -27,11 +27,15 @@ interface PigeonPagesProps {
   currentPage: "all" | "add" | "pedigree" | "health";
   onBack: () => void;
   onNavigate?: (page: "all" | "add" | "pedigree" | "health") => void;
+  pigeonEditingId?: string | null;
+  setPigeonEditingId?: (id: string | null) => void;
 }
 export function PigeonPages({
   currentPage,
   onBack,
   onNavigate,
+  pigeonEditingId,
+  setPigeonEditingId,
 }: PigeonPagesProps) {
   const { t, language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,7 +44,7 @@ export function PigeonPages({
   const [selectedPigeon, setSelectedPigeon] = useState<Bird | null>(null);
   const [showPedigreeModal, setShowPedigreeModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false); // For BirdModal (quick add?)
-  const [editingId, setEditingId] = useState<string | null>(null);
+  // const [editingId, setEditingId] = useState<string | null>(null); // Removed local state
   const [showHealthModal, setShowHealthModal] = useState(false);
 
   const debouncedSearch = useDebounce(searchTerm, 300);
@@ -86,12 +90,14 @@ export function PigeonPages({
 
   const handleEdit = useCallback(
     (pigeon: Bird) => {
-      setEditingId(pigeon.id);
+      if (setPigeonEditingId) {
+        setPigeonEditingId(pigeon.id);
+      }
       if (onNavigate) {
         onNavigate("add");
       }
     },
-    [onNavigate],
+    [onNavigate, setPigeonEditingId],
   );
 
   const handleView = useCallback((p: Bird) => {
@@ -102,14 +108,16 @@ export function PigeonPages({
   const renderAddPigeon = () => (
     <BirdForm
       editingBird={
-        editingId ? filteredPigeons?.find((b) => b.id === editingId) : null
+        pigeonEditingId
+          ? filteredPigeons?.find((b) => b.id === pigeonEditingId)
+          : null
       }
       onBack={() => {
-        setEditingId(null);
+        if (setPigeonEditingId) setPigeonEditingId(null);
         onBack();
       }}
       onSuccess={() => {
-        setEditingId(null);
+        if (setPigeonEditingId) setPigeonEditingId(null);
         if (onNavigate) {
           onNavigate("all");
         } else {
@@ -147,14 +155,14 @@ export function PigeonPages({
         {isLoading
           ? [...Array(6)].map((_, i) => <PigeonCardSkeleton key={i} />)
           : filteredPigeons.map((pigeon) => (
-              <BirdCard
-                key={pigeon.id}
-                pigeon={pigeon}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+            <BirdCard
+              key={pigeon.id}
+              pigeon={pigeon}
+              onView={handleView}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
       </div>
 
       {/* Pedigree Modal (Accessed via View Button in BirdCard) */}

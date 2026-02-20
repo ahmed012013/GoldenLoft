@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
 import { Bird } from "@shared/interfaces/bird.interface";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 interface PedigreeDialogProps {
   bird: Bird | null;
@@ -54,6 +55,21 @@ export function PedigreeDialog({
               </TabsTrigger>
             </TabsList>
             <TabsContent value="info" className="mt-4 space-y-4">
+              <div className="flex flex-col items-center mb-6">
+                <div className="h-40 w-40 relative rounded-3xl overflow-hidden border-2 border-primary/20 bg-muted shadow-inner">
+                  <Image
+                    src={
+                      bird.image && bird.image.startsWith("/")
+                        ? `${API_URL}${bird.image}`
+                        : bird.image || "/placeholder.svg"
+                    }
+                    alt={bird.name}
+                    fill
+                    className="object-cover"
+                    sizes="160px"
+                  />
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">
@@ -104,9 +120,21 @@ export function PedigreeDialog({
             <TabsContent value="pedigree" className="mt-4">
               <div className="flex flex-col items-center gap-4">
                 {/* Current Pigeon */}
-                <Card className="rounded-2xl border-2 border-primary w-48">
+                <Card className="rounded-2xl border-2 border-primary w-48 overflow-hidden">
+                  <div className="h-24 w-full relative bg-muted border-b">
+                    <Image
+                      src={
+                        bird.image && bird.image.startsWith("/")
+                          ? `${API_URL}${bird.image}`
+                          : bird.image || "/placeholder.svg"
+                      }
+                      alt={bird.name}
+                      fill
+                      className="object-cover"
+                      sizes="192px"
+                    />
+                  </div>
                   <CardContent className="p-3 text-center">
-                    <BirdIcon className="h-8 w-8 mx-auto text-primary mb-2" />
                     <p className="font-semibold text-sm">{bird.name}</p>
                     <p className="text-xs text-muted-foreground">
                       {bird.ringNumber}
@@ -165,7 +193,7 @@ export function PedigreeDialog({
                       {Math.round(
                         (((bird as any).wins || 0) /
                           ((bird as any).races || 1)) *
-                          100,
+                        100,
                       )}
                       %
                     </p>

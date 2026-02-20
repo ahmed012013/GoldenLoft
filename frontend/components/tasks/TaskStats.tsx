@@ -26,17 +26,17 @@ export function TaskStats({
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold mb-2">
-                {t("todayTasksTitle" as any)}
+                {t("todayTasksTitle")}
               </h2>
               <p className="text-white/80">
                 {completedCount} {language === "ar" ? "من" : "of"} {totalCount}{" "}
-                {t("completedTasks" as any)}
+                {t("completedTasks")}
               </p>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-center">
                 <p className="text-4xl font-bold">{progressPercent}%</p>
-                <p className="text-sm text-white/80">{t("completed" as any)}</p>
+                <p className="text-sm text-white/80">{t("completed")}</p>
               </div>
             </div>
           </div>
@@ -51,7 +51,7 @@ export function TaskStats({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("totalTasks" as any)}
+                  {t("totalTasks")}
                 </p>
                 <p className="text-2xl font-bold">{totalCount}</p>
               </div>
@@ -64,7 +64,7 @@ export function TaskStats({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("pendingTasks" as any)}
+                  {t("pendingTasks")}
                 </p>
                 <p className="text-2xl font-bold text-amber-500">
                   {pendingCount}
@@ -79,7 +79,7 @@ export function TaskStats({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("completedToday" as any)}
+                  {t("completedToday")}
                 </p>
                 <p className="text-2xl font-bold text-green-500">
                   {completedCount}
@@ -94,7 +94,7 @@ export function TaskStats({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("overdueTasks" as any)}
+                  {t("overdueTasks")}
                 </p>
                 <p className="text-2xl font-bold text-red-500">0</p>
               </div>

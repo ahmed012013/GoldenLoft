@@ -32,9 +32,9 @@ interface FeedingPlansManagerProps {
   plans: FeedingPlan[];
   getTargetGroupLabel: (group: string) => string;
   onAdd: () => void;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
-  onToggleStatus: (id: number) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  onToggleStatus: (id: string) => void;
 }
 
 export function FeedingPlansManager({
@@ -60,7 +60,7 @@ export function FeedingPlansManager({
               <div>
                 <p className="text-2xl font-bold">{plans.length}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("totalFeedingPlans" as any)}
+                  {t("totalFeedingPlans")}
                 </p>
               </div>
             </div>
@@ -77,7 +77,7 @@ export function FeedingPlansManager({
                   {plans.filter((p) => p.isActive).length}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t("activePlans" as any)}
+                  {t("activePlans")}
                 </p>
               </div>
             </div>
@@ -94,7 +94,7 @@ export function FeedingPlansManager({
                   {plans.reduce((sum, p) => sum + p.pigeonCount, 0)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t("pigeons" as any)}
+                  {t("pigeons")}
                 </p>
               </div>
             </div>
@@ -109,7 +109,7 @@ export function FeedingPlansManager({
               <div>
                 <p className="text-2xl font-bold">2</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("feedingFrequency" as any)}
+                  {t("feedingFrequency")}
                 </p>
               </div>
             </div>
@@ -128,13 +128,13 @@ export function FeedingPlansManager({
           />
           <Input
             type="search"
-            placeholder={t("search" as any)}
+            placeholder={t("search")}
             className={cn("rounded-xl", dir === "rtl" ? "pr-9" : "pl-9")}
           />
         </div>
         <Button onClick={onAdd} className="rounded-xl">
           <Plus className={cn("h-4 w-4", dir === "rtl" ? "ml-2" : "mr-2")} />
-          {t("addFeedingPlan" as any)}
+          {t("addFeedingPlan")}
         </Button>
       </div>
 
@@ -170,22 +170,22 @@ export function FeedingPlansManager({
                         className="rounded-full"
                       >
                         {plan.isActive
-                          ? t("activePlan" as any)
-                          : t("inactivePlan" as any)}
+                          ? t("activePlan")
+                          : t("inactivePlan")}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {getTargetGroupLabel(plan.targetGroup)} -{" "}
-                      {plan.pigeonCount} {t("pigeons" as any)}
+                      {plan.pigeonCount} {t("pigeons")}
                     </p>
                     <div className="flex items-center gap-4 text-sm">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5" />
-                        {t("morningFeed" as any)}: {plan.morningAmount}
+                        {t("morningFeed")}: {plan.morningAmount}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5" />
-                        {t("eveningFeed" as any)}: {plan.eveningAmount}
+                        {t("eveningFeed")}: {plan.eveningAmount}
                       </span>
                     </div>
                   </div>
@@ -223,7 +223,7 @@ export function FeedingPlansManager({
                             dir === "rtl" ? "ml-2" : "mr-2",
                           )}
                         />
-                        {t("editFeedingPlan" as any)}
+                        {t("editFeedingPlan")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onDelete(plan.id)}
@@ -235,7 +235,7 @@ export function FeedingPlansManager({
                             dir === "rtl" ? "ml-2" : "mr-2",
                           )}
                         />
-                        {t("deleteFeedingPlan" as any)}
+                        {t("deleteFeedingPlan")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
