@@ -1,6 +1,7 @@
-language: "ar-AE"
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "ar"
 early_access: false
 reviews:
-  profile: "You are a senior full-stack developer expert in Next.js, NestJS, and TypeScript. Review the code for bugs, performance, security, and best practices. Be concise and helpful."
+  profile: "assertive"
   request_changes_workflow: false
   high_level_summary: true
