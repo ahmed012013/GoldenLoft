@@ -13,7 +13,7 @@ import { EggList } from "./EggList";
 export function EggsTab() {
   const { t } = useLanguage();
   const { data: eggs = [], isLoading } = useEggs();
-  const { data: pairings = [] } = usePairings();
+  const { data: pairings = [], isLoading: isPairingsLoading } = usePairings();
   const { createEgg, updateEgg, hatchEgg, deleteEgg } = useEggMutations();
 
   const [showForm, setShowForm] = useState(false);
@@ -95,7 +95,7 @@ export function EggsTab() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isPairingsLoading) {
     return (
       <div className="space-y-6">
         <div className="grid gap-4">

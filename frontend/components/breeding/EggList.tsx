@@ -20,9 +20,9 @@ export function EggList({
   onStatusChange,
   isDeleting,
 }: EggListProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: BackendEgg["status"]) => {
     switch (status) {
       case "LAID":
         return "bg-yellow-100 text-yellow-800";
@@ -39,7 +39,7 @@ export function EggList({
     }
   };
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status: BackendEgg["status"]) => {
     switch (status) {
       case "LAID":
         return t("eggLaid");
@@ -69,9 +69,9 @@ export function EggList({
   const calculateIncubationDay = (layingDate: string) => {
     const days = Math.floor(
       (new Date().getTime() - new Date(layingDate).getTime()) /
-        (24 * 60 * 60 * 1000),
+      (24 * 60 * 60 * 1000),
     );
-    return Math.max(0, days);
+    return Math.min(Math.max(0, days), 18);
   };
 
   if (eggs.length === 0) {
@@ -120,7 +120,7 @@ export function EggList({
                       {t("layingDate")}
                     </p>
                     <p className="font-medium">
-                      {new Date(egg.layDate).toLocaleDateString("ar-EG")}
+                      {new Date(egg.layDate).toLocaleDateString(language)}
                     </p>
                   </div>
                   <div>
@@ -130,8 +130,8 @@ export function EggList({
                     <p className="font-medium">
                       {egg.hatchDateExpected
                         ? new Date(egg.hatchDateExpected).toLocaleDateString(
-                            "ar-EG",
-                          )
+                          language,
+                        )
                         : "-"}
                     </p>
                   </div>
@@ -149,7 +149,7 @@ export function EggList({
                         {t("candlingDate")}
                       </p>
                       <p className="font-medium">
-                        {new Date(egg.candlingDate).toLocaleDateString("ar-EG")}
+                        {new Date(egg.candlingDate).toLocaleDateString(language)}
                       </p>
                     </div>
                   )}

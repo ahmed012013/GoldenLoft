@@ -20,7 +20,7 @@ export function PairingList({
   onStatusChange,
   isDeleting,
 }: PairingListProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   if (pairings.length === 0) {
     return (
@@ -46,11 +46,10 @@ export function PairingList({
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Badge
-                      className={`rounded-2xl ${
-                        pair.status === "ACTIVE"
+                      className={`rounded-2xl ${pair.status === "ACTIVE"
                           ? "bg-green-100 text-green-800"
                           : "bg-blue-100 text-blue-800"
-                      }`}
+                        }`}
                       onClick={() =>
                         onStatusChange(
                           pair.id,
@@ -86,7 +85,7 @@ export function PairingList({
                         {t("pairingDate")}
                       </p>
                       <p className="font-medium">
-                        {new Date(pair.startDate).toLocaleDateString("ar-EG")}
+                        {new Date(pair.startDate).toLocaleDateString(language)}
                       </p>
                     </div>
                     <div>
