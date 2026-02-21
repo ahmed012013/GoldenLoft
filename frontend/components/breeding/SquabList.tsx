@@ -1,24 +1,24 @@
+import { TranslationKey } from "../../lib/translations";
+import { Bird } from "@shared/interfaces/bird.interface";
+import { useLanguage } from "@/lib/language-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bird } from "lucide-react";
-import { useLanguage } from "@/lib/language-context";
-import { getSquabStatusColor } from "./utils";
+import { Bird as BirdIcon } from "lucide-react";
 import { calculateAge } from "@/lib/utils";
+import { getSquabStatusColor } from "./utils";
 
 interface SquabListProps {
-  squabs: any[];
+  squabs: Bird[];
 }
 
 export function SquabList({ squabs }: SquabListProps) {
   const { t, language } = useLanguage();
 
-
-
   if (squabs.length === 0) {
     return (
       <Card className="rounded-3xl">
         <CardContent className="pt-6 text-center">
-          <Bird className="mx-auto h-12 w-12 text-muted-foreground/50 mb-2" />
+          <BirdIcon className="mx-auto h-12 w-12 text-muted-foreground/50 mb-2" />
           <p className="text-muted-foreground">{t("noSquabs")}</p>
           <p className="text-sm text-muted-foreground/70">
             {t("addFirstSquab")}
@@ -30,16 +30,16 @@ export function SquabList({ squabs }: SquabListProps) {
 
   return (
     <div className="grid gap-4">
-      {squabs.map((squab: any) => (
+      {squabs.map((squab) => (
         <Card key={squab.id}>
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Badge
-                    className={`${getSquabStatusColor(squab.status)} rounded-2xl`}
+                    className={`${getSquabStatusColor(squab.status as any)} rounded-2xl`}
                   >
-                    {t(squab.status as any) || squab.status}
+                    {t(squab.status as TranslationKey) || squab.status}
                   </Badge>
                   {squab.birthDate && (
                     <span className="text-sm font-medium">

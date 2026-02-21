@@ -22,10 +22,12 @@ async function bootstrap() {
     })
   );
 
-  // Note: CSRF is NOT needed for JWT/Bearer-token APIs.
-  // CSRF protects session-cookie-based auth only. Our tokens live in
-  // localStorage and are sent via the Authorization header, so they are
-  // immune to CSRF attacks without any extra middleware.
+  // Note: Authentication uses HttpOnly cookies (`access_token`).
+  // See AuthController.setCookie logic.
+  // Using HttpOnly cookies provides protection against XSS-based token theft.
+  // CSRF protection is partially provided by SameSite=Lax.
+  // For production, additional CSRF protection (e.g. middleware) is recommended
+  // for state-changing routes (POST/PUT/DELETE).
 
   app.useGlobalPipes(
     new ValidationPipe({

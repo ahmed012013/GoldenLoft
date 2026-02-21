@@ -11,7 +11,7 @@ export default function DashboardPage() {
   React.useEffect(() => {
     // If we land here, we assume authorized until an API call fails with 401
     setAuthorized(true);
-  }, [router]);
+  }, []);
 
   if (!authorized) {
     return null;

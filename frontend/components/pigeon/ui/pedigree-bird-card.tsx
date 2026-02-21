@@ -44,10 +44,12 @@ export function PedigreeBirdCard({ pigeon, onClick }: PedigreeBirdCardProps) {
             <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
               <span>
                 {t("father")}: {pigeon.father?.name || "-"}
+                {pigeon.father?.ringNumber && ` (${pigeon.father.ringNumber})`}
               </span>
               <span>•</span>
               <span>
                 {t("mother")}: {pigeon.mother?.name || "-"}
+                {pigeon.mother?.ringNumber && ` (${pigeon.mother.ringNumber})`}
               </span>
             </div>
           </div>

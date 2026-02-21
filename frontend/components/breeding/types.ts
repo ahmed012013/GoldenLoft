@@ -26,5 +26,6 @@ export interface BackendEgg {
   pairing?: {
     male: { ringNumber: string; name: string };
     female: { ringNumber: string; name: string };
+    nestBox?: string | null;
   };
 }

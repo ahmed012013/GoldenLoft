@@ -176,15 +176,35 @@ export class BirdsService {
       throw new NotFoundException(`Bird with ID ${id} not found`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    console.log('[BirdsService] Updating bird:', id);
+    console.log(
+      '[BirdsService] updateBirdDto:',
+      JSON.stringify(updateBirdDto, null, 2)
+    );
+
     const { fatherId, motherId, loftId, birthDate, ...rest } = updateBirdDto;
+
+    // If loftId is provided, verify ownership
+    if (loftId) {
+      const loft = await this.birdsRepository.findLoft(loftId);
+      if (!loft) throw new NotFoundException('Loft not found');
+      if (loft.userId !== userId) {
+        throw new BadRequestException('You do not own the target loft');
+      }
+    }
 
     const updateData: Prisma.BirdUpdateInput = {
       ...rest,
-      ...(fatherId && { father: { connect: { id: fatherId } } }),
-      ...(motherId && { mother: { connect: { id: motherId } } }),
+      father: fatherId ? { connect: { id: fatherId } } : undefined,
+      mother: motherId ? { connect: { id: motherId } } : undefined,
+      loft: loftId ? { connect: { id: loftId } } : undefined,
       ...(birthDate && { birthDate: new Date(birthDate) }),
     };
+
+    console.log(
+      '[BirdsService] updateData prepared:',
+      JSON.stringify(updateData, null, 2)
+    );
 
     return this.birdsRepository.update(id, updateData);
   }

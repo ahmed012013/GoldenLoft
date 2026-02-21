@@ -1,7 +1,13 @@
-import { IsString, IsOptional, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsDateString,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class CreateWaterScheduleDto {
   @IsString()
+  @IsNotEmpty()
   loft: string;
 
   @IsOptional()
@@ -15,6 +21,7 @@ export class CreateWaterScheduleDto {
   nextChange: string;
 
   @IsString()
+  @IsNotEmpty()
   quality: string;
 
   @IsOptional()

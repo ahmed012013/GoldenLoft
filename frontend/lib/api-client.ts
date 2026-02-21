@@ -103,7 +103,12 @@ apiClient.interceptors.response.use(
     }
 
     // Handle Retries for transient failures (5xx or Network Errors)
-    if (config && (status === undefined || (status >= 500 && status <= 599))) {
+    // Only retry for idempotent methods (GET, HEAD, OPTIONS)
+    if (
+      config &&
+      (status === undefined || (status >= 500 && status <= 599)) &&
+      ["GET", "HEAD", "OPTIONS"].includes(config.method?.toUpperCase() || "")
+    ) {
       config._retryCount = config._retryCount || 0;
 
       if (config._retryCount < MAX_RETRIES) {

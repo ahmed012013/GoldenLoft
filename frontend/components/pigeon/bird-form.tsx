@@ -42,6 +42,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { normalizeRingNumber } from "@/lib/ring-number-utils";
 
 const formSchema = z.object({
   ringNumber: z.string().min(3, "Ring number is required"),
@@ -81,7 +82,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ringNumber: "-EGY-2026",
+      ringNumber: "",
       name: "",
       gender: BirdGender.MALE,
       color: "",
@@ -158,7 +159,8 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
         value !== null &&
         key !== "loft" &&
         key !== "father" &&
-        key !== "mother"
+        key !== "mother" &&
+        key !== "image"
       ) {
         if (key === "birthDate" && value instanceof Date) {
           formData.append(key, value.toISOString());
@@ -288,17 +290,10 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("ringNumber")} *</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="-EGY-2026-XXX"
+                          placeholder="GL-26-XXXX"
                           className="rounded-xl"
                           {...field}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value.startsWith("-EGY-2026")) {
-                              field.onChange(value);
-                            } else if (value.length < "-EGY-2026".length) {
-                              field.onChange("-EGY-2026");
-                            }
-                          }}
+                          onChange={(e) => field.onChange(normalizeRingNumber(e.target.value))}
                         />
                       </FormControl>
                       <FormMessage />
@@ -334,7 +329,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("gender")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -347,6 +342,9 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                           </SelectItem>
                           <SelectItem value={BirdGender.FEMALE}>
                             {t("female")}
+                          </SelectItem>
+                          <SelectItem value={BirdGender.UNKNOWN}>
+                            {t("unknown")}
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -423,7 +421,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("status")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -455,7 +453,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("breed")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -484,7 +482,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("loft")} *</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -512,7 +510,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("father")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -542,7 +540,7 @@ export function BirdForm({ editingBird, onBack, onSuccess }: BirdFormProps) {
                       <FormLabel>{t("mother")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">

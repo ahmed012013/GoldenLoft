@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/language-context";
 import { BackendEgg } from "./types";
 import { EggStatus } from "@/lib/breeding-api";
 import { getSquabStatusColor } from "./utils";
+import { TranslationKey } from "../../lib/translations";
 
 interface EggListProps {
   eggs: BackendEgg[];
@@ -100,6 +101,11 @@ export function EggList({
                     </p>
                     <p className="font-medium">
                       {egg.pairing?.male?.name} × {egg.pairing?.female?.name}
+                      {egg.pairing?.nestBox && (
+                        <span className="text-primary ml-1">
+                          [{t("nestBox")}: {egg.pairing.nestBox}]
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div>
@@ -112,14 +118,16 @@ export function EggList({
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">
-                      {t("expectedHatchDate")}
+                      {egg.status === EggStatus.HATCHED ? t("actualHatchDate") : t("expectedHatchDate")}
                     </p>
                     <p className="font-medium">
-                      {egg.hatchDateExpected
-                        ? new Date(egg.hatchDateExpected).toLocaleDateString(
-                          language,
-                        )
-                        : "-"}
+                      {egg.status === EggStatus.HATCHED
+                        ? egg.hatchDateActual
+                          ? new Date(egg.hatchDateActual).toLocaleDateString(language)
+                          : "-"
+                        : egg.hatchDateExpected
+                          ? new Date(egg.hatchDateExpected).toLocaleDateString(language)
+                          : "-"}
                     </p>
                   </div>
                   <div>
@@ -146,7 +154,7 @@ export function EggList({
                         {t("candlingResult")}
                       </p>
                       <p className="font-medium">
-                        {t(egg.candlingResult as any) || egg.candlingResult}
+                        {t(egg.candlingResult as TranslationKey) || egg.candlingResult}
                       </p>
                     </div>
                   )}

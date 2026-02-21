@@ -10,10 +10,14 @@ interface EggStatsProps {
 export function EggStats({ eggs }: EggStatsProps) {
   const { t } = useLanguage();
 
-  const fertileCount = eggs.filter((e) => e.status === EggStatus.LAID).length;
+  const activeCount = eggs.filter((e) => e.status === EggStatus.LAID).length;
   const hatchedCount = eggs.filter((e) => e.status === EggStatus.HATCHED).length;
-  const infertileCount = eggs.filter((e) => e.status === EggStatus.INFERTILE)
-    .length;
+  const lostCount = eggs.filter(
+    (e) =>
+      e.status === EggStatus.INFERTILE ||
+      e.status === EggStatus.BROKEN ||
+      e.status === EggStatus.DEAD_IN_SHELL
+  ).length;
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -28,8 +32,8 @@ export function EggStats({ eggs }: EggStatsProps) {
       <Card className="rounded-3xl">
         <CardContent className="pt-6">
           <div className="text-center">
-            <p className="text-3xl font-bold text-green-600">{fertileCount}</p>
-            <p className="text-sm text-muted-foreground">{t("fertileEggs")}</p>
+            <p className="text-3xl font-bold text-green-600">{activeCount}</p>
+            <p className="text-sm text-muted-foreground">{t("activeEggs") || "Active"}</p>
           </div>
         </CardContent>
       </Card>
@@ -45,9 +49,9 @@ export function EggStats({ eggs }: EggStatsProps) {
         <CardContent className="pt-6">
           <div className="text-center">
             <p className="text-3xl font-bold text-orange-600">
-              {infertileCount}
+              {lostCount}
             </p>
-            <p className="text-sm text-muted-foreground">{t("infertile")}</p>
+            <p className="text-sm text-muted-foreground">{t("lostEggs") || "Lost"}</p>
           </div>
         </CardContent>
       </Card>

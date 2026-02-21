@@ -16,6 +16,12 @@ import { BreedingStatsSkeleton } from "./BreedingStatsSkeleton";
 import { PairingForm } from "./PairingForm";
 import { PairingList } from "./PairingList";
 import { PairingStatus } from "@/lib/breeding-api";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function PairingsTab() {
   const { t } = useLanguage();
@@ -29,9 +35,21 @@ export function PairingsTab() {
     null,
   );
 
+  const activeBirdIds = new Set(
+    (pairings as BackendPairing[])
+      .filter((p) => p.status === PairingStatus.ACTIVE)
+      .flatMap((p) => [p.maleId, p.femaleId]),
+  );
+
   const birds = birdsData?.data || [];
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: {
+    maleId: string;
+    femaleId: string;
+    startDate: string;
+    nestBox?: string;
+    notes?: string;
+  }) => {
     if (
       !editingPairing &&
       (!data.maleId || !data.femaleId || !data.startDate)
@@ -128,15 +146,23 @@ export function PairingsTab() {
         </Button>
       </div>
 
-      {showForm && (
-        <PairingForm
-          editingPairing={editingPairing}
-          birds={birds}
-          onSubmit={handleFormSubmit}
-          onCancel={() => setShowForm(false)}
-          isSubmitting={createPairing.isPending || updatePairing.isPending}
-        />
-      )}
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="max-w-2xl rounded-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {editingPairing ? t("editPairing") : t("addPairing")}
+            </DialogTitle>
+          </DialogHeader>
+          <PairingForm
+            editingPairing={editingPairing}
+            birds={birds}
+            activeBirdIds={activeBirdIds}
+            onSubmit={handleFormSubmit}
+            onCancel={() => setShowForm(false)}
+            isSubmitting={createPairing.isPending || updatePairing.isPending}
+          />
+        </DialogContent>
+      </Dialog>
 
       <PairingList
         pairings={pairings as BackendPairing[]}

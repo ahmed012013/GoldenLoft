@@ -41,6 +41,7 @@ export interface UpdateEggPayload {
   status?: EggStatus;
   candlingDate?: string;
   candlingResult?: string;
+  hatchDateActual?: string;
   hatchDate?: string;
 }
 

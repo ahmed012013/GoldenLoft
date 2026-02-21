@@ -31,7 +31,7 @@ import { winstonConfig } from './common/logger/winston.config';
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
-        limit: 10000,
+        limit: parseInt(process.env.THROTTLE_LIMIT || '100', 10),
       },
     ]),
     WinstonModule.forRoot(winstonConfig),
@@ -59,4 +59,4 @@ import { winstonConfig } from './common/logger/winston.config';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

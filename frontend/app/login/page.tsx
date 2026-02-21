@@ -56,16 +56,12 @@ export default function LoginPage() {
 
   // Check for registration success params
   React.useEffect(() => {
-    // We no longer check access_token here as it's an HttpOnly cookie.
-    // The Dashboard will handle unauthorized states via API calls.
-
-
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
     if (emailParam) {
       setEmail(emailParam);
     }
-  }, [router]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -313,8 +309,8 @@ export default function LoginPage() {
               key={index}
               onClick={() => api?.scrollTo(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${current === index
-                  ? "bg-white w-8"
-                  : "bg-white/40 hover:bg-white/60"
+                ? "bg-white w-8"
+                : "bg-white/40 hover:bg-white/60"
                 }`}
               aria-label={`الانتقال للشريحة ${index + 1}`}
             />

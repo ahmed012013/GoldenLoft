@@ -16,6 +16,7 @@ import { SupplementsManager } from "./nutrition/SupplementsManager";
 import { WaterManager } from "./nutrition/WaterManager";
 import { FeedingPlanDialog } from "./nutrition/FeedingPlanDialog";
 import { SupplementDialog } from "./nutrition/SupplementDialog";
+import { WaterDialog } from "./nutrition/WaterDialog";
 
 interface NutritionPagesProps {
   currentPage: "feeding" | "supplements" | "water";
@@ -48,6 +49,7 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
   // Dialog states (local UI state)
   const [showAddFeedingPlan, setShowAddFeedingPlan] = useState(false);
   const [showAddSupplement, setShowAddSupplement] = useState(false);
+  const [showAddWater, setShowAddWater] = useState(false);
 
   const getPageTitle = () => {
     switch (currentPage) {
@@ -107,13 +109,23 @@ export function NutritionPages({ currentPage, onBack }: NutritionPagesProps) {
         );
       case "water":
         return (
-          <WaterManager
-            schedule={waterSchedule}
-            getQualityLabel={getQualityLabel}
-            onRefresh={refreshWater}
-            onEdit={(id) => console.log("Edit water", id)}
-            onAdd={() => console.log("Add water schedule")}
-          />
+          <>
+            <WaterManager
+              schedule={waterSchedule}
+              getQualityLabel={getQualityLabel}
+              onRefresh={refreshWater}
+              onEdit={(id) => console.log("Edit water", id)}
+              onAdd={() => setShowAddWater(true)}
+            />
+            <WaterDialog
+              open={showAddWater}
+              onOpenChange={setShowAddWater}
+              onSave={async (data) => {
+                await addWaterSchedule(data);
+                setShowAddWater(false);
+              }}
+            />
+          </>
         );
       default:
         return null;

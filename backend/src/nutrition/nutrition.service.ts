@@ -33,22 +33,28 @@ export class NutritionService {
     userId: string,
     dto: UpdateFeedingPlanDto
   ) {
-    const plan = await this.prisma.feedingPlan.findFirst({
+    const result = await this.prisma.feedingPlan.updateMany({
       where: { id, userId },
-    });
-    if (!plan) throw new NotFoundException('Feeding plan not found');
-    return this.prisma.feedingPlan.update({
-      where: { id },
       data: dto,
     });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Feeding plan not found');
+    }
+
+    return this.prisma.feedingPlan.findUnique({ where: { id } });
   }
 
   async deleteFeedingPlan(id: string, userId: string) {
-    const plan = await this.prisma.feedingPlan.findFirst({
+    const result = await this.prisma.feedingPlan.deleteMany({
       where: { id, userId },
     });
-    if (!plan) throw new NotFoundException('Feeding plan not found');
-    return this.prisma.feedingPlan.delete({ where: { id } });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Feeding plan not found');
+    }
+
+    return { id };
   }
 
   // ─── Supplements ─────────────────────────────────────────
@@ -67,22 +73,28 @@ export class NutritionService {
   }
 
   async updateSupplement(id: string, userId: string, dto: UpdateSupplementDto) {
-    const item = await this.prisma.supplement.findFirst({
+    const result = await this.prisma.supplement.updateMany({
       where: { id, userId },
-    });
-    if (!item) throw new NotFoundException('Supplement not found');
-    return this.prisma.supplement.update({
-      where: { id },
       data: dto,
     });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Supplement not found');
+    }
+
+    return this.prisma.supplement.findUnique({ where: { id } });
   }
 
   async deleteSupplement(id: string, userId: string) {
-    const item = await this.prisma.supplement.findFirst({
+    const result = await this.prisma.supplement.deleteMany({
       where: { id, userId },
     });
-    if (!item) throw new NotFoundException('Supplement not found');
-    return this.prisma.supplement.delete({ where: { id } });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Supplement not found');
+    }
+
+    return { id };
   }
 
   // ─── Water Schedules ─────────────────────────────────────
@@ -110,26 +122,31 @@ export class NutritionService {
     userId: string,
     dto: UpdateWaterScheduleDto
   ) {
-    const item = await this.prisma.waterSchedule.findFirst({
-      where: { id, userId },
-    });
-    if (!item) throw new NotFoundException('Water schedule not found');
-
     const data: any = { ...dto };
     if (dto.lastChange) data.lastChange = new Date(dto.lastChange);
     if (dto.nextChange) data.nextChange = new Date(dto.nextChange);
 
-    return this.prisma.waterSchedule.update({
-      where: { id },
+    const result = await this.prisma.waterSchedule.updateMany({
+      where: { id, userId },
       data,
     });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Water schedule not found');
+    }
+
+    return this.prisma.waterSchedule.findUnique({ where: { id } });
   }
 
   async deleteWaterSchedule(id: string, userId: string) {
-    const item = await this.prisma.waterSchedule.findFirst({
+    const result = await this.prisma.waterSchedule.deleteMany({
       where: { id, userId },
     });
-    if (!item) throw new NotFoundException('Water schedule not found');
-    return this.prisma.waterSchedule.delete({ where: { id } });
+
+    if (result.count === 0) {
+      throw new NotFoundException('Water schedule not found');
+    }
+
+    return { id };
   }
 }

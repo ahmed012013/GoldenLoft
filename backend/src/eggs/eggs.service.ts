@@ -8,6 +8,7 @@ import { CreateEggDto } from './dto/create-egg.dto';
 import { UpdateEggDto } from './dto/update-egg.dto';
 import { HatchEggDto } from './dto/hatch-egg.dto';
 import { EggStatus, Bird, Prisma } from '@prisma/client';
+import * as crypto from 'crypto';
 
 type EggWithParents = Prisma.EggGetPayload<{
   include: { pairing: { include: { male: true; female: true } } };
@@ -34,32 +35,33 @@ export class EggsService {
     const hatchDateExpected = new Date(layDate);
     hatchDateExpected.setDate(layDate.getDate() + 18);
 
-    const egg = await this.prisma.egg.create({
-      data: {
-        pairingId: dto.pairingId,
-        layDate: layDate,
-        hatchDateExpected: hatchDateExpected,
-        hatchDateActual:
-          dto.status === EggStatus.HATCHED && dto.hatchDate
-            ? new Date(dto.hatchDate)
-            : dto.status === EggStatus.HATCHED
-              ? new Date()
-              : null,
-        status: dto.status || EggStatus.LAID,
-        ...(dto.candlingDate && { candlingDate: new Date(dto.candlingDate) }),
-        ...(dto.candlingResult && { candlingResult: dto.candlingResult }),
-      },
-      include: {
-        pairing: { include: { male: true, female: true } },
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const egg = await tx.egg.create({
+        data: {
+          pairingId: dto.pairingId,
+          layDate: layDate,
+          hatchDateExpected: hatchDateExpected,
+          hatchDateActual:
+            dto.status === EggStatus.HATCHED && dto.hatchDate
+              ? new Date(dto.hatchDate)
+              : dto.status === EggStatus.HATCHED
+                ? new Date()
+                : null,
+          status: dto.status || EggStatus.LAID,
+          ...(dto.candlingDate && { candlingDate: new Date(dto.candlingDate) }),
+          ...(dto.candlingResult && { candlingResult: dto.candlingResult }),
+        },
+        include: {
+          pairing: { include: { male: true, female: true } },
+        },
+      });
+
+      if (egg.status === EggStatus.HATCHED) {
+        await this.createSquab(egg, tx);
+      }
+
+      return egg;
     });
-
-    // If created as hatched, create the squab
-    if (egg.status === EggStatus.HATCHED) {
-      await this.createSquab(egg);
-    }
-
-    return egg;
   }
 
   async findAll(userId: string) {
@@ -105,36 +107,42 @@ export class EggsService {
   async update(userId: string, id: string, dto: UpdateEggDto) {
     const egg = await this.findOne(userId, id);
 
-    const updatedEgg = await this.prisma.egg.update({
-      where: { id },
-      data: {
-        status: dto.status,
-        hatchDateActual:
-          dto.status === EggStatus.HATCHED
-            ? dto.hatchDate
-              ? new Date(dto.hatchDate)
-              : egg.hatchDateActual || new Date()
-            : dto.status
-              ? null
-              : undefined,
-        ...(dto.candlingDate !== undefined && {
-          candlingDate: dto.candlingDate ? new Date(dto.candlingDate) : null,
-        }),
-        ...(dto.candlingResult !== undefined && {
-          candlingResult: dto.candlingResult,
-        }),
-      },
-      include: {
-        pairing: { include: { male: true, female: true } },
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const updatedEgg = await tx.egg.update({
+        where: { id },
+        data: {
+          status: dto.status,
+          hatchDateActual:
+            dto.status === EggStatus.HATCHED
+              ? dto.hatchDateActual
+                ? new Date(dto.hatchDateActual)
+                : dto.hatchDate
+                  ? new Date(dto.hatchDate)
+                  : egg.hatchDateActual || new Date()
+              : dto.status
+                ? null
+                : undefined,
+          ...(dto.candlingDate !== undefined && {
+            candlingDate: dto.candlingDate ? new Date(dto.candlingDate) : null,
+          }),
+          ...(dto.candlingResult !== undefined && {
+            candlingResult: dto.candlingResult,
+          }),
+        },
+        include: {
+          pairing: { include: { male: true, female: true } },
+        },
+      });
+
+      if (
+        dto.status === EggStatus.HATCHED &&
+        egg.status !== EggStatus.HATCHED
+      ) {
+        await this.createSquab(updatedEgg, tx);
+      }
+
+      return updatedEgg;
     });
-
-    // If status changed to HATCHED, create squab if it doesn't exist (simplification: always create)
-    if (dto.status === EggStatus.HATCHED && egg.status !== EggStatus.HATCHED) {
-      await this.createSquab(updatedEgg);
-    }
-
-    return updatedEgg;
   }
 
   async remove(userId: string, id: string) {
@@ -153,35 +161,38 @@ export class EggsService {
 
     const hatchDate = dto.hatchDate ? new Date(dto.hatchDate) : new Date();
 
-    // 1. Update Egg Status
-    const updatedEgg = await this.prisma.egg.update({
-      where: { id },
-      data: {
-        status: EggStatus.HATCHED,
-        hatchDateActual: hatchDate,
-      },
-      include: {
-        pairing: { include: { male: true, female: true } },
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const updatedEgg = await tx.egg.update({
+        where: { id },
+        data: {
+          status: EggStatus.HATCHED,
+          hatchDateActual: hatchDate,
+        },
+        include: {
+          pairing: { include: { male: true, female: true } },
+        },
+      });
+
+      await this.createSquab(updatedEgg, tx);
+
+      return updatedEgg;
     });
-
-    // 2. Create Squab
-    await this.createSquab(updatedEgg);
-
-    return updatedEgg;
   }
 
-  private async createSquab(egg: EggWithParents): Promise<Bird> {
+  private async createSquab(
+    egg: EggWithParents,
+    tx: Prisma.TransactionClient = this.prisma
+  ): Promise<Bird> {
     const hatchDate: Date = egg.hatchDateActual || new Date();
     const pairing = egg.pairing;
     const male = pairing.male;
 
-    // Generate temporary ring number and name
-    const timestamp = Date.now().toString().slice(-6);
-    const ringNumber = `SQ-${timestamp}`;
-    const name = `Squab ${timestamp}`;
+    // Generate truly unique ring number using UUID
+    const uniqueId = crypto.randomUUID().slice(0, 8).toUpperCase();
+    const ringNumber = `SQ-${uniqueId}`;
+    const name = `Squab ${uniqueId}`;
 
-    return this.prisma.bird.create({
+    return tx.bird.create({
       data: {
         ringNumber,
         name,
@@ -193,8 +204,7 @@ export class EggsService {
         fatherId: pairing.maleId,
         motherId: pairing.femaleId,
         color: 'unknown',
-        image:
-          'https://res.cloudinary.com/dcyr5qih0/image/upload/v1740051397/hatchling_placeholder_k2b7km.png',
+        image: null,
       },
     });
   }

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -25,7 +26,7 @@ import { CreateSupplementData } from "@/hooks/useNutrition";
 interface SupplementDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (data: CreateSupplementData) => void;
+  onSave: (data: CreateSupplementData) => Promise<void>;
 }
 
 export function SupplementDialog({
@@ -41,6 +42,7 @@ export function SupplementDialog({
   const [frequency, setFrequency] = useState("");
   const [purpose, setPurpose] = useState("");
   const [purposeAr, setPurposeAr] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const resetForm = () => {
     setName("");
@@ -52,18 +54,26 @@ export function SupplementDialog({
     setPurposeAr("");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name || !type || !dosage || !frequency) return;
-    onSave({
-      name,
-      nameAr: nameAr || undefined,
-      type,
-      dosage,
-      frequency,
-      purpose: purpose || undefined,
-      purposeAr: purposeAr || undefined,
-    });
-    resetForm();
+
+    setIsSaving(true);
+    try {
+      await onSave({
+        name,
+        nameAr: nameAr || undefined,
+        type,
+        dosage,
+        frequency,
+        purpose: purpose || undefined,
+        purposeAr: purposeAr || undefined,
+      });
+      resetForm();
+    } catch (error) {
+      console.error("Save failed:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -193,7 +203,14 @@ export function SupplementDialog({
           >
             {t("cancel")}
           </Button>
-          <Button onClick={handleSave} className="rounded-xl">
+          <Button
+            onClick={handleSave}
+            className="rounded-xl"
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : null}
             {t("saveSupplement")}
           </Button>
         </DialogFooter>

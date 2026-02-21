@@ -49,6 +49,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn, calculateAge } from "@/lib/utils";
 import { useLanguage } from "@/lib/language-context";
 import { Separator } from "@/components/ui/separator";
+import { normalizeRingNumber, suggestRingNumber } from "@/lib/ring-number-utils";
 
 // Form Schema
 const formSchema = z.object({
@@ -87,7 +88,7 @@ export function BirdModal({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ringNumber: "-EGY-2026",
+      ringNumber: suggestRingNumber(),
       name: "",
       gender: BirdGender.MALE,
       color: "",
@@ -152,7 +153,8 @@ export function BirdModal({
         value !== null &&
         key !== "loft" &&
         key !== "father" &&
-        key !== "mother"
+        key !== "mother" &&
+        key !== "image"
       ) {
         if (key === "birthDate" && value instanceof Date) {
           formData.append(key, value.toISOString());
@@ -298,12 +300,7 @@ export function BirdModal({
                               className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all"
                               {...field}
                               onChange={(e) => {
-                                const value = e.target.value;
-                                if (value.startsWith("-EGY-2026")) {
-                                  field.onChange(value);
-                                } else if (value.length < "-EGY-2026".length) {
-                                  field.onChange("-EGY-2026");
-                                }
+                                field.onChange(normalizeRingNumber(e.target.value));
                               }}
                             />
                           </FormControl>
@@ -340,7 +337,7 @@ export function BirdModal({
                           <FormLabel>{t("gender")}</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all">
@@ -353,6 +350,9 @@ export function BirdModal({
                               </SelectItem>
                               <SelectItem value={BirdGender.FEMALE}>
                                 {t("female")}
+                              </SelectItem>
+                              <SelectItem value={BirdGender.UNKNOWN}>
+                                {t("unknown")}
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -369,7 +369,7 @@ export function BirdModal({
                           <FormLabel>{t("status")}</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all">
@@ -401,7 +401,7 @@ export function BirdModal({
                           <FormLabel>{t("breed")}</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all">
@@ -517,7 +517,7 @@ export function BirdModal({
                           <FormLabel>{t("loft")} *</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all">
@@ -546,7 +546,7 @@ export function BirdModal({
                           <FormLabel>{t("father")}</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all">
@@ -576,7 +576,7 @@ export function BirdModal({
                           <FormLabel>{t("mother")}</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className="rounded-xl bg-muted/50 border-transparent focus:border-primary focus:bg-background transition-all">

@@ -11,16 +11,26 @@ import { EggForm } from "./EggForm";
 import { EggList } from "./EggList";
 import { HatchConfirmationDialog } from "./HatchConfirmationDialog";
 import { PairingStatus, EggStatus } from "@/lib/breeding-api";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function EggsTab() {
   const { t } = useLanguage();
-  const { data: eggs = [], isLoading } = useEggs();
+  const { data: eggsData, isLoading } = useEggs();
+  const eggs = (eggsData || []) as BackendEgg[];
   const { data: pairings = [], isLoading: isPairingsLoading } = usePairings();
   const { createEgg, updateEgg, hatchEgg, deleteEgg } = useEggMutations();
 
   const [showForm, setShowForm] = useState(false);
   const [editingEgg, setEditingEgg] = useState<BackendEgg | null>(null);
   const [hatchingEgg, setHatchingEgg] = useState<BackendEgg | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const activePairings = (pairings as BackendPairing[]).filter(
     (p) => p.status === PairingStatus.ACTIVE,
@@ -41,6 +51,8 @@ export function EggsTab() {
               ? new Date(data.candlingDate).toISOString()
               : undefined,
             candlingResult: data.candlingResult || undefined,
+            status: data.status,
+            hatchDateActual: data.hatchDate ? new Date(data.hatchDate).toISOString() : undefined,
           },
         });
         toast.success(t("eggUpdated"));
@@ -52,6 +64,8 @@ export function EggsTab() {
             ? new Date(data.candlingDate).toISOString()
             : undefined,
           candlingResult: data.candlingResult || undefined,
+          status: data.status,
+          hatchDate: data.hatchDate ? new Date(data.hatchDate).toISOString() : undefined,
         });
         toast.success(t("eggCreated"));
       }
@@ -96,7 +110,7 @@ export function EggsTab() {
   ) => {
     try {
       if (newStatus === EggStatus.HATCHED) {
-        const egg = eggs.find((e: any) => e.id === eggId);
+        const egg = eggs.find((e) => e.id === eggId);
         if (egg) {
           setHatchingEgg(egg as BackendEgg);
         }
@@ -130,31 +144,56 @@ export function EggsTab() {
     <div className="space-y-6">
       <EggStats eggs={eggs as BackendEgg[]} />
 
-      <div className="flex justify-end">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="relative w-full md:max-w-xs">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t("searchByParentRing")}
+            className="pl-10 rounded-2xl"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         <Button
           onClick={() => {
             setEditingEgg(null);
             setShowForm(true);
           }}
-          className="gap-2 rounded-2xl"
+          className="gap-2 rounded-2xl w-full md:w-auto"
         >
           <Plus className="h-4 w-4" />
           {t("addEgg")}
         </Button>
       </div>
 
-      {showForm && (
-        <EggForm
-          editingEgg={editingEgg}
-          activePairings={activePairings}
-          onSubmit={handleFormSubmit}
-          onCancel={() => setShowForm(false)}
-          isSubmitting={createEgg.isPending || updateEgg.isPending}
-        />
-      )}
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="max-w-2xl rounded-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {editingEgg ? t("editEgg") : t("addEgg")}
+            </DialogTitle>
+          </DialogHeader>
+          <EggForm
+            editingEgg={editingEgg}
+            activePairings={activePairings}
+            onSubmit={handleFormSubmit}
+            onCancel={() => setShowForm(false)}
+            isSubmitting={createEgg.isPending || updateEgg.isPending}
+          />
+        </DialogContent>
+      </Dialog>
 
       <EggList
-        eggs={eggs as BackendEgg[]}
+        eggs={(eggs as BackendEgg[]).filter((egg) => {
+          if (!searchTerm) return true;
+          const search = searchTerm.toLowerCase();
+          return (
+            egg.pairing?.male?.ringNumber?.toLowerCase().includes(search) ||
+            egg.pairing?.female?.ringNumber?.toLowerCase().includes(search) ||
+            egg.pairing?.male?.name?.toLowerCase().includes(search) ||
+            egg.pairing?.female?.name?.toLowerCase().includes(search)
+          );
+        })}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onStatusChange={handleStatusChange}

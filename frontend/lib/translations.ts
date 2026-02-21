@@ -56,6 +56,7 @@ export const translations = {
     deleteLoft: "Delete Loft",
     viewDetails: "View Details",
     saveLoft: "Save Loft",
+    save: "Save",
     cancel: "Cancel",
     loftCreated: "Loft created successfully",
     loftUpdated: "Loft updated successfully",
@@ -98,6 +99,7 @@ export const translations = {
     gender: "Gender",
     male: "Male",
     female: "Female",
+    unknown: "Unknown",
     color: "Color",
     breed: "Breed",
     birthDate: "Birth Date",
@@ -140,6 +142,7 @@ export const translations = {
     allGenders: "All genders",
     allLoftsFilter: "All lofts",
     searchPigeons: "Search pigeons...",
+    searchByParentRing: "Search by parent ring...",
     generation: "Generation",
     viewPedigree: "View Pedigree",
     racingRecord: "Racing Record",
@@ -379,6 +382,8 @@ export const translations = {
     actualEggs: "Actual Eggs",
     fertileEggs: "Fertile Eggs",
     hatchedEggs: "Hatched Eggs",
+    activeEggs: "Active Eggs",
+    lostEggs: "Lost Eggs",
     breedingNotes: "Breeding Notes",
 
     // Eggs
@@ -703,7 +708,6 @@ export const translations = {
     markHatched: "Mark as Hatched",
     markInfertile: "Mark as Infertile",
     unclear: "Unclear",
-    save: "Save",
     selectResult: "Select Result",
 
     // Footer
@@ -761,6 +765,8 @@ export const translations = {
     scheduleWaterChange: "Schedule Water Change",
     waterAdditive: "Additive",
     lastWaterChange: "Last Change",
+    waterDescription: "Manage water schedules for your lofts.",
+    waterQuality: "Water Quality",
     nextWaterChange: "Next Change",
     changeWater: "Change Water",
     waterChangeHistory: "Water Change History",
@@ -824,7 +830,9 @@ export const translations = {
     expectedEggs: "البيض المتوقع",
     actualEggs: "البيض الفعلي",
     fertileEggs: "البيض المخصب",
-    hatchedEggs: "البيض الفاقس",
+    hatchedEggs: "بيض فقس",
+    activeEggs: "بيض نشط",
+    lostEggs: "بيض مفقود",
     breedingNotes: "ملاحظات الإنتاج",
 
     // Eggs
@@ -993,6 +1001,7 @@ export const translations = {
     deleteLoft: "حذف اللوفت",
     viewDetails: "عرض التفاصيل",
     saveLoft: "حفظ اللوفت",
+    save: "حفظ",
     cancel: "إلغاء",
     loftCreated: "تم إنشاء اللوفت بنجاح",
     loftUpdated: "تم تحديث اللوفت بنجاح",
@@ -1034,6 +1043,7 @@ export const translations = {
     gender: "الجنس",
     male: "ذكر",
     female: "أنثى",
+    unknown: "غير معروف",
     color: "اللون",
     breed: "السلالة",
     birthDate: "تاريخ الميلاد",
@@ -1081,6 +1091,7 @@ export const translations = {
     allGenders: "جميع الأجناس",
     allLoftsFilter: "جميع اللوفتات",
     searchPigeons: "بحث عن حمام...",
+    searchByParentRing: "بحث برقم دبلة القص...",
     generation: "الجيل",
     viewPedigree: "عرض شجرة النسب",
     racingRecord: "سجل السباقات",
@@ -1468,7 +1479,6 @@ export const translations = {
     markHatched: "تسجيل كفقس",
     markInfertile: "تسجيل كغير مخصبة",
     unclear: "غير واضحة",
-    save: "حفظ",
     selectResult: "اختر النتيجة",
 
     // Footer
@@ -1529,6 +1539,8 @@ export const translations = {
     scheduleWaterChange: "جدولة تغيير الماء",
     waterAdditive: "مضافات الماء",
     lastWaterChange: "آخر تغيير",
+    waterDescription: "إدارة جداول تغيير الماء للوفتات.",
+    waterQuality: "جودة الماء",
     nextWaterChange: "التغيير القادم",
     changeWater: "تغيير الماء",
     waterChangeHistory: "سجل تغيير المياه",

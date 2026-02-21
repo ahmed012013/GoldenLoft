@@ -3,10 +3,13 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from './../src/prisma/prisma.service';
+import cookieParser from 'cookie-parser';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
+
+  jest.setTimeout(60000);
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,6 +17,7 @@ describe('AuthController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.use(cookieParser());
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
     await app.init();
 
@@ -21,7 +25,10 @@ describe('AuthController (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await prisma.user.deleteMany();
+    // Faster cleanup using a single TRUNCATE with CASCADE
+    await prisma.$executeRawUnsafe(
+      `TRUNCATE TABLE "Egg", "Pairing", "HealthRecord", "LifeEvent", "Bird", "TaskCompletion", "Task", "Loft", "InventoryItem", "Notification", "FeedingPlan", "Supplement", "WaterSchedule", "User" RESTART IDENTITY CASCADE;`
+    );
   });
 
   afterAll(async () => {

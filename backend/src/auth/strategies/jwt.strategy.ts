@@ -1,10 +1,12 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+  private readonly logger = new Logger(JwtStrategy.name);
+
   constructor(private userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -22,10 +24,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { sub: string; email: string }) {
-    console.log('JWT Payload:', payload);
+    this.logger.debug(`Validating JWT for user: ${payload.email}`);
     const user = await this.userService.findOne(payload.email);
     if (!user) {
-      console.log('User not found for payload:', payload);
+      this.logger.warn(`User not found for email: ${payload.email}`);
       throw new UnauthorizedException();
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

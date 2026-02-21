@@ -145,20 +145,25 @@ export function PedigreeDialog({
                 <div className="flex items-center gap-8">
                   <Card className="rounded-2xl w-40">
                     <CardContent className="p-3 text-center">
-                      <BirdIcon className="h-6 w-6 mx-auto text-blue-500 mb-2" />
                       <p className="font-medium text-sm">{t("father")}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {bird.father?.name || "-"}
-                      </p>
+                      <p className="text-xs font-semibold">{bird.father?.name || "-"}</p>
+                      {bird.father?.ringNumber && (
+                        <p className="text-[10px] text-muted-foreground">
+                          {bird.father.ringNumber}
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                   <Card className="rounded-2xl w-40">
                     <CardContent className="p-3 text-center">
                       <BirdIcon className="h-6 w-6 mx-auto text-pink-500 mb-2" />
                       <p className="font-medium text-sm">{t("mother")}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {bird.mother?.name || "-"}
-                      </p>
+                      <p className="text-xs font-semibold">{bird.mother?.name || "-"}</p>
+                      {bird.mother?.ringNumber && (
+                        <p className="text-[10px] text-muted-foreground">
+                          {bird.mother.ringNumber}
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTasks, CreateTaskData } from "@/hooks/use-tasks";
+import { useTasks, CreateTaskData, Task } from "@/hooks/use-tasks";
 import { useLofts } from "@/hooks/useLofts";
 import {
   ArrowLeft,
@@ -25,23 +25,6 @@ interface TasksPagesProps {
   onBack: () => void;
 }
 
-export interface Task {
-  id: string;
-  title: string;
-  titleEn?: string;
-  description?: string;
-  descriptionEn?: string;
-  time?: string;
-  instanceDate: string;
-  status: string;
-  category: string;
-  priority: string;
-  frequency: string;
-  isCompleted: boolean;
-  startDate?: string;
-  endDate?: string;
-  loft?: { id: string; name: string };
-}
 
 export function TasksPages({ currentPage, onBack }: TasksPagesProps) {
   const { language, t, dir } = useLanguage();

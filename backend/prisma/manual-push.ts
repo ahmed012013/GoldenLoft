@@ -10,8 +10,7 @@ neonConfig.webSocketConstructor = ws;
 async function main() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    console.error('DATABASE_URL is not set');
-    return;
+    throw new Error('DATABASE_URL is not set');
   }
 
   const pool = new Pool({ connectionString });
@@ -25,7 +24,7 @@ async function main() {
   const sqls = [
     // 1. FeedingPlan Table
     `CREATE TABLE IF NOT EXISTS "FeedingPlan" (
-        "id" TEXT NOT NULL,
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
         "name" TEXT NOT NULL,
         "nameAr" TEXT,
         "targetGroup" TEXT NOT NULL,
@@ -48,7 +47,7 @@ async function main() {
 
     // 2. Supplement Table
     `CREATE TABLE IF NOT EXISTS "Supplement" (
-        "id" TEXT NOT NULL,
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
         "name" TEXT NOT NULL,
         "nameAr" TEXT,
         "type" TEXT NOT NULL,
@@ -71,7 +70,7 @@ async function main() {
 
     // 3. WaterSchedule Table
     `CREATE TABLE IF NOT EXISTS "WaterSchedule" (
-        "id" TEXT NOT NULL,
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
         "loft" TEXT NOT NULL,
         "loftAr" TEXT,
         "lastChange" TIMESTAMP(3) NOT NULL,
@@ -99,6 +98,8 @@ async function main() {
     } catch (e) {
       console.error('❌ Error executing SQL:', sql);
       console.error(e);
+      await prisma.$disconnect();
+      process.exit(1);
     }
   }
 

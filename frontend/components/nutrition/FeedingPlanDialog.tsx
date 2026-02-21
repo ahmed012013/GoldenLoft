@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -25,7 +26,7 @@ import { CreateFeedingPlanData } from "@/hooks/useNutrition";
 interface FeedingPlanDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (data: CreateFeedingPlanData) => void;
+  onSave: (data: CreateFeedingPlanData) => Promise<void>;
 }
 
 export function FeedingPlanDialog({
@@ -40,6 +41,7 @@ export function FeedingPlanDialog({
   const [feedType, setFeedType] = useState("");
   const [morningAmount, setMorningAmount] = useState("");
   const [eveningAmount, setEveningAmount] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const resetForm = () => {
     setName("");
@@ -50,18 +52,26 @@ export function FeedingPlanDialog({
     setEveningAmount("");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name || !targetGroup || !feedType || !morningAmount || !eveningAmount)
       return;
-    onSave({
-      name,
-      nameAr: nameAr || undefined,
-      targetGroup,
-      feedType,
-      morningAmount,
-      eveningAmount,
-    });
-    resetForm();
+
+    setIsSaving(true);
+    try {
+      await onSave({
+        name,
+        nameAr: nameAr || undefined,
+        targetGroup,
+        feedType,
+        morningAmount,
+        eveningAmount,
+      });
+      resetForm();
+    } catch (error) {
+      console.error("Save failed:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -173,7 +183,14 @@ export function FeedingPlanDialog({
           >
             {t("cancel")}
           </Button>
-          <Button onClick={handleSave} className="rounded-xl">
+          <Button
+            onClick={handleSave}
+            className="rounded-xl"
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : null}
             {t("saveFeedingPlan")}
           </Button>
         </DialogFooter>
